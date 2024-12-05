@@ -9,7 +9,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 public class ApiService {
-    private static final String BASE_URL = "http:/10.0.2.2:5000/api/auth";
+    private static final String BASE_URL = "http://10.0.2.2:5000/api/auth";
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
 
@@ -30,6 +30,8 @@ public class ApiService {
         Request request = new Request.Builder().url(BASE_URL + "/login").post(body).build();
         client.newCall(request).enqueue(callback);
     }
+
+
 }
 
 class User {
@@ -43,6 +45,5 @@ class User {
         this.password = password;
     }
 }
-
 
 

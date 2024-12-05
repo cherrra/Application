@@ -15,6 +15,15 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="16dp" />
 
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выйти"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp" />
     <TextView
         android:id="@+id/categoriesTextView"
         android:layout_width="wrap_content"
@@ -25,12 +34,18 @@
         android:layout_below="@id/titleTextView"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="16dp" />
+    <Button
+        android:id="@+id/addCategoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Добавить категорию"
+        android:layout_marginTop="85dp"/>
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="395dp"
+        android:layout_height="571dp"
         android:layout_below="@id/categoriesTextView"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="53dp">
 
         <GridLayout
             android:id="@+id/categoryContainer"
@@ -39,39 +54,6 @@
             android:columnCount="3"
             android:padding="16dp" />
     </ScrollView>
-
-    <TextView
-        android:id="@+id/contactsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="306dp"
-        android:layout_marginBottom="16dp"
-        android:text="Контактная информация"
-        android:textColor="#000000"
-        android:textSize="20sp" />
-
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="376dp"
-        android:layout_height="200dp"
-        android:layout_below="@id/contactsTextView"
-        android:layout_marginTop="5dp" />
-
-
-    <TextView
-        android:id="@+id/adresTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="620dp"
-        android:layout_marginBottom="16dp"
-        android:text="г. Москва..."
-        android:textColor="#000000"
-        android:textSize="15sp" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -95,9 +77,8 @@
             android:textColor="#000000"
             android:textSize="16sp" />
 
-
         <TextView
-            android:id="@+id/garageButton"
+            android:id="@+id/usersButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -105,20 +86,7 @@
             android:focusable="true"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Гараж"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/accountButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Аккаунт"
+            android:text="Пользователи"
             android:textColor="#000000"
             android:textSize="16sp" />
 

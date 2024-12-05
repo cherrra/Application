@@ -16,34 +16,77 @@ public class AccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
-
         TextView usernameTextView = findViewById(R.id.usernameTextView);
         TextView emailTextView = findViewById(R.id.emailTextView);
         Button logoutButton = findViewById(R.id.logoutButton);
+
+        TextView homeButton = findViewById(R.id.homeButton);
+        homeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, HomeActivity.class);
+            startActivity(intent);
+        });
+
+        TextView accountButton = findViewById(R.id.accountButton);
+        accountButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, AccountActivity.class);
+            startActivity(intent);
+        });
+
+        TextView garageButton = findViewById(R.id.garageButton);
+        garageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, GarageActivity.class);
+            startActivity(intent);
+        });
+
+        TextView orderButton = findViewById(R.id.orderButton);
+        orderButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, OrdersActivity.class);
+            startActivity(intent);
+        });
+
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
             String token = encryptedSharedPrefs.getToken();
 
             if (token != null) {
-                // Извлечение данных из токена
                 String email = JwtUtils.decodeToken(token, "email");
                 String username = JwtUtils.decodeToken(token, "username");
 
-                // Вывод имени пользователя и email
-                usernameTextView.setText("Ваше имя: " + username);
-                emailTextView.setText("Ваш email: " + email);
+                usernameTextView.setText(username);
+                emailTextView.setText(email);
             } else {
-                usernameTextView.setText("Пользователь не найден");
-                emailTextView.setText("");
+                usernameTextView.setText("Имя не найдено");
+                emailTextView.setText("Email не найден");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            usernameTextView.setText("Ошибка загрузки данных");
-            emailTextView.setText("");
+            usernameTextView.setText("Ошибка");
+            emailTextView.setText("Ошибка");
         }
 
-        // Обработчик для кнопки выхода
+        TextView infoButton = findViewById(R.id.infoButton);
+
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    String token = encryptedSharedPrefs.getToken();
+                    if (token != null) {
+                        String email = JwtUtils.decodeToken(token, "email");
+                        String username = JwtUtils.decodeToken(token, "username");
+
+                        Intent intent = new Intent(AccountActivity.this, DetailsActivity.class);
+                        intent.putExtra("username", username);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,27 +97,16 @@ public class AccountActivity extends AppCompatActivity {
 
     private void logout() {
         try {
-            // Удаляем токен
             encryptedSharedPrefs.saveToken(null);
-
-            // Проверяем, что токен очищен
             String clearedToken = encryptedSharedPrefs.getToken();
-            if (clearedToken == null) {
-                Log.d("AccountActivity", "Токен успешно очищен");
-            } else {
-                Log.d("AccountActivity", "Токен не очищен: " + clearedToken);
-            }
+            Log.d("AccountActivity", "Токен после выхода: " + (clearedToken == null ? "успешно очищен" : clearedToken));
 
-            // Переходим на MainActivity
             Intent intent = new Intent(AccountActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-
-            // Закрываем текущую активность
             finish();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

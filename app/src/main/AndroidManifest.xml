@@ -24,8 +24,21 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".HomeAdminActivity" />
+        <activity android:name=".UsersActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".AccountActivity" />
+        <activity android:name=".DetailsActivity" />
+        <activity android:name=".EditActivity" />
+        <activity android:name=".GarageActivity" />
+        <activity android:name=".DetailsCarActivity" />
+        <activity android:name=".AddCarActivity" />
+        <activity android:name=".EditCarActivity" />
+        <activity android:name=".ServicesActivity" />
+        <activity android:name=".ServicesAdminActivity" />
+        <activity android:name=".OrdersActivity" />
+        <activity android:name=".AddOrderActivity" />
+        <activity android:name=".OrdersAdminActivity" />
     </application>
 
 </manifest>

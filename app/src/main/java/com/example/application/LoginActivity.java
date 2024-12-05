@@ -39,11 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
             String savedToken = encryptedSharedPrefs.getToken();
-            if (savedToken != null) {
-                Log.d("EncryptedSharedPrefs", "Saved token found: " + savedToken);
-            } else {
-                Log.d("EncryptedSharedPrefs", "No token found.");
-            }
+            Log.d("LoginActivity", "Токен при запуске: " + (savedToken != null ? savedToken : "отсутствует"));
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
         }
@@ -72,18 +68,24 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if (encryptedSharedPrefs != null) {
                                     encryptedSharedPrefs.saveToken(token);
+                                    Log.d("LoginActivity", "Токен успешно сохранён: " + token);
                                 }
 
                                 runOnUiThread(() -> {
                                     Toast.makeText(LoginActivity.this, "Вход успешен", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+
+                                    if (email.contains("@admin-mail")) {
+                                        startActivity(new Intent(LoginActivity.this, HomeAdminActivity.class));
+                                    } else {
+                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                    }
                                 });
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         } else {
                             runOnUiThread(() ->
-                                    Toast.makeText(LoginActivity.this, "Данные не верные", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(LoginActivity.this, "Данные неверные", Toast.LENGTH_SHORT).show()
                             );
                         }
                     }
@@ -92,3 +94,4 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
+

@@ -1,0 +1,64 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/modelInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Модель" />
+
+    <EditText
+        android:id="@+id/brandInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Марка" />
+
+    <EditText
+        android:id="@+id/yearInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Год"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/mileageInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Пробег"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/vinCodeInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="VIN код" />
+
+    <EditText
+        android:id="@+id/licensePlateInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Номерной знак" />
+
+    <EditText
+        android:id="@+id/bodyTypeInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Тип кузова" />
+
+    <EditText
+        android:id="@+id/engineTypeInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Тип двигателя" />
+
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сохранить" />
+</LinearLayout>

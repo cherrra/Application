@@ -2,9 +2,11 @@ package com.example.application;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -23,8 +25,9 @@ public class EncryptedSharedPrefs {
         );
     }
 
-    public void saveToken(String token) {
+  public void saveToken(String token) {
         sharedPreferences.edit().putString("token", token).apply();
+        Log.d("EncryptedSharedPrefs", "Токен: " + (token != null ? token : "очищен"));
     }
 
     public String getToken() {
