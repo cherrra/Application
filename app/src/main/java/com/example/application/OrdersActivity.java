@@ -134,7 +134,7 @@ public class OrdersActivity extends AppCompatActivity {
                 try {
                     JSONObject orderObject = ordersArray.getJSONObject(i);
                     String status = orderObject.getString("status");
-                    if (!"finished".equalsIgnoreCase(status)) { // Исключение finished-заказов
+                    if (!"finished".equalsIgnoreCase(status)) {
                         addOrderCard(orderObject);
                     }
                 } catch (Exception e) {
@@ -201,6 +201,12 @@ private void addOrderCard(JSONObject orderObject) {
         timeView.setTextSize(14f);
         timeView.setTextColor(Color.DKGRAY);
         card.addView(timeView);
+
+        TextView servicesView = new TextView(this);
+        servicesView.setText("Услуги: " + orderObject.getString("services"));
+        servicesView.setTextSize(14f);
+        servicesView.setTextColor(Color.DKGRAY);
+        card.addView(servicesView);
 
         TextView priceView = new TextView(this);
         priceView.setText("Стоимость: " + orderObject.getDouble("total_price") + " руб.");

@@ -149,7 +149,7 @@ public class ServicesActivity extends AppCompatActivity {
         servicesContainer.addView(card);
     }
 
-    private void saveSelectedService(int serviceId, String serviceName, double price) {
+   private void saveSelectedService(int serviceId, String serviceName, double price) {
         try {
             String servicesJson = sharedPreferences.getString("selectedServices", "[]");
             JSONArray servicesArray = new JSONArray(servicesJson);
@@ -169,6 +169,7 @@ public class ServicesActivity extends AppCompatActivity {
             Toast.makeText(this, "Ошибка при добавлении услуги", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void updateTotalPrice() {
         TextView totalPriceView = findViewById(R.id.totalPriceView);
         totalPriceView.setText("Добавлена услуга на сумму: " + totalPrice + " ₽");

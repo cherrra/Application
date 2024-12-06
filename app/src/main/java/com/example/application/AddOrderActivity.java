@@ -35,253 +35,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-/*
-public class AddOrderActivity extends AppCompatActivity {
-    private Spinner carSpinner;
-    private LinearLayout selectedServicesContainer;
-    private EditText dateInput, timeInput, commentInput;
-    private Button bookButton;
-    private EncryptedSharedPrefs encryptedSharedPrefs;
-    private SharedPreferences sharedPreferences;
-    private List<Integer> carIds = new ArrayList<>();
-    private List<String> selectedServices = new ArrayList<>();
-    private double totalPrice = 0;
-    private TextView totalPriceView;
-    private Button clearPriceButton;
-
-    @SuppressLint("MissingInflatedId")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_order);
-
-        carSpinner = findViewById(R.id.carSpinner);
-        selectedServicesContainer = findViewById(R.id.selectedServicesContainer);
-        dateInput = findViewById(R.id.dateInput);
-        timeInput = findViewById(R.id.timeInput);
-        commentInput = findViewById(R.id.commentInput);
-        bookButton = findViewById(R.id.bookButton);
-        totalPriceView = new TextView(this);
-        clearPriceButton = findViewById(R.id.clearPriceButton);
-        sharedPreferences = getSharedPreferences("OrderPrefs", MODE_PRIVATE);
-
-        try {
-            encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
-
-            if (token != null) {
-                fetchCars(token);
-                loadSelectedServices();
-                bookButton.setOnClickListener(v -> submitOrder(token));
-                clearPriceButton.setOnClickListener(v -> clearTotalPrice());
-            } else {
-                Toast.makeText(this, "Ошибка: токен не найден", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("AddOrderActivity", "Ошибка инициализации: " + e.getMessage());
-            Toast.makeText(this, "Ошибка инициализации", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadSelectedServices();  // Загружаем актуальные данные и обновляем цену при возвращении на экран
-    }
-
-    private void clearTotalPrice() {
-        totalPrice = 0;  // Обнуляем цену
-        updateTotalPrice();  // Обновляем отображение цены
-        saveTotalPrice();  // Сохраняем цену в SharedPreferences
-    }
-
-    private void saveTotalPrice() {
-        sharedPreferences.edit().putFloat("totalPrice", (float) totalPrice).apply();  // Сохраняем в SharedPreferences
-    }
-
-    private void fetchCars(String token) {
-        if (token == null || token.isEmpty()) {
-            Toast.makeText(AddOrderActivity.this, "Ошибка: отсутствует токен", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/cars")
-                .addHeader("Authorization", token)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(AddOrderActivity.this, "Ошибка загрузки машин", Toast.LENGTH_SHORT).show());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray carsArray = new JSONArray(response.body().string());
-                        runOnUiThread(() -> {
-                            List<String> carNames = new ArrayList<>();
-                            carIds.clear();
-                            for (int i = 0; i < carsArray.length(); i++) {
-                                try {
-                                    JSONObject car = carsArray.getJSONObject(i);
-                                    carNames.add(car.getString("model"));
-                                    carIds.add(car.getInt("id_car"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddOrderActivity.this,
-                                    android.R.layout.simple_spinner_dropdown_item, carNames);
-                            carSpinner.setAdapter(adapter);
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        runOnUiThread(() ->
-                                Toast.makeText(AddOrderActivity.this, "Ошибка обработки данных", Toast.LENGTH_SHORT).show());
-                    }
-                } else {
-                    if (response.code() == 401) {
-                        runOnUiThread(() -> {
-                            Toast.makeText(AddOrderActivity.this, "Ошибка авторизации. Пожалуйста, войдите заново.", Toast.LENGTH_SHORT).show();
-                            encryptedSharedPrefs.saveToken(null);
-                            finish();
-                        });
-                    } else {
-                        runOnUiThread(() ->
-                                Toast.makeText(AddOrderActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show());
-                    }
-                }
-            }
-        });
-    }
-
-    private void loadSelectedServices() {
-        selectedServices.clear();
-        selectedServicesContainer.removeAllViews();
-
-        // Загружаем цену из SharedPreferences, если она есть, или обнуляем
-        totalPrice = sharedPreferences.getFloat("totalPrice", 0);
-
-        String servicesJson = sharedPreferences.getString("selectedServices", "[]");
-        try {
-            JSONArray servicesArray = new JSONArray(servicesJson);
-            for (int i = 0; i < servicesArray.length(); i++) {
-                JSONObject service = servicesArray.getJSONObject(i);
-                String serviceName = service.getString("service_name");
-                double price = service.getDouble("price");
-
-                selectedServices.add(service.toString());
-                totalPrice += price;  // Добавляем цену услуги к общей
-
-                addServiceToView(serviceName, price, i);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        updateTotalPrice();  // Обновляем отображение цены
-    }
-
-    private void addServiceToView(String serviceName, double price, int index) {
-        if (price <= 0) return;
-
-        LinearLayout serviceLayout = new LinearLayout(this);
-        serviceLayout.setOrientation(LinearLayout.HORIZONTAL);
-        serviceLayout.setPadding(0, 10, 0, 10);
-
-        TextView serviceView = new TextView(this);
-        serviceView.setText(serviceName + " - " + price + " ₽");
-        serviceView.setTextSize(16f);
-        serviceView.setTextColor(Color.BLACK);
-
-        Button removeButton = new Button(this);
-        removeButton.setText("X");
-        removeButton.setTextSize(16f);
-        removeButton.setTextColor(Color.RED);
-        removeButton.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        removeButton.setOnClickListener(v -> {
-            removeServiceFromView(serviceLayout, index, price);
-        });
-
-        serviceLayout.addView(serviceView);
-        serviceLayout.addView(removeButton);
-
-        selectedServicesContainer.addView(serviceLayout);
-    }
-
-    private void removeServiceFromView(LinearLayout serviceLayout, int index, double price) {
-        selectedServicesContainer.removeView(serviceLayout);
-        selectedServices.remove(index);
-        totalPrice -= price;  // Уменьшаем цену
-        updateTotalPrice();  // Обновляем отображение цены
-        saveTotalPrice();  // Сохраняем обновленную цену
-        saveSelectedServices();
-    }
-
-    private void saveSelectedServices() {
-        JSONArray updatedServicesArray = new JSONArray();
-        for (String service : selectedServices) {
-            try {
-                updatedServicesArray.put(new JSONObject(service));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        sharedPreferences.edit().putString("selectedServices", updatedServicesArray.toString()).apply();
-    }
-
-    private void updateTotalPrice() {
-        totalPriceView.setText("Итого: " + totalPrice + " ₽");
-        totalPriceView.setTextSize(18f);
-        totalPriceView.setTextColor(Color.RED);
-
-        if (selectedServicesContainer.getChildCount() > 0) {
-            selectedServicesContainer.removeViewAt(selectedServicesContainer.getChildCount() - 1);
-        }
-        selectedServicesContainer.addView(totalPriceView);
-    }
-
-    private void submitOrder(String token) {
-        int selectedCarIndex = carSpinner.getSelectedItemPosition();
-        if (selectedCarIndex < 0 || selectedServices.isEmpty()) {
-            Toast.makeText(this, "Выберите машину и услуги", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int carId = carIds.get(selectedCarIndex);
-        String date = dateInput.getText().toString();
-        String time = timeInput.getText().toString();
-        String comment = commentInput.getText().toString();
-
-        try {
-            JSONArray servicesArray = new JSONArray(selectedServices);
-
-            JSONObject orderData = new JSONObject();
-            orderData.put("id_car", carId);
-            orderData.put("order_date", date);
-            orderData.put("order_time", time);
-            orderData.put("comment", comment);
-            orderData.put("total_price", totalPrice);
-            orderData.put("services", servicesArray);
-
-            sendOrderToServer(orderData, token);
-        } catch (JSONException e) {
-            Toast.makeText(this, "Ошибка подготовки данных", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }*/
-
 
 public class AddOrderActivity extends AppCompatActivity {
     private Spinner carSpinner;
@@ -294,8 +47,6 @@ public class AddOrderActivity extends AppCompatActivity {
     private List<String> selectedServices = new ArrayList<>();
     private double totalPrice = 0;
     private TextView totalPriceView;
-    private Button clearPriceButton;
-
     private Calendar calendar = Calendar.getInstance();
 
     @SuppressLint("MissingInflatedId")
@@ -311,8 +62,10 @@ public class AddOrderActivity extends AppCompatActivity {
         commentInput = findViewById(R.id.commentInput);
         bookButton = findViewById(R.id.bookButton);
         totalPriceView = new TextView(this);
-        clearPriceButton = findViewById(R.id.clearPriceButton);
         sharedPreferences = getSharedPreferences("OrderPrefs", MODE_PRIVATE);
+
+        Button clearServicesButton = findViewById(R.id.clearServicesButton);
+        clearServicesButton.setOnClickListener(v -> clearServices());
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
@@ -322,7 +75,6 @@ public class AddOrderActivity extends AppCompatActivity {
                 fetchCars(token);
                 loadSelectedServices();
                 bookButton.setOnClickListener(v -> submitOrder(token));
-                clearPriceButton.setOnClickListener(v -> clearTotalPrice());
             } else {
                 Toast.makeText(this, "Ошибка: токен не найден", Toast.LENGTH_SHORT).show();
                 finish();
@@ -345,14 +97,22 @@ public class AddOrderActivity extends AppCompatActivity {
         loadSelectedServices();
     }
 
-    private void clearTotalPrice() {
-        totalPrice = 0;
-        updateTotalPrice();
-        saveTotalPrice();
-    }
-
     private void saveTotalPrice() {
         sharedPreferences.edit().putFloat("totalPrice", (float) totalPrice).apply();
+    }
+
+    private void clearServices() {
+        selectedServices.clear();
+        selectedServicesContainer.removeAllViews();
+        totalPrice = 0;
+        updateTotalPrice();
+
+        sharedPreferences.edit()
+                .remove("selectedServices")
+                .remove("totalPrice")
+                .apply();
+
+        Toast.makeText(this, "Услуги очищены", Toast.LENGTH_SHORT).show();
     }
 
     private void fetchCars(String token) {
@@ -431,6 +191,7 @@ public class AddOrderActivity extends AppCompatActivity {
                 String serviceName = service.getString("service_name");
                 double price = service.getDouble("price");
 
+
                 selectedServices.add(service.toString());
                 totalPrice += price;
 
@@ -442,7 +203,7 @@ public class AddOrderActivity extends AppCompatActivity {
 
         updateTotalPrice();
     }
-
+/*
     private void addServiceToView(String serviceName, double price, int index) {
         if (price <= 0) return;
 
@@ -470,7 +231,108 @@ public class AddOrderActivity extends AppCompatActivity {
         serviceLayout.addView(removeButton);
 
         selectedServicesContainer.addView(serviceLayout);
+    }*/
+
+    private void addServiceToView(String serviceName, double price, int index) {
+        if (price <= 0) return;
+
+        LinearLayout serviceLayout = new LinearLayout(this);
+        serviceLayout.setOrientation(LinearLayout.HORIZONTAL);
+        serviceLayout.setPadding(0, 10, 0, 10);
+
+        // Текстовое представление услуги
+        TextView serviceView = new TextView(this);
+        serviceView.setText(serviceName + " - " + price + " ₽");
+        serviceView.setTextSize(16f);
+        serviceView.setTextColor(Color.BLACK);
+
+        // Кнопка удаления услуги
+        Button removeButton = new Button(this);
+        removeButton.setText("X");
+        removeButton.setTextSize(16f);
+        removeButton.setTextColor(Color.RED);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(20, 0, 0, 0);
+        removeButton.setLayoutParams(params);
+
+        // Действие кнопки удаления
+        removeButton.setOnClickListener(v -> {
+            removeService(serviceLayout, index, price);
+        });
+
+        // Добавляем элементы в макет услуги
+        serviceLayout.addView(serviceView);
+        serviceLayout.addView(removeButton);
+
+        // Добавляем макет услуги перед итоговой ценой
+        selectedServicesContainer.addView(serviceLayout, selectedServicesContainer.getChildCount() - 1);
     }
+/*
+    private void addServiceToView(String serviceName, double price, int index) {
+        if (price <= 0) return;
+
+        LinearLayout serviceLayout = new LinearLayout(this);
+        serviceLayout.setOrientation(LinearLayout.HORIZONTAL);
+        serviceLayout.setPadding(0, 10, 0, 10);
+
+        // Текстовое представление услуги
+        TextView serviceView = new TextView(this);
+        serviceView.setText(serviceName + " - " + price + " ₽");
+        serviceView.setTextSize(16f);
+        serviceView.setTextColor(Color.BLACK);
+
+        // Кнопка удаления услуги
+        Button removeButton = new Button(this);
+        removeButton.setText("X");
+        removeButton.setTextSize(16f);
+        removeButton.setTextColor(Color.RED);
+
+        // Установка отступов для кнопки
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(20, 0, 0, 0);
+        removeButton.setLayoutParams(params);
+
+        // Действие кнопки удаления
+        removeButton.setOnClickListener(v -> {
+            removeService(serviceLayout, index, price);
+        });
+
+        // Добавляем элементы в макет услуги
+        serviceLayout.addView(serviceView);
+        serviceLayout.addView(removeButton);
+
+        // Добавляем макет услуги в контейнер
+        selectedServicesContainer.addView(serviceLayout, selectedServicesContainer.getChildCount() - 1);
+    }
+*/
+    private void removeService(LinearLayout serviceLayout, int index, double price) {
+        // Удаление из интерфейса
+        selectedServicesContainer.removeView(serviceLayout);
+
+        // Удаление услуги из списка
+        selectedServices.remove(index);
+
+        // Обновляем индексы оставшихся услуг
+        for (int i = index; i < selectedServices.size(); i++) {
+            try {
+                JSONObject service = new JSONObject(selectedServices.get(i));
+                addServiceToView(service.getString("service_name"), service.getDouble("price"), i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Пересчёт итоговой цены
+        totalPrice -= price;
+        updateTotalPrice();
+        saveTotalPrice();
+        saveSelectedServices();
+    }
+
+/*
 
     private void removeServiceFromView(LinearLayout serviceLayout, int index, double price) {
         selectedServicesContainer.removeView(serviceLayout);
@@ -479,7 +341,7 @@ public class AddOrderActivity extends AppCompatActivity {
         updateTotalPrice();
         saveTotalPrice();
         saveSelectedServices();
-    }
+    }*/
 
     private void saveSelectedServices() {
         JSONArray updatedServicesArray = new JSONArray();
@@ -533,8 +395,8 @@ public class AddOrderActivity extends AppCompatActivity {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         timeInput.setText(timeFormat.format(calendar.getTime()));
     }
-/*
-    private void submitOrder(String token) {
+
+    protected void submitOrder(String token) {
         int selectedCarIndex = carSpinner.getSelectedItemPosition();
         if (selectedCarIndex < 0 || selectedServices.isEmpty()) {
             Toast.makeText(this, "Выберите машину и услуги", Toast.LENGTH_SHORT).show();
@@ -562,38 +424,7 @@ public class AddOrderActivity extends AppCompatActivity {
             Toast.makeText(this, "Ошибка подготовки данных", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-    }*/
-protected void submitOrder(String token) {
-    int selectedCarIndex = carSpinner.getSelectedItemPosition();
-    if (selectedCarIndex < 0 || selectedServices.isEmpty()) {
-        Toast.makeText(this, "Выберите машину и услуги", Toast.LENGTH_SHORT).show();
-        return;
     }
-
-    int carId = carIds.get(selectedCarIndex);
-    String date = dateInput.getText().toString();
-    String time = timeInput.getText().toString();
-    String comment = commentInput.getText().toString();
-
-    try {
-        JSONArray servicesArray = new JSONArray(selectedServices);
-
-        JSONObject orderData = new JSONObject();
-        orderData.put("id_car", carId);
-        orderData.put("order_date", date);
-        orderData.put("order_time", time);
-        orderData.put("comment", comment);
-        orderData.put("total_price", totalPrice);
-        orderData.put("services", servicesArray);
-
-        sendOrderToServer(orderData, token);
-    } catch (JSONException e) {
-        Toast.makeText(this, "Ошибка подготовки данных", Toast.LENGTH_SHORT).show();
-        e.printStackTrace();
-    }
-}
-
-
 
     private void sendOrderToServer(JSONObject orderData, String token) {
         OkHttpClient client = new OkHttpClient();
@@ -610,22 +441,11 @@ protected void submitOrder(String token) {
                 runOnUiThread(() -> Toast.makeText(AddOrderActivity.this, "Ошибка отправки данных", Toast.LENGTH_SHORT).show());
             }
 
-          /*  @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(AddOrderActivity.this, "Заказ успешно создан", Toast.LENGTH_SHORT).show();
-                        finish();
-                    });
-                } else {
-                    runOnUiThread(() -> Toast.makeText(AddOrderActivity.this, "Ошибка создания заказа", Toast.LENGTH_SHORT).show());
-                }
-            }*/
+
           @Override
           public void onResponse(Call call, Response response) throws IOException {
               if (response.isSuccessful()) {
                   runOnUiThread(() -> {
-                      // Очистка полей и отображение уведомления
                       clearFields();
                       Toast.makeText(AddOrderActivity.this, "Заказ успешно создан", Toast.LENGTH_SHORT).show();
                   });
@@ -638,20 +458,16 @@ protected void submitOrder(String token) {
     }
 
     private void clearFields() {
-        // Сброс даты, времени и комментария
         dateInput.setText("");
         timeInput.setText("");
         commentInput.setText("");
 
-        // Очистка контейнера услуг
         selectedServicesContainer.removeAllViews();
         selectedServices.clear();
 
-        // Обнуление цены
         totalPrice = 0;
         updateTotalPrice();
 
-        // Удаление данных из SharedPreferences
         sharedPreferences.edit()
                 .remove("selectedServices")
                 .remove("totalPrice")

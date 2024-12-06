@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        String url = "https://yandex.ru/maps/?ll=37.618423%2C55.751244&z=10&pt=37.618423,55.751244,pm2rdl";
+        String url = "https://yandex.ru/maps/?ll=37.593471%2C55.721609&z=10&pt=37.593471,55.721609,pm2rdl";
         webView.loadUrl(url);
 
         TextView homeButton = findViewById(R.id.homeButton);

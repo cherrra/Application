@@ -41,13 +41,13 @@
         android:layout_height="wrap_content"
         android:text="Записаться" />
 
-
     <Button
-        android:id="@+id/clearPriceButton"
+        android:id="@+id/clearServicesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Очистить цену"
+        android:text="Очистить услуги"
         android:layout_marginTop="16dp"
-        android:layout_gravity="center" />
+        android:layout_gravity="center_horizontal" />
+
 
 </LinearLayout>
