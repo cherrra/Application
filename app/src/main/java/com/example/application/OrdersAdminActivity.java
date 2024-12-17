@@ -71,7 +71,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
     private void fetchAllOrders(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/admin/orders")
+                .url("http://10.0.2.2:5000/api/orders/admin")
                 .addHeader("Authorization", token)
                 .build();
 
@@ -241,7 +241,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
         );
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/admin/orders/" + orderId)
+                .url("http://10.0.2.2:5000/api/orders/admin/" + orderId)
                 .put(body)
                 .addHeader("Authorization", token)
                 .build();

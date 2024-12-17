@@ -266,7 +266,7 @@ private void addOrderCard(JSONObject orderObject) {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     runOnUiThread(() -> {
-                        orderContainer.removeView(cardView); // Удаление карточки с клиента
+                        orderContainer.removeView(cardView);
                         Toast.makeText(OrdersActivity.this, "Заказ удалён", Toast.LENGTH_SHORT).show();
                     });
                 } else {
