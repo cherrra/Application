@@ -1,14 +1,22 @@
 package com.example.application;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONObject;
 
@@ -106,17 +114,51 @@ public class DetailsActivity extends AppCompatActivity {
                             birthDateTextView.setText(formattedDate);
                             genderTextView.setText(user.optString("gender"));
                             phoneNumberTextView.setText(user.optString("phone_number"));
+
+                            String imageUrl = user.optString("link_img");
+                            if (imageUrl != null && !imageUrl.isEmpty()) {
+                                String fullImageUrl = "http://10.0.2.2:5000" + imageUrl;
+                                loadImage(fullImageUrl);
+                                Log.d("DetailsActivity", "Image URL: " + imageUrl);
+
+                            } else {
+                                profileImageViewDetails.setImageResource(R.drawable.ic_placeholder);
+                            }
                         });
                     } catch (Exception e) {
                         Log.e("DetailsActivity", "Ошибка обработки ответа: " + e.getMessage());
+
+
                     }
                 } else {
                     Log.e("DetailsActivity", "Ответ сервера: " + response.code());
                 }
             }
-
         });
     }
+
+    private void loadImage(String imageUrl) {
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_placeholder)
+
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.e("Glide", "Ошибка загрузки изображения", e);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d("Glide", "Изображение успешно загружено");
+                        return false;
+                    }
+                })
+                .into(profileImageViewDetails);
+
+    }
+
 
     private String formatDate(String rawDate) {
         if (rawDate == null || rawDate.isEmpty()) {
