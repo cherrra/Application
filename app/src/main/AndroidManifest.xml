@@ -15,30 +15,31 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".HomeAdminActivity" />
-        <activity android:name=".UsersActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".AccountActivity" />
-        <activity android:name=".DetailsActivity" />
-        <activity android:name=".EditActivity" />
-        <activity android:name=".GarageActivity" />
-        <activity android:name=".DetailsCarActivity" />
-        <activity android:name=".AddCarActivity" />
-        <activity android:name=".EditCarActivity" />
-        <activity android:name=".ServicesActivity" />
-        <activity android:name=".ServicesAdminActivity" />
-        <activity android:name=".OrdersActivity" />
-        <activity android:name=".AddOrderActivity" />
-        <activity android:name=".OrdersAdminActivity" />
+        <activity android:name=".ui.view.LoginActivity" />
+        <activity android:name=".ui.view.RegisterActivity" />
+        <activity android:name=".ui.view.PrivacyPolicyActivity" />
+        <activity android:name=".ui.view.admin.HomeAdminActivity" />
+        <activity android:name=".ui.view.admin.UsersAdminActivity" />
+        <activity android:name=".ui.view.HomeActivity" />
+        <activity android:name=".ui.view.AccountActivity" />
+        <activity android:name=".ui.view.DetailsActivity" />
+        <activity android:name=".ui.view.EditActivity" />
+        <activity android:name=".ui.view.GarageActivity" />
+        <activity android:name=".ui.view.DetailsCarActivity" />
+        <activity android:name=".ui.view.AddCarActivity" />
+        <activity android:name=".ui.view.EditCarActivity" />
+        <activity android:name=".ui.view.OrdersActivity" />
+        <activity android:name=".ui.view.ServicesActivity" />
+        <activity android:name=".ui.view.admin.ServicesAdminActivity" />
+        <activity android:name=".ui.view.AddOrderActivity" />
+        <activity android:name=".ui.view.admin.OrdersAdminActivity" />
     </application>
 
 </manifest>
