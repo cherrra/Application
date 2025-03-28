@@ -1,20 +1,36 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
+    <!-- Заголовок "Информация об аккаунте" -->
+    <TextView
+        android:id="@+id/accountTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="Информация об аккаунте"
+        android:textColor="#2260FF"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
+
+    <!-- Основной контент, выровненный по центру -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/accountTitle"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_background"
             android:gravity="center"
@@ -61,17 +77,20 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <Button
+        <!-- Кнопка выхода -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/logoutButton"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="8dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="5dp"
             android:text="Выйти"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:backgroundTint="#2260FF"
+            app:cornerRadius="24dp"/>
     </LinearLayout>
 
+    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"

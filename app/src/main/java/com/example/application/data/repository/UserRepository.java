@@ -97,12 +97,19 @@ public class UserRepository {
         return userLiveData;
     }
 
+
     private String formatDate(String rawDate) {
         if (rawDate == null || rawDate.isEmpty()) {
             return "Не указана";
         }
 
         try {
+            // Если дата уже в формате "dd.MM.yyyy", просто возвращаем ее
+            if (rawDate.matches("\\d{2}\\.\\d{2}\\.\\d{4}")) {
+                return rawDate;
+            }
+
+            // Если дата в формате "yyyy-MM-dd", преобразуем в "dd.MM.yyyy"
             SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             SimpleDateFormat desiredFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
             Date date = isoFormat.parse(rawDate);

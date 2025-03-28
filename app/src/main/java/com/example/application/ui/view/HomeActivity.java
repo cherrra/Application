@@ -14,11 +14,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.application.utils.EncryptedSharedPrefs;
 import com.example.application.R;
 import com.example.application.data.model.Category;
 import com.example.application.ui.viewmodel.CategoryViewModel;
-
+import com.example.application.utils.EncryptedSharedPrefs;
 
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
     private void addCategoryCard(Category category) {
         GridLayout card = new GridLayout(this);
         card.setPadding(16, 16, 16, 16);
-        card.setBackgroundColor(Color.parseColor("#E0E0E0"));
+        card.setBackgroundColor(Color.parseColor("#CAD6FF"));
 
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
         params.width = 0;
@@ -113,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
         TextView nameView = new TextView(this);
         nameView.setText(category.getCategoryName());
         nameView.setTextSize(16f);
-        nameView.setTextColor(Color.BLACK);
+        nameView.setTextColor(Color.BLUE);
         card.addView(nameView);
 
         card.setOnClickListener(v -> {
@@ -124,6 +123,7 @@ public class HomeActivity extends AppCompatActivity {
 
         categoryContainer.addView(card);
     }
+
 
     private final ActivityResultLauncher<Intent> serviceLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

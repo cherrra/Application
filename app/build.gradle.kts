@@ -51,6 +51,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
+    implementation("androidx.cardview:cardview:1.0.0")
 
 }
 
