@@ -13,18 +13,29 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/garageInfoTextView"
+            android:id="@+id/accountTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Информация о гараже"
-            android:textSize="16sp" />
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:text="Информация об автомобилях"
+            android:textColor="#2260FF"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/addCarButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+" />
+
+        <TextView
+            android:id="@+id/pustoTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Пока пусто"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/carContainer"

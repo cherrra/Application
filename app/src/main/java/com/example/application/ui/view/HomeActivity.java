@@ -2,10 +2,15 @@ package com.example.application.ui.view;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,23 +102,73 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void addCategoryCard(Category category) {
+        // Создаем контейнер для карточки
         GridLayout card = new GridLayout(this);
-        card.setPadding(16, 16, 16, 16);
-        card.setBackgroundColor(Color.parseColor("#CAD6FF"));
+        card.setColumnCount(1); // Одна колонка для вертикального расположения
+        card.setPadding(24, 24, 24, 24); // Уменьшаем отступы внутри карточки
 
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = 0;
-        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-        params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
-        params.setMargins(16, 16, 16, 16);
-        card.setLayoutParams(params);
+        // Фон с закругленными углами и прозрачностью 50%
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(55f);
+        shape.setColor(Color.parseColor("#80CAD6FF"));
+        shape.setStroke(2, Color.parseColor("#CAD6FF"));
 
+        card.setBackground(shape);
+
+        // Параметры карточки - уменьшаем ширину и отступы
+        GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams();
+        cardParams.width = 0; // Используем 0 для автоматического растягивания
+        cardParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        cardParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Равномерное распределение
+        cardParams.setMargins(8, 8, 8, 8); // Уменьшаем отступы между карточками
+        card.setLayoutParams(cardParams);
+
+        // Добавляем иконку
+        ImageView iconView = new ImageView(this);
+        iconView.setImageResource(R.drawable.ic_category);
+
+        GridLayout.LayoutParams iconParams = new GridLayout.LayoutParams();
+        iconParams.width = 160; // Уменьшаем размер иконки
+        iconParams.height = 160;
+        iconParams.setGravity(Gravity.CENTER);
+        iconParams.setMargins(0, 0, 0, 8); // Уменьшаем отступ снизу
+
+        iconView.setLayoutParams(iconParams);
+        iconView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        card.addView(iconView);
+
+        // Текст категории
         TextView nameView = new TextView(this);
         nameView.setText(category.getCategoryName());
-        nameView.setTextSize(16f);
-        nameView.setTextColor(Color.BLUE);
+        nameView.setTextSize(16f); // Уменьшаем размер текста
+        nameView.setTextColor(Color.parseColor("#2260FF"));;
+        nameView.setGravity(Gravity.CENTER);
+        nameView.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+
+        GridLayout.LayoutParams textParams = new GridLayout.LayoutParams();
+        textParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+        textParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        textParams.setGravity(Gravity.CENTER);
+
+        nameView.setLayoutParams(textParams);
         card.addView(nameView);
+
+        // Анимация при нажатии
+        card.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
+        });
 
         card.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, ServicesActivity.class);
@@ -123,7 +178,6 @@ public class HomeActivity extends AppCompatActivity {
 
         categoryContainer.addView(card);
     }
-
 
     private final ActivityResultLauncher<Intent> serviceLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

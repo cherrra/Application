@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,11 +13,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.application.utils.EncryptedSharedPrefs;
 import com.example.application.R;
 import com.example.application.data.model.Car;
 import com.example.application.network.ApiClient;
 import com.example.application.ui.viewmodel.CarViewModel;
+import com.example.application.utils.EncryptedSharedPrefs;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -25,10 +26,10 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-
 public class GarageActivity extends AppCompatActivity {
 
     private LinearLayout carContainer;
+    private TextView pustoTextView; // Добавлено
     private CarViewModel carViewModel;
     private static final String TAG = "GarageActivity";
 
@@ -38,23 +39,11 @@ public class GarageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_garage);
 
         carContainer = findViewById(R.id.carContainer);
+        pustoTextView = findViewById(R.id.pustoTextView); // Инициализация TextView
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
         setupNavigation();
         fetchGarageDetails();
-    }
-
-    private void setupNavigation() {
-        findViewById(R.id.homeButton).setOnClickListener(v -> navigateTo(HomeActivity.class));
-        findViewById(R.id.accountButton).setOnClickListener(v -> navigateTo(AccountActivity.class));
-        findViewById(R.id.garageButton).setOnClickListener(v -> navigateTo(GarageActivity.class));
-        findViewById(R.id.orderButton).setOnClickListener(v -> navigateTo(OrdersActivity.class));
-        findViewById(R.id.addCarButton).setOnClickListener(v -> navigateTo(AddCarActivity.class));
-    }
-
-    private void navigateTo(Class<?> targetActivity) {
-        Intent intent = new Intent(this, targetActivity);
-        startActivity(intent);
     }
 
     private void fetchGarageDetails() {
@@ -69,14 +58,17 @@ public class GarageActivity extends AppCompatActivity {
         carViewModel.getCars(token).observe(this, cars -> {
             if (cars != null && !cars.isEmpty()) {
                 Log.d(TAG, "Загружено " + cars.size() + " автомобилей");
+                pustoTextView.setVisibility(View.GONE); // Скрываем надпись "Пока пусто"
                 updateUI(cars);
             } else {
-                Log.e(TAG, "Ошибка загрузки данных: cars == null или пустой");
-                Toast.makeText(GarageActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Нет автомобилей в гараже");
+                pustoTextView.setVisibility(View.VISIBLE); // Показываем надпись "Пока пусто"
+                carContainer.removeAllViews(); // Очищаем контейнер
             }
         });
     }
 
+    // Остальной код без изменений
     private void updateUI(List<Car> cars) {
         carContainer.removeAllViews();
         for (Car car : cars) {
@@ -116,14 +108,12 @@ public class GarageActivity extends AppCompatActivity {
         detailsButton.setText("Подробнее");
         detailsButton.setOnClickListener(v -> {
             String carJson = new Gson().toJson(car);
-            Log.d(TAG, "Передача данных в DetailsCarActivity: " + carJson);
             Intent intent = new Intent(GarageActivity.this, DetailsCarActivity.class);
             intent.putExtra("carDetails", carJson);
             startActivity(intent);
         });
         card.addView(detailsButton);
 
-        // Кнопка удаления
         TextView deleteButton = new TextView(this);
         deleteButton.setText("Удалить");
         deleteButton.setOnClickListener(v -> deleteCar(car.getIdCar(), card));
@@ -144,24 +134,38 @@ public class GarageActivity extends AppCompatActivity {
         ApiClient.getInstance().deleteCar(carId, token, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> {
-                    Log.e(TAG, "Ошибка удаления: " + e.getMessage());
-                    Toast.makeText(GarageActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() ->
+                        Toast.makeText(GarageActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    runOnUiThread(() -> {
+                runOnUiThread(() -> {
+                    if (response.isSuccessful()) {
                         carContainer.removeView(card);
+                        // Проверяем, остались ли еще автомобили
+                        if (carContainer.getChildCount() == 0) {
+                            pustoTextView.setVisibility(View.VISIBLE);
+                        }
                         Toast.makeText(GarageActivity.this, "Машина удалена", Toast.LENGTH_SHORT).show();
-                    });
-                } else {
-                    runOnUiThread(() -> Toast.makeText(GarageActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show());
-                    Log.e(TAG, "Ошибка удаления, код: " + response.code());
-                }
+                    } else {
+                        Toast.makeText(GarageActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
+    }
+
+    // Остальные методы без изменений
+    private void setupNavigation() {
+        findViewById(R.id.homeButton).setOnClickListener(v -> navigateTo(HomeActivity.class));
+        findViewById(R.id.accountButton).setOnClickListener(v -> navigateTo(AccountActivity.class));
+        findViewById(R.id.garageButton).setOnClickListener(v -> navigateTo(GarageActivity.class));
+        findViewById(R.id.orderButton).setOnClickListener(v -> navigateTo(OrdersActivity.class));
+        findViewById(R.id.addCarButton).setOnClickListener(v -> navigateTo(AddCarActivity.class));
+    }
+
+    private void navigateTo(Class<?> targetActivity) {
+        startActivity(new Intent(this, targetActivity));
     }
 }
