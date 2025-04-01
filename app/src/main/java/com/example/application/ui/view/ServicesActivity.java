@@ -2,9 +2,13 @@ package com.example.application.ui.view;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +44,25 @@ public class ServicesActivity extends AppCompatActivity {
         categoryId = getIntent().getIntExtra("id_category", -1);
         servicesContainer = findViewById(R.id.servicesContainer);
         sharedPreferences = getSharedPreferences("OrderPrefs", MODE_PRIVATE);
+        ImageView backArrow = findViewById(R.id.backArrow);
+
+        backArrow.setOnClickListener(v -> {
+            finish(); // Закрываем текущую активность и возвращаемся назад
+        });
+
+        backArrow.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
+        });
 
         try {
             token = new EncryptedSharedPrefs(this).getToken();
@@ -70,43 +93,103 @@ public class ServicesActivity extends AppCompatActivity {
     }
 
     private void addServiceCard(Service service) {
+        // Создаем контейнер для карточки
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(16, 16, 16, 16);
-        card.setBackgroundColor(Color.parseColor("#E0E0E0"));
+        card.setPadding(32, 32, 32, 32);
+        card.setGravity(Gravity.CENTER); // Центрируем содержимое
 
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = 0;
-        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-        params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
-        params.setMargins(16, 16, 16, 16);
-        card.setLayoutParams(params);
+        // Фон с закругленными углами
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(55f);
+        shape.setColor(Color.parseColor("#CAD6FF"));
+        card.setBackground(shape);
 
+        // Параметры карточки
+        GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams();
+        cardParams.width = 0;
+        cardParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        cardParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+        cardParams.setMargins(8, 8, 8, 8);
+        card.setLayoutParams(cardParams);
+
+        // Название услуги
         TextView nameView = new TextView(this);
         nameView.setText(service.getServiceName());
-        nameView.setTextSize(16f);
+        nameView.setTextSize(18f);
         nameView.setTextColor(Color.BLACK);
+        nameView.setGravity(Gravity.CENTER);
+        nameView.setTypeface(null, Typeface.BOLD);
         card.addView(nameView);
 
+        // Описание услуги (если есть)
+        if (service.getDescription() != null && !service.getDescription().isEmpty()) {
+            TextView descView = new TextView(this);
+            descView.setText(service.getDescription());
+            descView.setTextSize(14f);
+            descView.setTextColor(Color.BLACK);
+            descView.setGravity(Gravity.CENTER);
+            descView.setPadding(0, 8, 0, 8);
+            card.addView(descView);
+        }
+
+        // Цена
         TextView priceView = new TextView(this);
-        priceView.setText("Цена: " + service.getPrice() + " ₽");
-        priceView.setTextSize(14f);
-        priceView.setTextColor(Color.GRAY);
+        priceView.setText(service.getPrice() + " ₽");
+        priceView.setTextSize(16f);
+        priceView.setTextColor(Color.BLACK);
+        priceView.setGravity(Gravity.CENTER);
+        priceView.setTypeface(null, Typeface.BOLD);
         card.addView(priceView);
 
-        Button buyButton = new Button(this);
-        buyButton.setText("Выбрать");
-        buyButton.setOnClickListener(v -> {
+        // Кнопка в виде кружка с плюсом
+        ImageView addButton = new ImageView(this);
+        LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                dpToPx(40), // Размер кнопки
+                dpToPx(40)
+        );
+        btnParams.gravity = Gravity.CENTER;
+        btnParams.setMargins(0, 16, 0, 0);
+        addButton.setLayoutParams(btnParams);
+
+        // Создаем круглую кнопку с плюсом
+        GradientDrawable btnShape = new GradientDrawable();
+        btnShape.setShape(GradientDrawable.OVAL);
+        btnShape.setColor(Color.parseColor("#2260FF")); // Синий фон
+        addButton.setBackground(btnShape);
+
+        // Устанавливаем иконку плюса
+        addButton.setImageResource(android.R.drawable.ic_input_add);
+        addButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        addButton.setColorFilter(Color.WHITE); // Белый плюс
+
+        // Обработчик нажатия
+        addButton.setOnClickListener(v -> {
             saveSelectedService(service);
             updateTotalPrice();
-            Toast.makeText(this, "Услуга добавлена в заказ", Toast.LENGTH_SHORT).show();
+
+            // Анимация нажатия
+            v.animate()
+                    .scaleX(0.8f).scaleY(0.8f)
+                    .setDuration(100)
+                    .withEndAction(() -> v.animate()
+                            .scaleX(1f).scaleY(1f)
+                            .setDuration(100)
+                            .start())
+                    .start();
+
+            Toast.makeText(this, service.getServiceName() + " добавлена", Toast.LENGTH_SHORT).show();
         });
 
-        card.addView(buyButton);
+        card.addView(addButton);
         servicesContainer.addView(card);
     }
 
+    // Вспомогательный метод для преобразования dp в пиксели
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
+    }
     private void saveSelectedService(Service service) {
         try {
             String servicesJson = sharedPreferences.getString("selectedServices", "[]");
