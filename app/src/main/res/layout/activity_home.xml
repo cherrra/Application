@@ -7,9 +7,9 @@
 
     <ImageView
         android:id="@+id/myImageView"
-        android:layout_width="123dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="-10dp"
+        android:layout_width="135dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
         android:src="@drawable/logo" />
 
         <ImageView
