@@ -5,92 +5,106 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Заголовок "Информация об аккаунте" -->
     <TextView
         android:id="@+id/accountTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:gravity="center"
-        android:text="Информация об аккаунте"
+        android:text="Аккаунт"
         android:textColor="#2260FF"
         android:textSize="22sp"
         android:textStyle="bold"/>
 
-    <!-- Основной контент, выровненный по центру -->
+
     <LinearLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/accountTitle"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="110dp"
         android:gravity="center_horizontal"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingTop="80dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_height="250dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_background"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingTop="40dp">
 
             <TextView
                 android:id="@+id/usernameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:gravity="center"
-                android:text=""
+                android:textColor="#000000"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/emailTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text=""
+                android:textColor="#000000"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/infoButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="start"
                 android:text="Подробная информация"
+                android:textColor="#000000"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/bonusesButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="start"
                 android:text="Бонусы и скидки"
+                android:textColor="#000000"
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <!-- Кнопка выхода -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logoutButton"
             android:layout_width="200dp"
             android:layout_height="48dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="25dp"
             android:text="Выйти"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             app:backgroundTint="#2260FF"
-            app:cornerRadius="24dp"/>
+            app:cornerRadius="24dp" />
     </LinearLayout>
 
-    <!-- Нижнее меню -->
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/contentLayout"
+        android:layout_marginBottom="-175dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/circle_background"
+        android:elevation="4dp"/>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"

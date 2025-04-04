@@ -3,20 +3,24 @@ package com.example.application.ui.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.application.utils.EncryptedSharedPrefs;
+import com.bumptech.glide.Glide;
 import com.example.application.R;
 import com.example.application.ui.viewmodel.UserViewModel;
+import com.example.application.utils.EncryptedSharedPrefs;
 
 public class AccountActivity extends AppCompatActivity {
     private UserViewModel userViewModel;
     private EncryptedSharedPrefs encryptedSharedPrefs;
+    private ImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,30 +30,24 @@ public class AccountActivity extends AppCompatActivity {
         TextView usernameTextView = findViewById(R.id.usernameTextView);
         TextView emailTextView = findViewById(R.id.emailTextView);
         Button logoutButton = findViewById(R.id.logoutButton);
+        profileImageView = findViewById(R.id.profileImageView);
 
-        TextView homeButton = findViewById(R.id.homeButton);
-        homeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AccountActivity.this, HomeActivity.class);
-            startActivity(intent);
+        setupNavigationButtons();
+
+        logoutButton.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
         });
 
-        TextView accountButton = findViewById(R.id.accountButton);
-        accountButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AccountActivity.this, AccountActivity.class);
-            startActivity(intent);
-        });
-
-        TextView garageButton = findViewById(R.id.garageButton);
-        garageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AccountActivity.this, GarageActivity.class);
-            startActivity(intent);
-        });
-
-        TextView orderButton = findViewById(R.id.orderButton);
-        orderButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AccountActivity.this, OrdersActivity.class);
-            startActivity(intent);
-        });
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
@@ -75,7 +73,7 @@ public class AccountActivity extends AppCompatActivity {
                     userViewModel.getUser(token).observe(this, user -> {
                         if (user != null) {
                             Intent intent = new Intent(AccountActivity.this, DetailsActivity.class);
-                            intent.putExtra("userId", user.getId()); // Передаем ID для загрузки данных
+                            intent.putExtra("userId", user.getId());
                             startActivity(intent);
                         } else {
                             Toast.makeText(this, "Ошибка загрузки данных пользователя", Toast.LENGTH_SHORT).show();
@@ -90,11 +88,28 @@ public class AccountActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> logout());
     }
 
+    private void setupNavigationButtons() {
+        findViewById(R.id.homeButton).setOnClickListener(v ->
+                startActivity(new Intent(this, HomeActivity.class)));
+        findViewById(R.id.accountButton).setOnClickListener(v ->
+                startActivity(new Intent(this, AccountActivity.class)));
+        findViewById(R.id.garageButton).setOnClickListener(v ->
+                startActivity(new Intent(this, GarageActivity.class)));
+        findViewById(R.id.orderButton).setOnClickListener(v ->
+                startActivity(new Intent(this, OrdersActivity.class)));
+    }
+
     private void observeUserData(String token, TextView usernameTextView, TextView emailTextView) {
         userViewModel.getUser(token).observe(this, user -> {
             if (user != null) {
                 usernameTextView.setText(user.getUsername());
                 emailTextView.setText(user.getEmail());
+
+                if (user.getLinkImg() != null && !user.getLinkImg().isEmpty()) {
+                    loadProfileImage(user.getLinkImg());
+                } else {
+                    profileImageView.setImageResource(R.drawable.ic_placeholder);
+                }
             } else {
                 Toast.makeText(this, "Ошибка загрузки данных пользователя", Toast.LENGTH_SHORT).show();
                 Log.e("AccountActivity", "User data is null");
@@ -102,10 +117,28 @@ public class AccountActivity extends AppCompatActivity {
         });
     }
 
+    private void loadProfileImage(String imageUrl) {
+        try {
+            String baseUrl = "http://10.0.2.2:5000/";
+            String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+            String fullImageUrl = baseUrl + cleanPath;
+
+            Glide.with(this)
+                    .load(fullImageUrl)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
+                    .circleCrop()
+                    .into(profileImageView);
+        } catch (Exception e) {
+            Log.e("AccountActivity", "Error loading profile image: " + e.getMessage());
+            profileImageView.setImageResource(R.drawable.ic_placeholder);
+        }
+    }
+
     private void logout() {
         try {
             encryptedSharedPrefs.saveToken(null);
-            Intent intent = new Intent(AccountActivity.this, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

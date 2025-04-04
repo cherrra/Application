@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class EditActivity extends AppCompatActivity {
     private EditText usernameEditText, emailEditText, birthDateEditText, genderEditText, phoneNumberEditText;
-    private Button saveButton, cancelButton, uploadImageButton;
+    private Button saveButton, uploadImageButton;
     private ImageView profileImageView;
 
     private UserViewModel userViewModel;
@@ -40,9 +41,9 @@ public class EditActivity extends AppCompatActivity {
         genderEditText = findViewById(R.id.genderEditText);
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         saveButton = findViewById(R.id.saveButton);
-        cancelButton = findViewById(R.id.cancelButton);
         uploadImageButton = findViewById(R.id.uploadImageButton);
         profileImageView = findViewById(R.id.profileImageView);
+        ImageView backArrow = findViewById(R.id.backArrow);
 
         Intent intent = getIntent();
         usernameEditText.setText(intent.getStringExtra("username"));
@@ -51,7 +52,27 @@ public class EditActivity extends AppCompatActivity {
         genderEditText.setText(intent.getStringExtra("gender"));
         phoneNumberEditText.setText(intent.getStringExtra("phoneNumber"));
 
-        cancelButton.setOnClickListener(v -> finish());
+        setupButtonAnimation(saveButton);
+        setupButtonAnimation(uploadImageButton);
+
+        backArrow.setOnClickListener(v -> {
+            finish();
+        });
+
+        backArrow.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
+        });
+
         saveButton.setOnClickListener(v -> saveUserData());
         uploadImageButton.setOnClickListener(v -> openImagePicker());
     }
@@ -111,6 +132,21 @@ public class EditActivity extends AppCompatActivity {
             } else {
                 Log.e("EditActivity", "Ошибка обновления данных.");
             }
+        });
+    }
+
+    private void setupButtonAnimation(Button button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
         });
     }
 }

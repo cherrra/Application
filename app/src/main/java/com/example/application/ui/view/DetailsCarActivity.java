@@ -53,6 +53,7 @@ public class DetailsCarActivity extends AppCompatActivity {
 
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
+
         carDetailsJson = getIntent().getStringExtra("carDetails");
 
         if (carDetailsJson != null) {

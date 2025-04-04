@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,26 +43,40 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        // Инициализация всех View
         usernameTextView = findViewById(R.id.usernameDetailsTextView);
         emailTextView = findViewById(R.id.emailDetailsTextView);
         birthDateTextView = findViewById(R.id.birthDateDetailsTextView);
         genderTextView = findViewById(R.id.genderDetailsTextView);
         phoneNumberTextView = findViewById(R.id.phoneNumberDetailsTextView);
         profileImageViewDetails = findViewById(R.id.profileImageViewDetails);
+        ImageView backArrow = findViewById(R.id.backArrow);
 
-        // Инициализация ViewModel
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class); // Используем ViewModelProvider
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        // Получаем данные пользователя
         fetchUserDetails();
 
-        // Остальной код обработки кнопок остается без изменений
-        Button backButton = findViewById(R.id.backButton);
         Button editButton = findViewById(R.id.editButton);
         Button deleteAccountButton = findViewById(R.id.deleteAccountButton);
+        setupButtonAnimation(editButton);
+        setupButtonAnimation(deleteAccountButton);
 
-        backButton.setOnClickListener(v -> finish());
+        backArrow.setOnClickListener(v -> {
+            finish();
+        });
+
+        backArrow.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
+        });
 
         editButton.setOnClickListener(v -> {
             Intent intent = new Intent(DetailsActivity.this, EditActivity.class);
@@ -102,32 +117,27 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(User user) {
-        // Устанавливаем все данные пользователя
         usernameTextView.setText(user.getUsername());
         emailTextView.setText(user.getEmail());
 
-        // Проверяем и устанавливаем дату рождения
         if (user.getBirthDate() != null && !user.getBirthDate().isEmpty()) {
             birthDateTextView.setText(user.getBirthDate());
         } else {
             birthDateTextView.setText("Дата рождения не указана");
         }
 
-        // Проверяем и устанавливаем пол
         if (user.getGender() != null) {
             genderTextView.setText(user.getGender().getValue());
         } else {
             genderTextView.setText("Пол не указан");
         }
 
-        // Проверяем и устанавливаем телефон
         if (user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty()) {
             phoneNumberTextView.setText(user.getPhoneNumber());
         } else {
             phoneNumberTextView.setText("Телефон не указан");
         }
 
-        // Загружаем изображение профиля
         if (user.getLinkImg() != null && !user.getLinkImg().isEmpty()) {
             loadImage(user.getLinkImg());
         } else {
@@ -135,76 +145,51 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-//    private void loadImage(String imageUrl) {
-//        Glide.with(this)
-//                .load(imageUrl)
-//                .placeholder(R.drawable.ic_placeholder)
-//                .listener(new RequestListener<Drawable>() {
-//                    @Override
-//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                        Log.e("Glide", "Ошибка загрузки изображения", e);
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        Log.d("Glide", "Изображение успешно загружено");
-//                        return false;
-//                    }
-//                })
-//                .into(profileImageViewDetails);
-//    }
-private void loadImage(String imageUrl) {
-    if (imageUrl == null || imageUrl.isEmpty()) {
-        profileImageViewDetails.setImageResource(R.drawable.ic_placeholder);
-        return;
-    }
+    private void loadImage(String imageUrl) {
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            profileImageViewDetails.setImageResource(R.drawable.ic_placeholder);
+            return;
+        }
 
-    try {
-        // Базовый URL сервера (должен заканчиваться на /)
-        String baseUrl = "http://10.0.2.2:5000/";
+        try {
+            String baseUrl = "http://10.0.2.2:5000/";
+            String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+            String fullImageUrl = baseUrl + cleanPath;
+            Log.d("ImageLoad", "Final image URL: " + fullImageUrl);
 
-        // Удаляем начальный слэш из пути изображения, если он есть
-        String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
-
-        // Формируем полный URL
-        String fullImageUrl = baseUrl + cleanPath;
-
-        Log.d("ImageLoad", "Final image URL: " + fullImageUrl);
-
-        Glide.with(this)
-                .load(fullImageUrl)
-                .placeholder(R.drawable.ic_placeholder)
-                .error(R.drawable.ic_placeholder)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        Log.e("Glide", "Failed to load image: " + fullImageUrl);
-                        if (e != null) {
-                            for (Throwable t : e.getRootCauses()) {
-                                Log.e("Glide", "Cause: " + t.getMessage());
+            Glide.with(this)
+                    .load(fullImageUrl)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
+                    .circleCrop()
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Drawable> target, boolean isFirstResource) {
+                            Log.e("Glide", "Failed to load image: " + fullImageUrl);
+                            if (e != null) {
+                                for (Throwable t : e.getRootCauses()) {
+                                    Log.e("Glide", "Cause: " + t.getMessage());
+                                }
                             }
+                            return false;
                         }
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource,
-                                                   boolean isFirstResource) {
-                        Log.d("Glide", "Successfully loaded: " + fullImageUrl);
-                        return false;
-                    }
-                })
-                .into(profileImageViewDetails);
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model,
+                                                       Target<Drawable> target, DataSource dataSource,
+                                                       boolean isFirstResource) {
+                            Log.d("Glide", "Successfully loaded: " + fullImageUrl);
+                            return false;
+                        }
+                    })
+                    .into(profileImageViewDetails);
 
-    } catch (Exception e) {
-        Log.e("ImageLoad", "Error: " + e.getMessage());
-        profileImageViewDetails.setImageResource(R.drawable.ic_placeholder);
+        } catch (Exception e) {
+            Log.e("ImageLoad", "Error: " + e.getMessage());
+            profileImageViewDetails.setImageResource(R.drawable.ic_placeholder);
+        }
     }
-}
-
     private void deleteAccount() {
         try {
             String token = new EncryptedSharedPrefs(this).getToken();
@@ -232,5 +217,20 @@ private void loadImage(String imageUrl) {
         } catch (Exception e) {
             Log.e("DetailsActivity", "Ошибка при удалении аккаунта: " + e.getMessage());
         }
+    }
+
+    private void setupButtonAnimation(Button button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
+        });
     }
 }
