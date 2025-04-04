@@ -1,8 +1,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp">
+
+             <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Назад"/>
+
+              <TextView
+            android:id="@+id/detailsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/backArrow"
+            android:layout_marginStart="16dp"
+            android:text="Автомобиль"
+            android:textColor="#2260FF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/detailsTextView"
@@ -13,11 +43,23 @@
         android:textColor="#000"
         android:padding="16dp" />
 
-    <Button
-        android:id="@+id/editButton"
+    <LinearLayout
+        android:id="@+id/editCarButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Редактировать"
-        android:layout_marginTop="16dp" />
+        android:layout_marginBottom="150dp"
+        android:gravity="center"
+        android:padding="50dp">
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Редактировать"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/blue"
+            app:cornerRadius="24dp"/>
+    </LinearLayout>
 
 </LinearLayout>

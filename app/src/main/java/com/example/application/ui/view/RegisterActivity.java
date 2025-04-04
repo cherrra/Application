@@ -1,8 +1,9 @@
 package com.example.application.ui.view;
 
-
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -28,7 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText usernameEditText, emailEditText, passwordEditText;
     private Button registerButton;
     private CheckBox privacyPolicyCheckBox;
-    private TextView privacyPolicyTextView;
+
+    private TextView privacyPolicyText;
     private ApiService apiService;
 
     @Override
@@ -42,17 +44,21 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         registerButton = findViewById(R.id.registerButton);
         privacyPolicyCheckBox = findViewById(R.id.privacyPolicyCheckBox);
-        privacyPolicyTextView = findViewById(R.id.privacyPolicyTextView);
+        privacyPolicyText = findViewById(R.id.privacyPolicyText);
 
+        // Начальное состояние кнопки (заблокирована)
         registerButton.setEnabled(false);
+        updateRegisterButtonState(false);
+        setupButtonAnimation(registerButton);
 
         privacyPolicyCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             registerButton.setEnabled(isChecked);
+            updateRegisterButtonState(isChecked);
         });
 
-        privacyPolicyTextView.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, PrivacyPolicyActivity.class);
-            startActivity(intent);
+        privacyPolicyText.setOnClickListener(v -> {
+            // Переход на политику конфиденциальности
+            startActivity(new Intent(RegisterActivity.this, PrivacyPolicyActivity.class));
         });
 
         registerButton.setOnClickListener(v -> {
@@ -74,22 +80,22 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             if (!isValid) {
-                Toast.makeText(com.example.application.ui.view.RegisterActivity.this, errorMessages.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, errorMessages.toString(), Toast.LENGTH_LONG).show();
                 return;
             }
 
             apiService.register(username, email, password, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    runOnUiThread(() -> Toast.makeText(com.example.application.ui.view.RegisterActivity.this, "Ошибка подключения", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "Ошибка подключения", Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         runOnUiThread(() -> {
-                            Toast.makeText(com.example.application.ui.view.RegisterActivity.this, "Регистрация успешна", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(com.example.application.ui.view.RegisterActivity.this, LoginActivity.class));
+                            Toast.makeText(RegisterActivity.this, "Регистрация успешна", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         });
                     } else {
                         try {
@@ -102,11 +108,11 @@ public class RegisterActivity extends AppCompatActivity {
                                     serverErrors.append(errors.getString(i)).append("\n");
                                 }
                                 runOnUiThread(() ->
-                                        Toast.makeText(com.example.application.ui.view.RegisterActivity.this, serverErrors.toString(), Toast.LENGTH_LONG).show()
+                                        Toast.makeText(RegisterActivity.this, serverErrors.toString(), Toast.LENGTH_LONG).show()
                                 );
                             } else {
                                 runOnUiThread(() ->
-                                        Toast.makeText(com.example.application.ui.view.RegisterActivity.this, "Ошибка регистрации", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(RegisterActivity.this, "Ошибка регистрации", Toast.LENGTH_SHORT).show()
                                 );
                             }
                         } catch (JSONException e) {
@@ -115,6 +121,35 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
             });
+        });
+    }
+
+    private void updateRegisterButtonState(boolean enabled) {
+        if (enabled) {
+            // Включенное состояние: синий фон, белый текст
+            registerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue)));
+            registerButton.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            // Выключенное состояние: светло-голубой фон, синий текст
+            registerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.light_blue)));
+            registerButton.setTextColor(getResources().getColor(R.color.blue));
+        }
+    }
+
+    private void setupButtonAnimation(Button button) {
+        button.setOnTouchListener((v, event) -> {
+            if (button.isEnabled()) { // Анимация только для активной кнопки
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                        break;
+                }
+            }
+            return false;
         });
     }
 }

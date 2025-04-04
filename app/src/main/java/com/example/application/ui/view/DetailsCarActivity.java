@@ -3,7 +3,9 @@ package com.example.application.ui.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,17 +29,35 @@ public class DetailsCarActivity extends AppCompatActivity {
 
         TextView detailsTextView = findViewById(R.id.detailsTextView);
         Button editButton = findViewById(R.id.editButton);
+        ImageView backArrow = findViewById(R.id.backArrow);
 
-        // Инициализация ViewModel
+        backArrow.setOnClickListener(v -> {
+            finish();
+        });
+
+        backArrow.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
+        });
+
+        setupButtonAnimation(editButton);
+
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
-        // Получаем JSON-строку из Intent
         carDetailsJson = getIntent().getStringExtra("carDetails");
 
         if (carDetailsJson != null) {
             Log.d(TAG, "Получен JSON: " + carDetailsJson);
             try {
-                // Используем Gson для парсинга
                 Car car = new Gson().fromJson(carDetailsJson, Car.class);
 
                 if (car == null) {
@@ -45,11 +65,8 @@ public class DetailsCarActivity extends AppCompatActivity {
                     detailsTextView.setText("Ошибка загрузки данных автомобиля");
                     return;
                 }
-
-                // Устанавливаем машину в ViewModel
                 carViewModel.setSelectedCar(car);
 
-                // Отображаем данные
                 detailsTextView.setText(getCarDetailsString(car));
 
                 // Кнопка редактирования
@@ -62,9 +79,8 @@ public class DetailsCarActivity extends AppCompatActivity {
                     Intent intent = new Intent(DetailsCarActivity.this, EditCarActivity.class);
                     intent.putExtra("carDetails", carDetailsJson);
 
-                    // Передаем объект в ViewModel (на случай, если он сбросится)
-                    carViewModel.setSelectedCar(car);
 
+                    carViewModel.setSelectedCar(car);
                     startActivity(intent);
                 });
 
@@ -90,56 +106,19 @@ public class DetailsCarActivity extends AppCompatActivity {
                 "Тип кузова: " + car.getBodyType() + "\n" +
                 "Тип двигателя: " + car.getEngineType();
     }
+
+    private void setupButtonAnimation(Button button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
+        });
+    }
 }
-//package com.example.application.ui.view;
-//
-//import android.content.Intent;
-//import android.os.Bundle;
-//import android.widget.Button;
-//import android.widget.TextView;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//import androidx.lifecycle.ViewModelProvider;
-//
-//import com.example.application.R;
-//import com.example.application.data.model.Car;
-//import com.example.application.ui.viewmodel.CarViewModel;
-//
-//public class DetailsCarActivity extends AppCompatActivity {
-//
-//    private CarViewModel carViewModel;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_details_car);
-//
-//        TextView detailsTextView = findViewById(R.id.detailsTextView);
-//        Button editButton = findViewById(R.id.editButton);
-//
-//        carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
-//        Car car = carViewModel.getSelectedCar().getValue();
-//
-//        if (car != null) {
-//            detailsTextView.setText(getCarDetailsString(car));
-//
-//            editButton.setOnClickListener(v -> {
-//                Intent intent = new Intent(DetailsCarActivity.this, EditCarActivity.class);
-//                startActivity(intent);
-//            });
-//        } else {
-//            detailsTextView.setText("Ошибка загрузки данных автомобиля");
-//        }
-//    }
-//
-//    private String getCarDetailsString(Car car) {
-//        return "Модель: " + car.getModel() + "\n" +
-//                "Марка: " + car.getBrand() + "\n" +
-//                "Год: " + car.getYear() + "\n" +
-//                "Пробег: " + car.getMileage() + " км\n" +
-//                "VIN: " + car.getVinCode() + "\n" +
-//                "Номерной знак: " + car.getLicensePlate() + "\n" +
-//                "Тип кузова: " + car.getBodyType() + "\n" +
-//                "Тип двигателя: " + car.getEngineType();
-//    }
-//}

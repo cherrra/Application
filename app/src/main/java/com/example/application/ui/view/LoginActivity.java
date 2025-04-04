@@ -4,6 +4,7 @@ package com.example.application.ui.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
         }
+
+        setupButtonAnimation(loginButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,9 +108,23 @@ public class LoginActivity extends AppCompatActivity {
         registerTextB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Переход на RegisterActivity
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
+        });
+    }
+
+    private void setupButtonAnimation(Button button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
         });
     }
 }
