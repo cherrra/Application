@@ -1,61 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="nazvanie"
-        android:textSize="24sp"
-        android:textColor="#000000"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="16dp" />
+    <!-- Логотип -->
+    <ImageView
+        android:id="@+id/myImageView"
+        android:layout_width="135dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/logo" />
 
+    <!-- Кнопка выхода -->
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Выйти"
-        android:textColor="#FFFFFF"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="8dp" />
-    <TextView
-        android:id="@+id/categoriesTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Категории услуг"
-        android:textSize="20sp"
-        android:textColor="#000000"
-        android:layout_below="@id/titleTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Выйти"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#2260FF"
+        app:cornerRadius="24dp" />
+
+    <!-- Кнопка добавления категории -->
     <Button
         android:id="@+id/addCategoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/myImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
         android:text="Добавить категорию"
-        android:layout_marginTop="85dp"/>
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#2260FF"
+        app:cornerRadius="24dp" />
 
+    <!-- Заголовок "Категории услуг" -->
+    <TextView
+        android:id="@+id/categoriesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addCategoryButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="Категории услуг"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <!-- Контейнер с категориями -->
     <ScrollView
-        android:layout_width="395dp"
-        android:layout_height="571dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/linearLayout"
         android:layout_below="@id/categoriesTextView"
-        android:layout_marginTop="53dp">
+        android:layout_marginTop="16dp">
 
         <GridLayout
             android:id="@+id/categoryContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:padding="16dp" />
+            android:columnCount="2"
+            android:padding="8dp" />
     </ScrollView>
 
+    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"

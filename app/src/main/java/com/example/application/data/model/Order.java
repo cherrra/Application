@@ -8,6 +8,7 @@ import java.util.List;
 public class Order {
     private int idOrder;
     private String carModel;
+    private String carBrand;
     private String orderDate;
     private String orderTime;
     private String services;
@@ -17,9 +18,10 @@ public class Order {
     private int id;
 
     // Конструктор
-    public Order(int idOrder, String carModel, String orderDate, String orderTime, String services, double price, Status status, String comment, int id) {
+    public Order(int idOrder, String carModel, String carBrand, String orderDate, String orderTime, String services, double price, Status status, String comment, int id) {
         this.idOrder = idOrder;
         this.carModel = carModel;
+        this.carBrand = carBrand;
         this.orderDate = orderDate;
         this.orderTime = orderTime;
         this.services = services;
@@ -52,7 +54,13 @@ public class Order {
     public void setCarModel(String carModel) {
         this.carModel = carModel;
     }
+    public String getCarBrand() {
+        return carBrand;
+    }
 
+    public void setCarBrand(String carBrand) {
+        this.carBrand = carBrand;
+    }
     public String getOrderDate() {
         return orderDate;
     }
@@ -104,7 +112,8 @@ public class Order {
         ACCEPTED("accepted"),
         IN_PROGRESS("in_progress"),
         FINISHED("finished"),
-        CREATED("created");
+        CREATED("created"),
+        CANCELLED("canceled");
 
         private final String value;
 
@@ -135,6 +144,7 @@ public class Order {
                 orders.add(new Order(
                         obj.getInt("id_order"),
                         obj.getString("car_model"),
+                        obj.getString("car_brand"),
                         obj.getString("order_date"),
                         obj.getString("order_time"),
                         obj.getString("services"),

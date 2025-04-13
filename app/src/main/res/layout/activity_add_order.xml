@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#FFFFFF">
 
+    <!-- Поля ввода -->
     <Spinner
         android:id="@+id/carSpinner"
         android:layout_width="match_parent"
@@ -15,40 +17,57 @@
         android:id="@+id/dateInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Введите дату" />
+        android:hint="Введите дату"
+        android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/timeInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Введите время" />
+        android:hint="Введите время"
+        android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/commentInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Комментарий" />
-
+        android:hint="Комментарий"
+        android:layout_marginTop="8dp"/>
 
     <LinearLayout
         android:id="@+id/selectedServicesContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"/>
 
-    <Button
-        android:id="@+id/bookButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Записаться" />
+        android:orientation="vertical"
+        android:layout_marginTop="24dp"
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/clearServicesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Очистить услуги"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center_horizontal" />
+        <Button
+            android:id="@+id/bookButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Записаться"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/blue"
+            app:cornerRadius="24dp"
+            android:layout_marginBottom="16dp"/>
 
+        <Button
+            android:id="@+id/clearServicesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Очистить услуги"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/blue"
+            app:cornerRadius="24dp"/>
+    </LinearLayout>
 
 </LinearLayout>

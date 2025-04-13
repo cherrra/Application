@@ -39,7 +39,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
 
         adminOrderContainer = findViewById(R.id.adminOrderContainer);
 
-        // Получение токена из зашифрованных SharedPrefs
+//        // Получение токена из зашифрованных SharedPrefs
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
             String token = encryptedSharedPrefs.getToken();
@@ -51,6 +51,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         // Навигационные кнопки
         TextView homeButton = findViewById(R.id.homeButton);

@@ -2,10 +2,15 @@ package com.example.application.ui.view.admin;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,42 +100,121 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void addCategoryCard(Category category) {
-        GridLayout card = new GridLayout(this);
-        card.setOrientation(GridLayout.VERTICAL);
+        // Убедимся, что контейнер вертикальный
+        categoryContainer.setOrientation(GridLayout.VERTICAL);
+
+        // Основной контейнер карточки
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(16, 16, 16, 16);
-        card.setBackgroundColor(Color.parseColor("#E0E0E0"));
 
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = 0;
-        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-        params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
-        params.setMargins(16, 16, 16, 16);
-        card.setLayoutParams(params);
+        // Стиль карточки
+        GradientDrawable cardShape = new GradientDrawable();
+        cardShape.setShape(GradientDrawable.RECTANGLE);
+        cardShape.setCornerRadius(20f);
+        cardShape.setColor(Color.parseColor("#FFFFFF"));
+        cardShape.setStroke(4, Color.parseColor("#E3F2FD"));
+        card.setBackground(cardShape);
 
+        // Параметры карточки - важно WRAP_CONTENT для высоты
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        cardParams.setMargins(16, 8, 16, 8);
+        card.setLayoutParams(cardParams);
+
+        // Иконка категории
+        ImageView iconView = new ImageView(this);
+        iconView.setImageResource(R.drawable.ic_category);
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+                100, 100
+        );
+        iconParams.gravity = Gravity.CENTER;
+        iconParams.setMargins(0, 0, 0, 12);
+        iconView.setLayoutParams(iconParams);
+        card.addView(iconView);
+
+        // Название категории
         TextView nameView = new TextView(this);
         nameView.setText(category.getCategoryName());
-        nameView.setTextSize(16f);
-        nameView.setTextColor(Color.BLACK);
+        nameView.setTextSize(20f);
+        nameView.setTextColor(Color.parseColor("#1976D2"));
+        nameView.setGravity(Gravity.CENTER);
+        nameView.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        textParams.setMargins(0, 0, 0, 16);
+        nameView.setLayoutParams(textParams);
         card.addView(nameView);
 
+        // Контейнер для кнопок
+        LinearLayout buttonsContainer = new LinearLayout(this);
+        buttonsContainer.setOrientation(LinearLayout.HORIZONTAL);
+        buttonsContainer.setGravity(Gravity.CENTER);
+        buttonsContainer.setPadding(8, 8, 8, 8);
+
+        GradientDrawable buttonsBg = new GradientDrawable();
+        buttonsBg.setShape(GradientDrawable.RECTANGLE);
+        buttonsBg.setCornerRadius(20f);
+        buttonsBg.setColor(Color.parseColor("#F5F5F5"));
+        buttonsContainer.setBackground(buttonsBg);
+
+        LinearLayout.LayoutParams buttonsParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        buttonsContainer.setLayoutParams(buttonsParams);
+
+        // Кнопка редактирования
         Button editButton = new Button(this);
-        editButton.setText("✎");
-        editButton.setTextSize(12f);
-        editButton.setBackgroundColor(Color.TRANSPARENT);
-        editButton.setTextColor(Color.MAGENTA);
-        card.addView(editButton);
+        editButton.setText("Изменить");
+        editButton.setTextSize(16f);
+        editButton.setBackground(createRoundedButtonBackground("#4CAF50"));
+        editButton.setTextColor(Color.WHITE);
+        editButton.setPadding(24, 8, 24, 8);
+        LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        editParams.setMargins(4, 0, 2, 0);
+        editButton.setLayoutParams(editParams);
+        buttonsContainer.addView(editButton);
 
+        // Кнопка удаления
         Button deleteButton = new Button(this);
-        deleteButton.setText("✖");
-        deleteButton.setTextSize(12f);
-        deleteButton.setBackgroundColor(Color.TRANSPARENT);
-        deleteButton.setTextColor(Color.MAGENTA);
-        card.addView(deleteButton);
+        deleteButton.setText("Удалить");
+        deleteButton.setTextSize(16f);
+        deleteButton.setBackground(createRoundedButtonBackground("#F44336"));
+        deleteButton.setTextColor(Color.WHITE);
+        deleteButton.setPadding(24, 8, 24, 8);
+        LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        deleteParams.setMargins(2, 0, 4, 0);
+        deleteButton.setLayoutParams(deleteParams);
+        buttonsContainer.addView(deleteButton);
 
+        card.addView(buttonsContainer);
+
+        // Обработчики событий
         editButton.setOnClickListener(v -> showEditCategoryDialog(category.getIdCategory(), category.getCategoryName()));
-
         deleteButton.setOnClickListener(v -> confirmAndDeleteCategory(category.getIdCategory(), card));
+
+        // Анимация
+        card.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.setAlpha(0.9f);
+                    v.animate().scaleX(0.98f).scaleY(0.98f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setAlpha(1f);
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
+        });
 
         card.setOnClickListener(v -> {
             Intent intent = new Intent(HomeAdminActivity.this, ServicesAdminActivity.class);
@@ -138,8 +222,20 @@ public class HomeAdminActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Очищаем контейнер перед добавлением новых карточек (если нужно)
+        // categoryContainer.removeAllViews();
+
         categoryContainer.addView(card);
     }
+    private GradientDrawable createRoundedButtonBackground(String color) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(24f); // Меньший радиус для кнопок
+        shape.setColor(Color.parseColor(color));
+        shape.setStroke(1, Color.parseColor("#BDBDBD")); // Тоньше обводка
+        return shape;
+    }
+
 
     private void showEditCategoryDialog(int categoryId, String currentName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -199,7 +295,7 @@ public class HomeAdminActivity extends AppCompatActivity {
         }
     }
 
-    private void deleteCategory(int categoryId, GridLayout card) {
+    private void deleteCategory(int categoryId, LinearLayout card) {
         try {
             EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
             String token = encryptedSharedPrefs.getToken();
@@ -230,7 +326,7 @@ public class HomeAdminActivity extends AppCompatActivity {
         }
     }
 
-    private void confirmAndDeleteCategory(int categoryId, GridLayout card) {
+    private void confirmAndDeleteCategory(int categoryId, LinearLayout card) {
         new AlertDialog.Builder(this)
                 .setTitle("Удалить категорию")
                 .setMessage("Вы уверены, что хотите удалить эту категорию?")
