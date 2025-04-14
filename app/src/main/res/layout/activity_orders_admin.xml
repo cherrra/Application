@@ -1,15 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/ordersTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Заказы"
+        android:textColor="#2260FF"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/finishedOrdersButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ordersTitle"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp"
+        android:text="Завершенные заказы"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:backgroundTint="@color/blue"
+        app:cornerRadius="24dp"/>
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/linearLayout"
+        android:layout_below="@id/finishedOrdersButton"
         android:padding="16dp">
 
         <LinearLayout

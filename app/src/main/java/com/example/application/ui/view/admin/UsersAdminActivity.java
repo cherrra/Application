@@ -217,7 +217,7 @@ public class UsersAdminActivity extends AppCompatActivity {
         TextView usernameView = new TextView(this);
         usernameView.setText(username);
         usernameView.setTextSize(16f);
-        usernameView.setTextColor(Color.BLACK);
+        usernameView.setTextColor(Color.parseColor("#2260FF"));
         usernameView.setTypeface(Typeface.DEFAULT_BOLD);
         infoLayout.addView(usernameView);
 

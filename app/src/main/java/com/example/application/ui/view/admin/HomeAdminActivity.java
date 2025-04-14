@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application.R;
 import com.example.application.data.model.Category;
+import com.example.application.ui.view.MainActivity;
 import com.example.application.ui.viewmodel.CategoryViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
 
@@ -36,6 +38,7 @@ import okhttp3.Response;
 public class HomeAdminActivity extends AppCompatActivity {
     private GridLayout categoryContainer;
     private CategoryViewModel categoryViewModel;
+    private EncryptedSharedPrefs encryptedSharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +65,24 @@ public class HomeAdminActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-//        Button logoutButton = findViewById(R.id.logoutButton);
-//        logoutButton.setOnClickListener(v -> logout());
+
+        try {
+            encryptedSharedPrefs = new EncryptedSharedPrefs(this);
+            String token = encryptedSharedPrefs.getToken();
+            Log.d("HomeAdminActivity", "Полученный токен: " + token);
+//
+//            if (token != null) {
+//                observeUserData(token, usernameTextView, emailTextView);
+//            } else {
+//                Log.e("AccountActivity", "Токен отсутствует");
+//            }
+        } catch (Exception e) {
+            Log.e("HomeAdminActivity", "Ошибка доступа к токену: " + e.getMessage());
+        }
+
+
+        Button logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(v -> logout());
 
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
@@ -139,7 +158,7 @@ public class HomeAdminActivity extends AppCompatActivity {
         TextView nameView = new TextView(this);
         nameView.setText(category.getCategoryName());
         nameView.setTextSize(20f);
-        nameView.setTextColor(Color.parseColor("#1976D2"));
+        nameView.setTextColor(Color.parseColor("#2260FF"));
         nameView.setGravity(Gravity.CENTER);
         nameView.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
@@ -172,7 +191,7 @@ public class HomeAdminActivity extends AppCompatActivity {
         Button editButton = new Button(this);
         editButton.setText("Изменить");
         editButton.setTextSize(16f);
-        editButton.setBackground(createRoundedButtonBackground("#4CAF50"));
+        editButton.setBackground(createRoundedButtonBackground("#2260FF"));
         editButton.setTextColor(Color.WHITE);
         editButton.setPadding(24, 8, 24, 8);
         LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(
@@ -185,7 +204,7 @@ public class HomeAdminActivity extends AppCompatActivity {
         Button deleteButton = new Button(this);
         deleteButton.setText("Удалить");
         deleteButton.setTextSize(16f);
-        deleteButton.setBackground(createRoundedButtonBackground("#F44336"));
+        deleteButton.setBackground(createRoundedButtonBackground("#2260FF"));
         deleteButton.setTextColor(Color.WHITE);
         deleteButton.setPadding(24, 8, 24, 8);
         LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(
@@ -347,18 +366,15 @@ public class HomeAdminActivity extends AppCompatActivity {
     );
 
 
-//    private void logout() {
-//        try {
-//            encryptedSharedPrefs.saveToken(null);
-//            String clearedToken = encryptedSharedPrefs.getToken();
-//            Log.d("HomeAdminActivity", "Токен после выхода: " + (clearedToken == null ? "успешно очищен" : clearedToken));
-//
-//            Intent intent = new Intent(HomeAdminActivity.this, MainActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
-//            finish();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void logout() {
+        try {
+            encryptedSharedPrefs.saveToken(null);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
