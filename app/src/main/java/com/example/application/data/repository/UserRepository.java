@@ -55,12 +55,6 @@ public class UserRepository {
                         String birthDateString = jsonObject.optString("birth_date", null);
                         String formattedDate = formatDate(birthDateString);
 
-                        // Преобразование значения gender
-                        User.Gender gender = null;
-                        if (jsonObject.has("gender")) {
-                            gender = User.Gender.fromString(jsonObject.optString("gender"));
-                        }
-
                         String phoneNumber = jsonObject.optString("phone_number", null);
                         String linkImg = jsonObject.optString("link_img", null);
                         boolean isAdmin = jsonObject.optBoolean("is_admin", false);
@@ -73,7 +67,6 @@ public class UserRepository {
                                 username,
                                 email,
                                 formattedDate,
-                                gender,
                                 phoneNumber,
                                 linkImg,
                                 isAdmin,

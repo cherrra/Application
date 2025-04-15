@@ -50,13 +50,10 @@
         android:id="@+id/birthDateEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Дата рождения" />
-
-    <EditText
-        android:id="@+id/genderEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Пол" />
+        android:hint="Дата рождения"
+        android:inputType="none"
+        android:focusable="false"
+        android:clickable="true"/>
 
     <EditText
         android:id="@+id/phoneNumberEditText"

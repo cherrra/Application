@@ -64,17 +64,7 @@
         android:textColor="#000000"
         android:text="Имя пользователя" />
 
-    <TextView
-        android:id="@+id/emailDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:text="Email пользователя" />
-
-    <TextView
+        <TextView
         android:id="@+id/birthDateDetailsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,24 +75,25 @@
         android:text="Дата рождения" />
 
     <TextView
-        android:id="@+id/genderDetailsTextView"
+        android:id="@+id/emailDetailsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textSize="20sp"
         android:gravity="center"
         android:textColor="#000000"
-        android:text="Пол" />
+        android:text="Email пользователя" />
 
-    <TextView
-        android:id="@+id/phoneNumberDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:text="Номер телефона" />
+         <TextView
+             android:id="@+id/phoneNumberDetailsTextView"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="16dp"
+             android:textSize="20sp"
+             android:gravity="center"
+             android:textColor="#000000"
+             android:text="Номер телефона" />
+
     </LinearLayout>
 
 

@@ -33,7 +33,7 @@ import okhttp3.Response;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private TextView usernameTextView, emailTextView, birthDateTextView, genderTextView, phoneNumberTextView;
+    private TextView usernameTextView, emailTextView, birthDateTextView, phoneNumberTextView;
     private ImageView profileImageViewDetails;
     private UserViewModel userViewModel;
     private static final String BASE_URL = "http://10.0.2.2:5000/api/";
@@ -46,7 +46,6 @@ public class DetailsActivity extends AppCompatActivity {
         usernameTextView = findViewById(R.id.usernameDetailsTextView);
         emailTextView = findViewById(R.id.emailDetailsTextView);
         birthDateTextView = findViewById(R.id.birthDateDetailsTextView);
-        genderTextView = findViewById(R.id.genderDetailsTextView);
         phoneNumberTextView = findViewById(R.id.phoneNumberDetailsTextView);
         profileImageViewDetails = findViewById(R.id.profileImageViewDetails);
         ImageView backArrow = findViewById(R.id.backArrow);
@@ -83,7 +82,6 @@ public class DetailsActivity extends AppCompatActivity {
             intent.putExtra("username", usernameTextView.getText().toString());
             intent.putExtra("email", emailTextView.getText().toString());
             intent.putExtra("birthDate", birthDateTextView.getText().toString());
-            intent.putExtra("gender", genderTextView.getText().toString());
             intent.putExtra("phoneNumber", phoneNumberTextView.getText().toString());
             startActivity(intent);
         });
@@ -124,12 +122,6 @@ public class DetailsActivity extends AppCompatActivity {
             birthDateTextView.setText(user.getBirthDate());
         } else {
             birthDateTextView.setText("Дата рождения не указана");
-        }
-
-        if (user.getGender() != null) {
-            genderTextView.setText(user.getGender().getValue());
-        } else {
-            genderTextView.setText("Пол не указан");
         }
 
         if (user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty()) {

@@ -39,7 +39,6 @@ public class OrdersRepository {
                                 jsonObject.getString("username"),
                                 jsonObject.getString("email"),
                                 jsonObject.getString("birth_date"),
-                                User.Gender.fromString(jsonObject.getString("gender")),
                                 jsonObject.getString("phone_number"),
                                 jsonObject.getString("link_img"),
                                 jsonObject.getBoolean("is_admin"),

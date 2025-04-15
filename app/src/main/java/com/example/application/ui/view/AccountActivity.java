@@ -30,23 +30,12 @@ public class AccountActivity extends AppCompatActivity {
         TextView usernameTextView = findViewById(R.id.usernameTextView);
         TextView emailTextView = findViewById(R.id.emailTextView);
         Button logoutButton = findViewById(R.id.logoutButton);
+        Button infoButton = findViewById(R.id.infoButton);
         profileImageView = findViewById(R.id.profileImageView);
 
         setupNavigationButtons();
-
-        logoutButton.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
-                    v.performClick();
-                    break;
-            }
-            return true;
-        });
+        setupButtonAnimation(logoutButton);
+        setupButtonAnimation(infoButton);
 
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -65,7 +54,7 @@ public class AccountActivity extends AppCompatActivity {
             Log.e("AccountActivity", "Ошибка доступа к токену: " + e.getMessage());
         }
 
-        TextView infoButton = findViewById(R.id.infoButton);
+
         infoButton.setOnClickListener(v -> {
             try {
                 String token = encryptedSharedPrefs.getToken();
@@ -133,6 +122,21 @@ public class AccountActivity extends AppCompatActivity {
             Log.e("AccountActivity", "Error loading profile image: " + e.getMessage());
             profileImageView.setImageResource(R.drawable.ic_placeholder);
         }
+    }
+
+    private void setupButtonAnimation(Button button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
+        });
     }
 
     private void logout() {

@@ -1,117 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <TextView
-        android:id="@+id/accountTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:text="Аккаунт"
-        android:textColor="#2260FF"
-        android:textSize="22sp"
-        android:textStyle="bold"/>
-
-
+    <!-- Шапка профиля -->
     <LinearLayout
-        android:id="@+id/contentLayout"
+        android:id="@+id/profileHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/accountTitle"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="110dp"
-        android:gravity="center_horizontal"
+        android:layout_height="180dp"
+        android:background="#CAD6FF"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:paddingTop="80dp">
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Аккаунт"
+            android:textColor="#2260FF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Аватар поверх шапки и основного контента -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/avatarCard"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="110dp"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="65dp"
+        app:strokeColor="#A9BCFE"
+        app:strokeWidth="2dp"
+        app:elevation="6dp"
+        android:layout_alignTop="@id/profileHeader">
+
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:background="@drawable/circle_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"/>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- Основной контент -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/profileHeader"
+        android:paddingTop="80dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/rounded_background"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Карточка информации -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:elevation="2dp"
+                app:strokeColor="#A9BCFE"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:id="@+id/usernameTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="#2260FF"/>
+
+                    <TextView
+                        android:id="@+id/emailTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:textColor="#282828"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/infoButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Подробная информация"
+                        android:textColor="#2260FF"
+                        app:strokeColor="#66AACDFF"
+                        app:strokeWidth="1dp"
+                        app:backgroundTint="@color/light_blue_transparent"
+                        app:cornerRadius="24dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Кнопка выхода -->
+        <LinearLayout
+            android:id="@+id/addCarButtonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/linearLayout"
+            android:layout_marginBottom="150dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:paddingTop="40dp">
+            android:padding="5dp">
 
-            <TextView
-                android:id="@+id/usernameTextView"
+        <Button
+                android:id="@+id/logoutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/emailTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/infoButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="start"
-                android:text="Подробная информация"
-                android:textColor="#000000"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/bonusesButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="start"
-                android:text="Бонусы и скидки"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+                android:text="Выйти"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:backgroundTint="@color/blue"
+                app:cornerRadius="24dp"/>
         </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/logoutButton"
-            android:layout_width="200dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="25dp"
-            android:text="Выйти"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:backgroundTint="#2260FF"
-            app:cornerRadius="24dp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/profileImageView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/contentLayout"
-        android:layout_marginBottom="-175dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/circle_background"
-        android:elevation="4dp"/>
-
+    <!-- Нижняя навигация -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingBottom="16dp">
 
         <TextView
@@ -166,4 +198,5 @@
             android:textColor="#000000"
             android:textSize="16sp" />
     </LinearLayout>
+
 </RelativeLayout>
