@@ -4,74 +4,78 @@
     android:padding="16dp"
     android:background="#FFFFFF">
 
-
-    <ImageView
-        android:id="@+id/myImageView"
-        android:layout_width="135dp"
-        android:layout_height="60dp"
-        android:layout_marginLeft="5dp"
-        android:src="@drawable/logo" />
-
-        <ImageView
-        android:id="@+id/photoAms"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/myImageView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/photo_ams" />
-
-    <TextView
-        android:id="@+id/categoriesTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Категории услуг"
-        android:textSize="20sp"
-        android:textColor="#000000"
-        android:layout_below="@id/photoAms"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="16dp" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/categoriesTextView"
-        android:layout_marginTop="5dp">
+        android:layout_above="@id/linearLayout">
 
-        <GridLayout
-            android:id="@+id/categoryContainer"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:padding="8dp"
-            android:layout_marginLeft="-4dp"
-            android:layout_marginRight="-4dp" />
+            android:orientation="vertical">
+
+            <!-- Логотип -->
+            <ImageView
+                android:id="@+id/myImageView"
+                android:layout_width="135dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/logo" />
+
+            <!-- Фото -->
+            <ImageView
+                android:id="@+id/photoAms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/photo_ams" />
+
+            <!-- Заголовок -->
+            <TextView
+                android:id="@+id/categoriesTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Наши услуги"
+                android:textColor="#2260FF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Категории -->
+            <LinearLayout
+                android:id="@+id/categoryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:layout_marginLeft="-4dp"
+                android:layout_marginRight="-4dp" />
+
+            <!-- Контакты -->
+            <TextView
+                android:id="@+id/contactsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Где нас найти"
+                android:textColor="#2260FF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- WebView (увеличена высота) -->
+            <WebView
+                android:id="@+id/webview"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/white" />
+        </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/contactsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/categoriesTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="16dp"
-        android:text="Контактная информация"
-        android:textColor="#000000"
-        android:textSize="20sp" />
-
-    <!-- WebView -->
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="376dp"
-        android:layout_height="230dp"
-        android:layout_below="@id/contactsTextView"
-        android:layout_marginTop="5dp"
-        android:background="@android:color/white" />
-
+    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -81,6 +85,7 @@
         android:orientation="horizontal"
         android:paddingBottom="16dp">
 
+        <!-- Меню кнопок -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
