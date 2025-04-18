@@ -1,73 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="24dp"
     android:background="#FFFFFF">
 
-    <!-- Поля ввода -->
-    <Spinner
-        android:id="@+id/carSpinner"
+    <!-- Заголовок -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/select_car" />
+        android:text="Запись на обслуживание"
+        android:textColor="#2260FF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
 
-    <EditText
-        android:id="@+id/dateInput"
+    <!-- Выбор автомобиля -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Введите дату"
-        android:layout_marginTop="8dp"/>
+        android:hint="Автомобиль"
+        app:boxStrokeColor="#CAD6FF"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp">
 
-    <EditText
-        android:id="@+id/timeInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Введите время"
-        android:layout_marginTop="8dp"/>
+        <Spinner
+            android:id="@+id/carSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/commentInput"
+    <!-- Дата и время в одной строке -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:weightSum="2">
+
+        <!-- Выбор даты -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Дата"
+            app:boxStrokeColor="#CAD6FF"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dateInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Выбор времени -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:hint="Время"
+            app:boxStrokeColor="#CAD6FF"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/timeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- Комментарий -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="Комментарий"
-        android:layout_marginTop="8dp"/>
+        app:boxStrokeColor="#CAD6FF"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/commentInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Выбранные услуги -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выбранные услуги:"
+        android:textColor="#2260FF"
+        android:textSize="16sp"
+        android:layout_marginTop="24dp"/>
 
     <LinearLayout
         android:id="@+id/selectedServicesContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:background="#F5F7FF"
+        android:divider="@drawable/divider"
+        android:showDividers="middle"/>
 
+    <!--  стоимость -->
+    <TextView
+        android:id="@+id/totalPriceView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Предварительная стоимость: 0 ₽*"
+        android:textColor="#2260FF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:gravity="end"/>
+
+    <TextView
+        android:id="@+id/commentTotalPriceView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="*итоговая стоимость может измениться на месте
+        в зависимости от необходимых запчастей"
+        android:textColor="#A9BCFE"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:gravity="start"/>
+
+    <!-- Кнопки действий -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_marginTop="24dp"
         android:gravity="center_horizontal">
 
-        <Button
-            android:id="@+id/bookButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Записаться"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:backgroundTint="@color/blue"
-            app:cornerRadius="24dp"
-            android:layout_marginBottom="16dp"/>
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/clearServicesButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Очистить услуги"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:backgroundTint="@color/blue"
+            android:layout_height="48dp"
+            android:text="Очистить"
+            android:textColor="#2260FF"
+            app:strokeColor="#2260FF"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@android:color/transparent"
+            app:cornerRadius="24dp"
+            android:layout_marginEnd="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bookButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Записаться"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#2260FF"
             app:cornerRadius="24dp"/>
     </LinearLayout>
-
 </LinearLayout>
