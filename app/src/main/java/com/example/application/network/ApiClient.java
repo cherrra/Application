@@ -67,12 +67,13 @@ public class ApiClient {
 
     public void uploadImage(RequestBody body, String token, Callback callback) {
         Request request = new Request.Builder()
-                .url(BASE_URL + "/user/uploadImage")
+                .url(BASE_URL + "/upload")
                 .addHeader("Authorization", "Bearer " + token)
                 .post(body)
                 .build();
         client.newCall(request).enqueue(callback);
     }
+
 
     public void getCars(String token, Callback callback) {
         Request request = new Request.Builder()

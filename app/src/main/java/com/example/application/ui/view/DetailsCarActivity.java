@@ -98,14 +98,12 @@ public class DetailsCarActivity extends AppCompatActivity {
     }
 
     private String getCarDetailsString(Car car) {
-        return "Модель: " + car.getModel() + "\n" +
-                "Марка: " + car.getBrand() + "\n" +
+        return  "Марка: " + car.getModel().getBrand().getBrandName() + "\n" +
+                "Модель: " + car.getModel().getModelName() + "\n" +
                 "Год: " + car.getYear() + "\n" +
                 "Пробег: " + car.getMileage() + " км\n" +
                 "VIN: " + car.getVinCode() + "\n" +
-                "Номерной знак: " + car.getLicensePlate() + "\n" +
-                "Тип кузова: " + car.getBodyType() + "\n" +
-                "Тип двигателя: " + car.getEngineType();
+                "Номерной знак: " + car.getLicensePlate();
     }
 
     private void setupButtonAnimation(Button button) {

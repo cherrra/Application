@@ -72,18 +72,6 @@
         android:layout_height="wrap_content"
         android:hint="Государственный номер" />
 
-    <EditText
-        android:id="@+id/editBodyType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Тип кузова" />
-
-    <EditText
-        android:id="@+id/editEngineType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Тип двигателя" />
-
     <LinearLayout
         android:id="@+id/saveButtonContainer"
         android:layout_width="match_parent"

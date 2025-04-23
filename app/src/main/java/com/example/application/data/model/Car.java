@@ -2,16 +2,12 @@ package com.example.application.data.model;
 
 public class Car {
     private int idCar;
-    private String model;
-    private String brand;
+    private Model model;
     private int year;
     private int mileage;
     private String vinCode;
     private String licensePlate;
-    private String bodyType;
-    private String engineType;
 
-    // Геттеры и сеттеры
     public int getIdCar() {
         return idCar;
     }
@@ -20,20 +16,12 @@ public class Car {
         this.idCar = idCar;
     }
 
-    public String getModel() {
+    public Model getModel() {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(Model model) {
         this.model = model;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
     }
 
     public int getYear() {
@@ -66,21 +54,5 @@ public class Car {
 
     public void setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate;
-    }
-
-    public String getBodyType() {
-        return bodyType;
-    }
-
-    public void setBodyType(String bodyType) {
-        this.bodyType = bodyType;
-    }
-
-    public String getEngineType() {
-        return engineType;
-    }
-
-    public void setEngineType(String engineType) {
-        this.engineType = engineType;
     }
 }

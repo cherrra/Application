@@ -44,8 +44,6 @@ public class EditCarActivity extends AppCompatActivity {
         EditText mileageEdit = findViewById(R.id.editMileage);
         EditText vinCodeEdit = findViewById(R.id.editVinCode);
         EditText licensePlateEdit = findViewById(R.id.editLicensePlate);
-        EditText bodyTypeEdit = findViewById(R.id.editBodyType);
-        EditText engineTypeEdit = findViewById(R.id.editEngineType);
         Button saveButton = findViewById(R.id.saveButton);
         ImageView backArrow = findViewById(R.id.backArrow);
 
@@ -82,14 +80,12 @@ public class EditCarActivity extends AppCompatActivity {
         }
 
         if (car != null) {
-            modelEdit.setText(car.getModel());
-            brandEdit.setText(car.getBrand());
+//            modelEdit.setText(car.getModel());
+//            brandEdit.setText(car.getBrand());
             yearEdit.setText(String.valueOf(car.getYear()));
             mileageEdit.setText(String.valueOf(car.getMileage()));
             vinCodeEdit.setText(car.getVinCode());
             licensePlateEdit.setText(car.getLicensePlate());
-            bodyTypeEdit.setText(car.getBodyType());
-            engineTypeEdit.setText(car.getEngineType());
         }
 
 //        saveButton.setOnClickListener(v -> {
@@ -119,18 +115,14 @@ public class EditCarActivity extends AppCompatActivity {
                 String mileageString = mileageEdit.getText().toString();
                 String vinCode = vinCodeEdit.getText().toString();
                 String licensePlate = licensePlateEdit.getText().toString();
-                String bodyType = bodyTypeEdit.getText().toString();
-                String engineType = engineTypeEdit.getText().toString();
 
                 // Если поля пустые, не присваиваем их объекту, а передаем null
-                car.setModel(model.isEmpty() ? null : model);
-                car.setBrand(brand.isEmpty() ? null : brand);
+//                car.setModel(model.isEmpty() ? null : model);
+//                car.setBrand(brand.isEmpty() ? null : brand);
                 car.setYear(yearString.isEmpty() ? 0 : Integer.parseInt(yearString));
                 car.setMileage(mileageString.isEmpty() ? 0 : Integer.parseInt(mileageString));
                 car.setVinCode(vinCode.isEmpty() ? null : vinCode);
                 car.setLicensePlate(licensePlate.isEmpty() ? null : licensePlate);
-                car.setBodyType(bodyType.isEmpty() ? null : bodyType);
-                car.setEngineType(engineType.isEmpty() ? null : engineType);
 
                 // Логируем JSON перед отправкой
                 String json = new Gson().toJson(car);

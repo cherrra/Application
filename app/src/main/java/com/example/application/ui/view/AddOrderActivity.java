@@ -16,8 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application.R;
+import com.example.application.data.model.Car;
+import com.example.application.ui.viewmodel.CarViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
 
 import org.json.JSONArray;
@@ -47,17 +50,19 @@ public class AddOrderActivity extends AppCompatActivity {
     private Button bookButton, clearButton;
     private TextView totalPriceView;
 
-    private List<Integer> carIds = new ArrayList<>();
+    private List<Car> userCars = new ArrayList<>();
     private List<String> selectedServices = new ArrayList<>();
     private double totalPrice = 0;
     private Calendar calendar = Calendar.getInstance();
     private SharedPreferences sharedPreferences;
+    private CarViewModel carViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_order);
 
+        carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
         initViews();
         setupDateTimePickers();
         setupButtons();
@@ -65,7 +70,7 @@ public class AddOrderActivity extends AppCompatActivity {
         try {
             String token = new EncryptedSharedPrefs(this).getToken();
             if (token != null) {
-                fetchCars(token);
+                loadUserCars(token);
                 loadSelectedServices();
             } else {
                 showToast("Требуется авторизация");
@@ -88,6 +93,35 @@ public class AddOrderActivity extends AppCompatActivity {
         clearButton = findViewById(R.id.clearServicesButton);
         totalPriceView = findViewById(R.id.totalPriceView);
         sharedPreferences = getSharedPreferences("OrderPrefs", MODE_PRIVATE);
+    }
+
+    private void loadUserCars(String token) {
+        carViewModel.getCars(token).observe(this, cars -> {
+            if (cars != null && !cars.isEmpty()) {
+                userCars = cars;
+                updateCarSpinner();
+            } else {
+                showToast("У вас нет автомобилей в гараже");
+                finish();
+            }
+        });
+    }
+
+    private void updateCarSpinner() {
+        List<String> carDisplayNames = new ArrayList<>();
+        for (Car car : userCars) {
+            // Формируем строку для отображения: "Бренд Модель"
+            String displayName = car.getModel().getBrand().getBrandName() + " " + car.getModel().getModelName();
+            carDisplayNames.add(displayName);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                carDisplayNames
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        carSpinner.setAdapter(adapter);
     }
 
     private void setupDateTimePickers() {
@@ -130,53 +164,6 @@ public class AddOrderActivity extends AppCompatActivity {
     private void setupButtons() {
         bookButton.setOnClickListener(v -> submitOrder());
         clearButton.setOnClickListener(v -> clearServices());
-    }
-
-    private void fetchCars(String token) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/cars")
-                .addHeader("Authorization", token)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> showToast("Ошибка загрузки машин"));
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray cars = new JSONArray(response.body().string());
-                        List<String> carNames = new ArrayList<>();
-                        carIds.clear();
-
-                        for (int i = 0; i < cars.length(); i++) {
-                            JSONObject car = cars.getJSONObject(i);
-                            carNames.add(car.getString("model"));
-                            carIds.add(car.getInt("id_car"));
-                        }
-
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                    AddOrderActivity.this,
-                                    android.R.layout.simple_spinner_item,
-                                    carNames
-                            );
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            carSpinner.setAdapter(adapter);
-                        });
-                    } catch (Exception e) {
-                        Log.e("AddOrderActivity", "Ошибка парсинга", e);
-                        runOnUiThread(() -> showToast("Ошибка обработки данных"));
-                    }
-                } else {
-                    runOnUiThread(() -> showToast("Ошибка сервера: " + response.code()));
-                }
-            }
-        });
     }
 
     private void loadSelectedServices() {
@@ -261,7 +248,7 @@ public class AddOrderActivity extends AppCompatActivity {
     }
 
     private void submitOrder() {
-        if (carSpinner.getSelectedItemPosition() < 0) {
+        if (carSpinner.getSelectedItemPosition() < 0 || userCars.isEmpty()) {
             showToast("Выберите автомобиль");
             return;
         }
@@ -283,8 +270,11 @@ public class AddOrderActivity extends AppCompatActivity {
                 return;
             }
 
+            // Получаем выбранный автомобиль
+            Car selectedCar = userCars.get(carSpinner.getSelectedItemPosition());
+
             JSONObject order = new JSONObject();
-            order.put("id_car", carIds.get(carSpinner.getSelectedItemPosition()));
+            order.put("id_car", selectedCar.getIdCar());
             order.put("order_date", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                     .format(calendar.getTime()));
             order.put("order_time", timeInput.getText().toString());

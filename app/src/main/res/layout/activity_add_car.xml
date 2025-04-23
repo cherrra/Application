@@ -72,19 +72,6 @@
         android:layout_height="wrap_content"
         android:hint="Номерной знак" />
 
-    <EditText
-        android:id="@+id/bodyTypeInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Тип кузова" />
-
-    <EditText
-        android:id="@+id/engineTypeInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Тип двигателя" />
-
-
     <LinearLayout
         android:id="@+id/saveButtonContainer"
         android:layout_width="match_parent"

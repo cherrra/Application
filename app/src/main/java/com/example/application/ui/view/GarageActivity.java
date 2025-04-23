@@ -32,6 +32,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
 public class GarageActivity extends AppCompatActivity {
 
     private LinearLayout carContainer;
@@ -80,7 +81,9 @@ public class GarageActivity extends AppCompatActivity {
     private void updateUI(List<Car> cars) {
         carContainer.removeAllViews();
         for (Car car : cars) {
-            addCarCard(car);
+            if (car != null) {
+                addCarCard(car);
+            }
         }
     }
 
@@ -114,7 +117,18 @@ public class GarageActivity extends AppCompatActivity {
         infoParams.addRule(RelativeLayout.CENTER_VERTICAL);
         infoLayout.setLayoutParams(infoParams);
 
-        TextView carView = createCarInfoTextView(car.getBrand() + " " + car.getModel());
+        // Получаем название бренда и модели с проверкой на null
+        String brandName = "Не указано";
+        String modelName = "Не указано";
+
+        if (car.getModel() != null) {
+            modelName = car.getModel().getModelName();
+            if (car.getModel().getBrand() != null) {
+                brandName = car.getModel().getBrand().getBrandName();
+            }
+        }
+
+        TextView carView = createCarInfoTextView(brandName + " " + modelName);
         infoLayout.addView(carView);
 
         View spacer = new View(this);
@@ -169,11 +183,10 @@ public class GarageActivity extends AppCompatActivity {
         carImagePlaceholder.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         card.addView(carImagePlaceholder);
-
         carContainer.addView(card);
     }
 
-
+    // Остальные методы остаются без изменений
     private void setupButtonAnimation(Button button) {
         button.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -245,7 +258,6 @@ public class GarageActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (response.isSuccessful()) {
                         carContainer.removeView(card);
-                        // Проверяем, остались ли еще автомобили
                         if (carContainer.getChildCount() == 0) {
                             pustoTextView.setVisibility(View.VISIBLE);
                         }
@@ -257,7 +269,6 @@ public class GarageActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void setupNavigation() {
         findViewById(R.id.homeButton).setOnClickListener(v -> navigateTo(HomeActivity.class));

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class AddCarActivity extends AppCompatActivity {
-    private EditText modelInput, brandInput, yearInput, mileageInput, vinCodeInput, licensePlateInput, bodyTypeInput, engineTypeInput;
+    private EditText modelInput, brandInput, yearInput, mileageInput, vinCodeInput, licensePlateInput;
     private final CarViewModel carViewModel = new CarViewModel();
 
     @Override
@@ -33,8 +33,6 @@ public class AddCarActivity extends AppCompatActivity {
         mileageInput = findViewById(R.id.mileageInput);
         vinCodeInput = findViewById(R.id.vinCodeInput);
         licensePlateInput = findViewById(R.id.licensePlateInput);
-        bodyTypeInput = findViewById(R.id.bodyTypeInput);
-        engineTypeInput = findViewById(R.id.engineTypeInput);
         Button saveButton = findViewById(R.id.saveButton);
         ImageView backArrow = findViewById(R.id.backArrow);
 
@@ -72,14 +70,12 @@ public class AddCarActivity extends AppCompatActivity {
     private void saveCar() {
         try {
             Car car = new Car();
-            car.setModel(modelInput.getText().toString());
-            car.setBrand(brandInput.getText().toString());
+//            car.setModel(modelInput.getText().toString());
+//            car.setBrand(brandInput.getText().toString());
             car.setYear(Integer.parseInt(yearInput.getText().toString()));
             car.setMileage(Integer.parseInt(mileageInput.getText().toString()));
             car.setVinCode(vinCodeInput.getText().toString());
             car.setLicensePlate(licensePlateInput.getText().toString());
-            car.setBodyType(bodyTypeInput.getText().toString());
-            car.setEngineType(engineTypeInput.getText().toString());
 
             // Получаем токен из EncryptedSharedPrefs
             String token;
