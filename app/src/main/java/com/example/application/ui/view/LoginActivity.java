@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.application.ApiService;
 import com.example.application.R;
+import com.example.application.network.ApiClient;
 import com.example.application.ui.view.admin.HomeAdminActivity;
 import com.example.application.utils.EncryptedSharedPrefs;
 
@@ -31,7 +31,7 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
-    private ApiService apiService;
+    private ApiClient apiClient;
     private EncryptedSharedPrefs encryptedSharedPrefs;
     private TextView registerTextB;
 
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        apiService = new ApiService();
+        apiClient = new ApiClient();
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordInputEditText);
         loginButton = findViewById(R.id.loginButton);
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                apiService.login(email, password, new Callback() {
+                apiClient.login(email, password, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         runOnUiThread(() ->

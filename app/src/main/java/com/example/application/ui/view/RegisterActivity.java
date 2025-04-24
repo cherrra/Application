@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.application.ApiService;
 import com.example.application.R;
+import com.example.application.network.ApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,14 +31,14 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox privacyPolicyCheckBox;
 
     private TextView privacyPolicyText;
-    private ApiService apiService;
+    private ApiClient apiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        apiService = new ApiService();
+        apiClient = new ApiClient();
         usernameEditText = findViewById(R.id.usernameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -84,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            apiService.register(username, email, password, new Callback() {
+            apiClient.register(username, email, password, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "Ошибка подключения", Toast.LENGTH_SHORT).show());

@@ -1,5 +1,9 @@
 package com.example.application.network;
 
+import com.example.application.network.request.LoginRequest;
+import com.example.application.network.request.RegisterRequest;
+import com.google.gson.Gson;
+
 import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -10,6 +14,7 @@ public class ApiClient {
     private static final String BASE_URL = "http://10.0.2.2:5000/api/";
     private static ApiClient instance;
     private final OkHttpClient client;
+    private final Gson gson = new Gson();
 
     public ApiClient() {
         client = new OkHttpClient();
@@ -23,20 +28,31 @@ public class ApiClient {
     }
 
 
-    // метод для входа
-//    public void login(String email, String password, Callback callback) {
-//        RequestBody formBody = new FormBody.Builder()
-//                .add("email", email)
-//                .add("password", password)
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "auth/login")
-//                .post(formBody)
-//                .build();
-//
-//        client.newCall(request).enqueue(callback);
-//    }
+    public void register(String username, String email, String password, Callback callback) {
+        RegisterRequest registerRequest = new RegisterRequest(username, email, password);
+        String json = gson.toJson(registerRequest);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(BASE_URL + "auth/register")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(callback);
+    }
+
+    public void login(String email, String password, Callback callback) {
+        LoginRequest loginRequest = new LoginRequest(email, password);
+        String json = gson.toJson(loginRequest);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(BASE_URL + "auth/login")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(callback);
+    }
 
     public void getUserDetails(String token, Callback callback) {
         Request request = new Request.Builder()
@@ -156,47 +172,6 @@ public class ApiClient {
                 .build();
         client.newCall(request).enqueue(callback);
     }
-
-    // Получение списка заказов
-//    public void getOrders(String token, Callback callback) {
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "orders")
-//                .addHeader("Authorization", token)
-//                .build();
-//        client.newCall(request).enqueue(callback);
-//    }
-//
-//    public void updateOrderStatus(int orderId, RequestBody body, String token, Callback callback) {
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "orders/admin/" + orderId)
-//                .put(body)
-//                .addHeader("Authorization", token)
-//                .build();
-//        client.newCall(request).enqueue(callback);
-//    }
-
-//    public void getOrders(String token, Callback callback) {
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "orders")
-//                .addHeader("Authorization", "Bearer " + token)
-//                .build();
-//        client.newCall(request).enqueue(callback);
-//    }
-//
-//    public void updateOrderStatus(int orderId, String newStatus, String token, Callback callback) {
-//        RequestBody body = RequestBody.create(
-//                MediaType.parse("application/json"),
-//                "{\"status\": \"" + newStatus + "\"}"
-//        );
-//
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "orders/admin/" + orderId)
-//                .put(body)
-//                .addHeader("Authorization", "Bearer " + token)
-//                .build();
-//
-//        client.newCall(request).enqueue(callback);
-//    }
 
     public void getOrders(String token, Callback callback) {
         Request request = new Request.Builder()
