@@ -32,13 +32,20 @@
             android:text="Пока пусто"
             android:textSize="16sp" />
 
-        <LinearLayout
-            android:id="@+id/carContainer"
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_below="@id/ordersTitle"
+            android:layout_above="@id/addCarButtonContainer"
             android:padding="16dp">
-        </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/carContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
     </LinearLayout>
 
 

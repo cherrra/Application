@@ -1,5 +1,7 @@
 package com.example.application.network;
 
+import android.util.Log;
+
 import com.example.application.network.request.LoginRequest;
 import com.example.application.network.request.RegisterRequest;
 import com.google.gson.Gson;
@@ -90,7 +92,18 @@ public class ApiClient {
         client.newCall(request).enqueue(callback);
     }
 
+    public void uploadImageCar(RequestBody body, String token, int carId, Callback callback) {
+        String url = BASE_URL + "cars/" + carId + "/upload";
+        Log.d("ApiClient", "Upload car image URL: " + url);
 
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + token)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(callback);
+    }
     public void getCars(String token, Callback callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + "cars")

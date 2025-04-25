@@ -11,7 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.application.R;
+import com.example.application.data.model.Brand;
 import com.example.application.data.model.Car;
+import com.example.application.data.model.Model;
 import com.example.application.ui.viewmodel.CarViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
 
@@ -36,9 +38,7 @@ public class AddCarActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.saveButton);
         ImageView backArrow = findViewById(R.id.backArrow);
 
-        backArrow.setOnClickListener(v -> {
-            finish();
-        });
+        backArrow.setOnClickListener(v -> finish());
 
         backArrow.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -69,9 +69,17 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void saveCar() {
         try {
+            // Создаем объекты Brand и Model
+            Brand brand = new Brand();
+            brand.setBrandName(brandInput.getText().toString());
+
+            Model model = new Model();
+            model.setModelName(modelInput.getText().toString());
+            model.setBrand(brand);
+
+            // Создаем объект Car и связываем с Model
             Car car = new Car();
-//            car.setModel(modelInput.getText().toString());
-//            car.setBrand(brandInput.getText().toString());
+            car.setModel(model);
             car.setYear(Integer.parseInt(yearInput.getText().toString()));
             car.setMileage(Integer.parseInt(mileageInput.getText().toString()));
             car.setVinCode(vinCodeInput.getText().toString());

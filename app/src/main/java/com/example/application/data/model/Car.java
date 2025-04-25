@@ -7,6 +7,7 @@ public class Car {
     private int mileage;
     private String vinCode;
     private String licensePlate;
+    private String linkImg;
 
     public int getIdCar() {
         return idCar;
@@ -54,5 +55,13 @@ public class Car {
 
     public void setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate;
+    }
+
+    public String getLinkImg() {
+        return linkImg;
+    }
+
+    public void setLinkImg(String linkImg) {
+        this.linkImg = linkImg;
     }
 }

@@ -38,46 +38,76 @@
         android:id="@+id/editModel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Модель" />
+        android:hint="Марка"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editBrand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Марка" />
+        android:hint="Модель"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editYear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Год"
-        android:inputType="number" />
+        android:inputType="number"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editMileage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Пробег"
-        android:inputType="number" />
+        android:inputType="number"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editVinCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="VIN код" />
+        android:hint="VIN код"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editLicensePlate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Государственный номер" />
+        android:hint="Государственный номер"
+        android:layout_marginBottom="16dp"/>
+    <!-- Добавленный блок для изображения автомобиля -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
 
+        <ImageView
+            android:id="@+id/carImageView"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_backgroun"
+            android:contentDescription="Фото автомобиля"/>
+
+        <Button
+            android:id="@+id/uploadImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Загрузить фото"
+            android:textColor="#2260FF"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/saveButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="50dp">
+        android:padding="10dp">
 
         <Button
             android:id="@+id/saveButton"

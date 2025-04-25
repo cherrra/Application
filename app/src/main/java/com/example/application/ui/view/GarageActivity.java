@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.application.R;
 import com.example.application.data.model.Car;
 import com.example.application.network.ApiClient;
@@ -117,7 +118,6 @@ public class GarageActivity extends AppCompatActivity {
         infoParams.addRule(RelativeLayout.CENTER_VERTICAL);
         infoLayout.setLayoutParams(infoParams);
 
-        // Получаем название бренда и модели с проверкой на null
         String brandName = "Не указано";
         String modelName = "Не указано";
 
@@ -165,24 +165,31 @@ public class GarageActivity extends AppCompatActivity {
         infoLayout.addView(buttonsLayout);
         card.addView(infoLayout);
 
-        ImageView carImagePlaceholder = new ImageView(this);
+        ImageView carImageView = new ImageView(this);
         GradientDrawable placeholderShape = new GradientDrawable();
         placeholderShape.setShape(GradientDrawable.RECTANGLE);
         placeholderShape.setCornerRadius(16f);
         placeholderShape.setColor(Color.parseColor("#B0C6FF"));
-        carImagePlaceholder.setBackground(placeholderShape);
+        carImageView.setBackground(placeholderShape);
 
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
-                dpToPx(100),
+                dpToPx(115),
                 dpToPx(150)
         );
         imageParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
         imageParams.setMargins(16, 0, 0, 0);
-        carImagePlaceholder.setLayoutParams(imageParams);
-        carImagePlaceholder.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        carImageView.setLayoutParams(imageParams);
+        carImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        card.addView(carImagePlaceholder);
+        // Загрузка изображения, если оно есть
+        if (car.getLinkImg() != null && !car.getLinkImg().isEmpty()) {
+            loadCarImage(car.getLinkImg(), carImageView);
+        } else {
+            carImageView.setImageResource(R.drawable.rounded_backgroun); // Замените на вашу заглушку
+        }
+
+        card.addView(carImageView);
         carContainer.addView(card);
     }
 
@@ -269,6 +276,24 @@ public class GarageActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void loadCarImage(String imageUrl, ImageView imageView) {
+        try {
+            String baseUrl = "http://10.0.2.2:5000/";
+            String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+            String fullImageUrl = baseUrl + cleanPath;
+
+            Glide.with(this)
+                    .load(fullImageUrl)
+                    .placeholder(R.drawable.rounded_backgroun)
+                    .centerCrop()
+                    .into(imageView);
+        } catch (Exception e) {
+            Log.e("GarageActivity", "Error loading car image: " + e.getMessage());
+            imageView.setImageResource(R.drawable.rounded_backgroun);
+        }
+    }
+
 
     private void setupNavigation() {
         findViewById(R.id.homeButton).setOnClickListener(v -> navigateTo(HomeActivity.class));
