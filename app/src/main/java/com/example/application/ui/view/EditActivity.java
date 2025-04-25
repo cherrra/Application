@@ -186,7 +186,7 @@ public class EditActivity extends AppCompatActivity {
 
     private String getToken() {
         try {
-            String token = new EncryptedSharedPrefs(this).getToken();
+            String token = new EncryptedSharedPrefs(this).getAccessToken();
             if (token == null) {
                 showError("Токен отсутствует");
             }

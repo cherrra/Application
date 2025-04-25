@@ -1,10 +1,15 @@
 package com.example.application.network;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.application.network.request.LoginRequest;
 import com.example.application.network.request.RegisterRequest;
+import com.example.application.utils.TokenInterceptor;
 import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -15,18 +20,56 @@ import okhttp3.RequestBody;
 public class ApiClient {
     private static final String BASE_URL = "http://10.0.2.2:5000/api/";
     private static ApiClient instance;
+    private static Context appContext; // Храним глобальный Context
     private final OkHttpClient client;
     private final Gson gson = new Gson();
 
-    public ApiClient() {
-        client = new OkHttpClient();
+    // Приватный конструктор
+    private ApiClient(Context context) throws GeneralSecurityException, IOException {
+        this.client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(context))
+                .build();
     }
 
-    public static ApiClient getInstance() {
+    // Метод инициализации — вызывать один раз при старте приложения
+    public static synchronized void init(Context context) throws GeneralSecurityException, IOException {
         if (instance == null) {
-            instance = new ApiClient();
+            appContext = context.getApplicationContext(); // используем application context
+            instance = new ApiClient(appContext);
+        }
+    }
+
+    // Геттер без параметров — безопасен для использования в репозиториях
+    public static synchronized ApiClient getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("ApiClient is not initialized. Call ApiClient.init(context) first.");
         }
         return instance;
+    }
+
+    public OkHttpClient getClient() {
+        return client;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
+
+    public void login(String email, String password, Callback callback) {
+        LoginRequest loginRequest = new LoginRequest(email, password);
+        String json = gson.toJson(loginRequest);
+
+        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(BASE_URL + "auth/login")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(callback);
     }
 
 
@@ -37,19 +80,6 @@ public class ApiClient {
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
         Request request = new Request.Builder()
                 .url(BASE_URL + "auth/register")
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(callback);
-    }
-
-    public void login(String email, String password, Callback callback) {
-        LoginRequest loginRequest = new LoginRequest(email, password);
-        String json = gson.toJson(loginRequest);
-
-        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
-        Request request = new Request.Builder()
-                .url(BASE_URL + "auth/login")
                 .post(body)
                 .build();
 

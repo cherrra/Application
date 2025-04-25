@@ -35,16 +35,15 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class CarRepository {
-    private static final String BASE_URL = "http://10.0.2.2:5000/api/cars";
+    private static final String BASE_URL = "http://10.0.2.2:5000/api/";
     private final OkHttpClient client = new OkHttpClient();
     private final ApiClient apiClient = ApiClient.getInstance();
 
     public LiveData<List<Car>> getCars(String token) {
         MutableLiveData<List<Car>> carsLiveData = new MutableLiveData<>();
-
         Request request = new Request.Builder()
-                .url(BASE_URL)
-                .addHeader("Authorization", token)
+                .url(BASE_URL + "cars")
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

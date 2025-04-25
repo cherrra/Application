@@ -88,7 +88,7 @@ public class AddCarActivity extends AppCompatActivity {
             // Получаем токен из EncryptedSharedPrefs
             String token;
             try {
-                token = new EncryptedSharedPrefs(this).getToken();
+                token = new EncryptedSharedPrefs(this).getAccessToken();
             } catch (GeneralSecurityException | IOException e) {
                 Log.e("AddCarActivity", "Ошибка получения токена: " + e.getMessage());
                 return;

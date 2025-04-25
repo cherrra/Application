@@ -17,6 +17,9 @@ import com.example.application.R;
 import com.example.application.ui.viewmodel.UserViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 public class AccountActivity extends AppCompatActivity {
     private UserViewModel userViewModel;
     private EncryptedSharedPrefs encryptedSharedPrefs;
@@ -42,7 +45,7 @@ public class AccountActivity extends AppCompatActivity {
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             Log.d("AccountActivity", "Полученный токен: " + token);
 
             if (token != null) {
@@ -57,7 +60,7 @@ public class AccountActivity extends AppCompatActivity {
 
         infoButton.setOnClickListener(v -> {
             try {
-                String token = encryptedSharedPrefs.getToken();
+                String token = encryptedSharedPrefs.getAccessToken();
                 if (token != null) {
                     userViewModel.getUser(token).observe(this, user -> {
                         if (user != null) {
@@ -74,7 +77,7 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
-        logoutButton.setOnClickListener(v -> logout());
+       logoutButton.setOnClickListener(v -> logout());
     }
 
     private void setupNavigationButtons() {
@@ -141,13 +144,21 @@ public class AccountActivity extends AppCompatActivity {
 
     private void logout() {
         try {
-            encryptedSharedPrefs.saveToken(null);
+            EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
+            encryptedSharedPrefs.clearTokens();
+
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-        } catch (Exception e) {
+
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         }
     }
 }

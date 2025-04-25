@@ -68,7 +68,7 @@ public class AddOrderActivity extends AppCompatActivity {
         setupButtons();
 
         try {
-            String token = new EncryptedSharedPrefs(this).getToken();
+            String token = new EncryptedSharedPrefs(this).getAccessToken();
             if (token != null) {
                 loadUserCars(token);
                 loadSelectedServices();
@@ -264,7 +264,7 @@ public class AddOrderActivity extends AppCompatActivity {
         }
 
         try {
-            String token = new EncryptedSharedPrefs(this).getToken();
+            String token = new EncryptedSharedPrefs(this).getAccessToken();
             if (token == null) {
                 showToast("Требуется авторизация");
                 return;

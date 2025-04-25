@@ -456,7 +456,7 @@ public class OrdersActivity extends AppCompatActivity {
     private void fetchOrders() {
         String token;
         try {
-            token = new EncryptedSharedPrefs(this).getToken();
+            token = new EncryptedSharedPrefs(this).getAccessToken();
         } catch (GeneralSecurityException | IOException e) {
             Log.e("OrdersActivity", "Ошибка получения токена: " + e.getMessage());
             return;
@@ -680,7 +680,7 @@ public class OrdersActivity extends AppCompatActivity {
     private void deleteOrder(int orderId, View cardView) {
         String token;
         try {
-            token = new EncryptedSharedPrefs(this).getToken();
+            token = new EncryptedSharedPrefs(this).getAccessToken();
         } catch (GeneralSecurityException | IOException e) {
             Log.e("OrdersActivity", "Ошибка получения токена: " + e.getMessage());
             return;

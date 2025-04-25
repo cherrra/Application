@@ -97,7 +97,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void fetchUserDetails() {
         try {
-            String token = new EncryptedSharedPrefs(this).getToken();
+            String token = new EncryptedSharedPrefs(this).getAccessToken();
             if (token != null) {
                 userViewModel.getUser(token).observe(this, user -> {
                     if (user != null) {
@@ -184,7 +184,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
     private void deleteAccount() {
         try {
-            String token = new EncryptedSharedPrefs(this).getToken();
+            String token = new EncryptedSharedPrefs(this).getAccessToken();
             if (token != null) {
                 ApiClient.getInstance().deleteAccount(token, new Callback() {
                     @Override

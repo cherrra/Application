@@ -29,6 +29,7 @@ import com.example.application.ui.viewmodel.CategoryViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 import okhttp3.Call;
@@ -68,7 +69,7 @@ public class HomeAdminActivity extends AppCompatActivity {
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             Log.d("HomeAdminActivity", "Полученный токен: " + token);
 //
 //            if (token != null) {
@@ -88,7 +89,7 @@ public class HomeAdminActivity extends AppCompatActivity {
 
         try {
             EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             if (token != null) {
                 observeCategories(token);
             } else {
@@ -286,7 +287,7 @@ public class HomeAdminActivity extends AppCompatActivity {
     private void updateCategory(int categoryId, String newCategoryName) {
         try {
             EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
 
             if (token != null) {
                 categoryViewModel.updateCategory(categoryId, newCategoryName, token, new Callback() {
@@ -317,7 +318,7 @@ public class HomeAdminActivity extends AppCompatActivity {
     private void deleteCategory(int categoryId, LinearLayout card) {
         try {
             EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
 
             if (token != null) {
                 categoryViewModel.deleteCategory(categoryId, token, new Callback() {
@@ -368,13 +369,21 @@ public class HomeAdminActivity extends AppCompatActivity {
 
     private void logout() {
         try {
-            encryptedSharedPrefs.saveToken(null);
+            EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
+            encryptedSharedPrefs.clearTokens();
+
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-        } catch (Exception e) {
+
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         }
     }
 }

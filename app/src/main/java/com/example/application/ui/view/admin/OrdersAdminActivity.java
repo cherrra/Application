@@ -416,7 +416,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             if (token != null) {
                 fetchAllOrders(token);
             } else {
@@ -645,7 +645,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
             int selectedPosition = alertDialog.getListView().getCheckedItemPosition();
             if (selectedPosition >= 0) {
                 try {
-                    String token = encryptedSharedPrefs.getToken();
+                    String token = encryptedSharedPrefs.getAccessToken();
                     if (token != null) {
                         updateOrderStatus(token, orderId, statuses[selectedPosition]);
                     }
@@ -691,7 +691,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Toast.makeText(OrdersAdminActivity.this, "Статус обновлен", Toast.LENGTH_SHORT).show();
                         try {
-                            fetchAllOrders(encryptedSharedPrefs.getToken());
+                            fetchAllOrders(encryptedSharedPrefs.getAccessToken());
                         } catch (Exception e) {
                             Log.e("OrdersAdminActivity", "Ошибка обновления списка", e);
                         }

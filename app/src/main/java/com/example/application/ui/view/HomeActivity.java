@@ -72,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
 
         try {
             EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             if (token != null) {
                 observeCategories(token);
             } else {

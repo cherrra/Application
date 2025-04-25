@@ -42,7 +42,7 @@ public class ServicesAdminActivity extends AppCompatActivity {
         serviceViewModel = new ViewModelProvider(this).get(ServiceViewModel.class);
 
         try {
-            token = new EncryptedSharedPrefs(this).getToken();
+            token = new EncryptedSharedPrefs(this).getAccessToken();
         } catch (Exception e) {
             e.printStackTrace();
         }

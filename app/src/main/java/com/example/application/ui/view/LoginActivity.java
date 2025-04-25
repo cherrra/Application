@@ -1,11 +1,9 @@
 package com.example.application.ui.view;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,7 +29,6 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
-    private ApiClient apiClient;
     private EncryptedSharedPrefs encryptedSharedPrefs;
     private TextView registerTextB;
 
@@ -40,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        apiClient = new ApiClient();
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordInputEditText);
         loginButton = findViewById(R.id.loginButton);
@@ -48,68 +44,78 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String savedToken = encryptedSharedPrefs.getToken();
+            // Используем getAccessToken() вместо getToken()
+            String savedToken = encryptedSharedPrefs.getAccessToken();
             Log.d("LoginActivity", "Токен при запуске: " + (savedToken != null ? savedToken : "отсутствует"));
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Ошибка инициализации хранилища", Toast.LENGTH_SHORT).show();
         }
 
         setupButtonAnimation(loginButton);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+        loginButton.setOnClickListener(v -> {
+            String email = emailEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
 
-                apiClient.login(email, password, new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        runOnUiThread(() ->
-                                Toast.makeText(com.example.application.ui.view.LoginActivity.this, "Ошибка подключения", Toast.LENGTH_SHORT).show()
-                        );
-                    }
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "Заполните все поля", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            try {
-                                String responseBody = response.body().string();
-                                JSONObject jsonObject = new JSONObject(responseBody);
-                                String token = jsonObject.getString("token");
+            ApiClient apiClient = ApiClient.getInstance(); // без параметров
+            apiClient.login(email, password, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() ->
+                            Toast.makeText(LoginActivity.this, "Ошибка подключения: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+                }
 
-                                if (encryptedSharedPrefs != null) {
-                                    encryptedSharedPrefs.saveToken(token);
-                                    Log.d("LoginActivity", "Токен успешно сохранён: " + token);
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        try {
+                            String responseBody = response.body().string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            String accessToken = jsonObject.getString("accessToken");
+                            String refreshToken = jsonObject.getString("refreshToken");
+
+                            // Сохраняем оба токена
+                            encryptedSharedPrefs.saveTokens(accessToken, refreshToken);
+
+                            runOnUiThread(() -> {
+                                Toast.makeText(LoginActivity.this, "Вход успешен", Toast.LENGTH_SHORT).show();
+
+                                Intent intent;
+                                if (email.contains("@admin-mail")) {
+                                    intent = new Intent(LoginActivity.this, HomeAdminActivity.class);
+                                } else {
+                                    intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 }
-
-                                runOnUiThread(() -> {
-                                    Toast.makeText(com.example.application.ui.view.LoginActivity.this, "Вход успешен", Toast.LENGTH_SHORT).show();
-
-                                    if (email.contains("@admin-mail")) {
-                                        startActivity(new Intent(com.example.application.ui.view.LoginActivity.this, HomeAdminActivity.class));
-                                    } else {
-                                        startActivity(new Intent(com.example.application.ui.view.LoginActivity.this, HomeActivity.class));
-                                    }
-                                });
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
+                                startActivity(intent);
+                                finish();
+                            });
+                        } catch (JSONException e) {
                             runOnUiThread(() ->
-                                    Toast.makeText(com.example.application.ui.view.LoginActivity.this, "Данные неверные", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(LoginActivity.this, "Ошибка обработки ответа", Toast.LENGTH_SHORT).show()
                             );
                         }
+                    } else {
+                        runOnUiThread(() -> {
+                            if (response.code() == 401) {
+                                Toast.makeText(LoginActivity.this, "Неверный email или пароль", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Ошибка сервера: " + response.code(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
         });
 
-        registerTextB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
+        registerTextB.setOnClickListener(v -> {
+          startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
     }
 

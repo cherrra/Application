@@ -65,7 +65,7 @@ public class ServicesActivity extends AppCompatActivity {
         });
 
         try {
-            token = new EncryptedSharedPrefs(this).getToken();
+            token = new EncryptedSharedPrefs(this).getAccessToken();
         } catch (Exception e) {
             Toast.makeText(this, "Ошибка получения токена", Toast.LENGTH_SHORT).show();
             return;

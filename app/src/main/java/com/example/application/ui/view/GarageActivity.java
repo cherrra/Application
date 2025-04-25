@@ -60,7 +60,7 @@ public class GarageActivity extends AppCompatActivity {
     private void fetchGarageDetails() {
         String token;
         try {
-            token = new EncryptedSharedPrefs(this).getToken();
+            token = new EncryptedSharedPrefs(this).getAccessToken();
         } catch (Exception e) {
             Log.e(TAG, "Ошибка получения токена: " + e.getMessage());
             return;
@@ -247,7 +247,7 @@ public class GarageActivity extends AppCompatActivity {
     private void deleteCar(int carId, RelativeLayout card) {
         String token;
         try {
-            token = new EncryptedSharedPrefs(this).getToken();
+            token = new EncryptedSharedPrefs(this).getAccessToken();
         } catch (Exception e) {
             Log.e(TAG, "Ошибка получения токена: " + e.getMessage());
             return;

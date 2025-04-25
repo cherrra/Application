@@ -161,7 +161,7 @@ public class EditCarActivity extends AppCompatActivity {
 
     private void updateCar(Car car) {
         try {
-            String token = new EncryptedSharedPrefs(this).getToken();
+            String token = new EncryptedSharedPrefs(this).getAccessToken();
             if (token == null || token.isEmpty()) {
                 Toast.makeText(this, "Ошибка авторизации", Toast.LENGTH_SHORT).show();
                 return;

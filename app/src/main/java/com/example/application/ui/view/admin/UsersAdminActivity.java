@@ -60,7 +60,7 @@ public class UsersAdminActivity extends AppCompatActivity {
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             if (token != null) {
                 fetchUsers(token);
             } else {
@@ -442,7 +442,7 @@ public class UsersAdminActivity extends AppCompatActivity {
 
     private void deleteUser(int userId, RelativeLayout card) {
         try {
-            String token = encryptedSharedPrefs.getToken();
+            String token = encryptedSharedPrefs.getAccessToken();
             if (token == null) {
                 Toast.makeText(this, "Необходима авторизация", Toast.LENGTH_SHORT).show();
                 return;

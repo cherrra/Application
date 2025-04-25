@@ -38,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        apiClient = new ApiClient();
+        apiClient = ApiClient.getInstance();
         usernameEditText = findViewById(R.id.usernameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -126,11 +126,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void updateRegisterButtonState(boolean enabled) {
         if (enabled) {
-            // Включенное состояние: синий фон, белый текст
+            // Включенное состояние
             registerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue)));
             registerButton.setTextColor(getResources().getColor(R.color.white));
         } else {
-            // Выключенное состояние: светло-голубой фон, синий текст
+            // Выключенное состояние
             registerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.light_blue)));
             registerButton.setTextColor(getResources().getColor(R.color.blue));
         }
