@@ -44,6 +44,8 @@
         <activity android:name=".ui.view.ServicesActivity" />
         <activity android:name=".ui.view.admin.ServicesAdminActivity" />
         <activity android:name=".ui.view.AddOrderActivity" />
+        <activity android:name=".ui.view.NotificationActivity" />
+        <activity android:name=".ui.view.admin.NotificationAdminActivity" />
         <activity android:name=".ui.view.admin.OrdersAdminActivity" />
     </application>
 

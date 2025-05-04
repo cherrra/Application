@@ -103,7 +103,7 @@ public class ServicesActivity extends AppCompatActivity {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(55f);
-        shape.setColor(Color.parseColor("#CAD6FF"));
+        shape.setColor(Color.parseColor("#80CAD6FF"));
         card.setBackground(shape);
 
         // Параметры карточки
@@ -118,7 +118,7 @@ public class ServicesActivity extends AppCompatActivity {
         TextView nameView = new TextView(this);
         nameView.setText(service.getServiceName());
         nameView.setTextSize(18f);
-        nameView.setTextColor(Color.BLACK);
+        nameView.setTextColor(Color.parseColor("#2260FF"));
         nameView.setGravity(Gravity.CENTER);
         nameView.setTypeface(null, Typeface.BOLD);
         card.addView(nameView);
@@ -138,7 +138,7 @@ public class ServicesActivity extends AppCompatActivity {
         TextView priceView = new TextView(this);
         priceView.setText(service.getPrice() + " ₽");
         priceView.setTextSize(16f);
-        priceView.setTextColor(Color.BLACK);
+        priceView.setTextColor(Color.parseColor("#2260FF"));
         priceView.setGravity(Gravity.CENTER);
         priceView.setTypeface(null, Typeface.BOLD);
         card.addView(priceView);
@@ -156,7 +156,7 @@ public class ServicesActivity extends AppCompatActivity {
         // Создаем круглую кнопку с плюсом
         GradientDrawable btnShape = new GradientDrawable();
         btnShape.setShape(GradientDrawable.OVAL);
-        btnShape.setColor(Color.parseColor("#2260FF")); // Синий фон
+        btnShape.setColor(Color.parseColor("#902260FF")); // Синий фон
         addButton.setBackground(btnShape);
 
         // Устанавливаем иконку плюса

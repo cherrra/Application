@@ -36,7 +36,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView usernameTextView, emailTextView, birthDateTextView, phoneNumberTextView;
     private ImageView profileImageViewDetails;
     private UserViewModel userViewModel;
-    private static final String BASE_URL = "http://10.0.2.2:5000/api/";
+    private static final String BASE_URL = "https://automser.store/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

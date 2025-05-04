@@ -35,7 +35,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class CarRepository {
-    private static final String BASE_URL = "http://10.0.2.2:5000/api/";
+    private static final String BASE_URL = "https://automser.store/api/";
     private final OkHttpClient client = new OkHttpClient();
     private final ApiClient apiClient = ApiClient.getInstance();
 

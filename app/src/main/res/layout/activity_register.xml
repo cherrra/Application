@@ -83,13 +83,12 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+        <!-- Container for CheckBox -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/checkboxLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/passwordInputLayout">
@@ -100,19 +99,23 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/blue"
                 android:scaleX="1.2"
-                android:scaleY="1.2" />
+                android:scaleY="1.2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/privacyPolicyText"
-                android:layout_width="212dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="8dp"
                 android:text="согласен с политикой конфиденциальности"
                 android:textColor="@color/grey"
-                android:textSize="18sp" />
-        </LinearLayout>
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/privacyPolicyCheckBox"
+                app:layout_constraintTop_toTopOf="@id/privacyPolicyCheckBox" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerButton"

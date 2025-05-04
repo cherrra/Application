@@ -16,11 +16,12 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class ApiClient {
-    private static final String BASE_URL = "http://10.0.2.2:5000/api/";
+    private static final String BASE_URL = "https://automser.store/api/";
     private static ApiClient instance;
-    private static Context appContext; // Храним глобальный Context
+    private static Context appContext;
     private final OkHttpClient client;
     private final Gson gson = new Gson();
 
@@ -59,14 +60,35 @@ public class ApiClient {
         return BASE_URL;
     }
 
+//    public void login(String email, String password, Callback callback) {
+//        LoginRequest loginRequest = new LoginRequest(email, password);
+//        String json = gson.toJson(loginRequest);
+//
+//        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+//        Request request = new Request.Builder()
+//                .url(BASE_URL + "auth/login")
+//                .post(body)
+//                .build();
+//
+//        client.newCall(request).enqueue(callback);
+//    }
+
     public void login(String email, String password, Callback callback) {
         LoginRequest loginRequest = new LoginRequest(email, password);
         String json = gson.toJson(loginRequest);
+
+        // Логируем тело запроса перед отправкой
+        Log.d("ApiClient", "Отправляемый JSON: " + json);
 
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
         Request request = new Request.Builder()
                 .url(BASE_URL + "auth/login")
                 .post(body)
+                .build();
+
+        // Добавляем логирование через Interceptor
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
 
         client.newCall(request).enqueue(callback);

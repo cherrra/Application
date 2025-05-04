@@ -87,7 +87,7 @@ public class OrdersActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/orders")
+                .url("https://automser.store/api/orders")
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
 
@@ -306,7 +306,7 @@ public class OrdersActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/orders/" + orderId)
+                .url("https://automser.store/api/orders/" + orderId)
                 .delete()
                 .addHeader("Authorization", "Bearer " + token)
                 .build();

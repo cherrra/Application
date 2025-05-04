@@ -422,8 +422,8 @@ public class UsersAdminActivity extends AppCompatActivity {
                 return;
             }
 
-            if (!imageUrl.startsWith("http")) {
-                String baseUrl = "http://10.0.2.2:5000/";
+            if (!imageUrl.startsWith("https")) {
+                String baseUrl = "https://automser.store/";
                 String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
                 imageUrl = baseUrl + cleanPath;
             }

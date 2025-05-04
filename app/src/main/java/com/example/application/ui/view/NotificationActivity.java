@@ -1,0 +1,224 @@
+//package com.example.application.ui.view;
+//
+//import android.Manifest;
+//import android.app.NotificationChannel;
+//import android.app.NotificationManager;
+//import android.content.pm.PackageManager;
+//import android.os.Build;
+//import android.os.Bundle;
+//import android.os.Handler;
+//import android.widget.LinearLayout;
+//import android.widget.TextView;
+//import android.widget.Toast;
+//
+//import androidx.appcompat.app.AppCompatActivity;
+//import androidx.core.app.ActivityCompat;
+//import androidx.core.app.NotificationCompat;
+//import androidx.core.app.NotificationManagerCompat;
+//
+//import com.example.application.R;
+//import com.example.application.utils.EncryptedSharedPrefs;
+//
+//import org.json.JSONArray;
+//import org.json.JSONException;
+//import org.json.JSONObject;
+//
+//import java.io.IOException;
+//import java.util.HashSet;
+//import java.util.Set;
+//
+//import okhttp3.Call;
+//import okhttp3.Callback;
+//import okhttp3.OkHttpClient;
+//import okhttp3.Request;
+//import okhttp3.Response;
+//
+//public class NotificationActivity extends AppCompatActivity {
+//    private Handler handler = new Handler();
+//    private Runnable runnable;
+//    private static final long INTERVAL = 30000; // 30 секунд
+//
+//    private LinearLayout notificationsContainer;
+//    private EncryptedSharedPrefs prefs;
+//    private static final String NOTIFICATIONS_KEY = "notifications";
+//    private static final String SENT_NOTIFICATIONS_KEY = "sent_notifications";
+//    private static final String CHANNEL_ID = "order_channel";
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_notification);
+//
+//        try {
+//            prefs = new EncryptedSharedPrefs(this);
+//            String token = prefs.getAccessToken();
+//            if (token != null) {
+//                notificationsContainer = findViewById(R.id.notificationsContainer);
+//
+//                // Запрашиваем разрешения для Android 13+
+//                requestNotificationPermission();
+//                createNotificationChannel();
+//                loadSavedNotifications();
+//                startOrderStatusChecker();
+//            } else {
+//                showToast("Необходима авторизация");
+//                finish();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            showToast("Ошибка инициализации");
+//            finish();
+//        }
+//    }
+//
+//    private void requestNotificationPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+//            }
+//        }
+//    }
+//
+//    private void startOrderStatusChecker() {
+//        runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                checkOrderStatus();
+//                handler.postDelayed(this, INTERVAL);
+//            }
+//        };
+//        handler.post(runnable);
+//    }
+//
+//    private void checkOrderStatus() {
+//        String token = prefs.getAccessToken();
+//        if (token == null) return;
+//
+//        OkHttpClient client = new OkHttpClient();
+//        Request request = new Request.Builder()
+//                .url("https://automser.store/api/orders")
+//                .addHeader("Authorization", "Bearer " + token)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                runOnUiThread(() -> showToast("Ошибка соединения"));
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                if (!response.isSuccessful()) return;
+//
+//                try {
+//                    JSONArray ordersArray = new JSONArray(response.body().string());
+//                    for (int i = 0; i < ordersArray.length(); i++) {
+//                        JSONObject order = ordersArray.getJSONObject(i);
+//                        processOrderStatus(order);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+//
+//    private void processOrderStatus(JSONObject order) throws JSONException {
+//        String orderId = order.getString("id_order");
+//        String status = order.getString("status");
+//        String notificationId = "order_" + orderId + "_" + status;
+//        String notificationText = "Статус заказа #" + orderId + ": " + status;
+//
+//        Set<String> sentNotifications = prefs.getStringSet(SENT_NOTIFICATIONS_KEY, new HashSet<>());
+//        if (!sentNotifications.contains(notificationId)) {
+//            runOnUiThread(() -> {
+//                addNotificationToScreen(notificationText);
+//                sendSystemNotification(notificationText);
+//            });
+//
+//            // Обновляем сохраненные уведомления
+//            Set<String> updatedNotifications = new HashSet<>(sentNotifications);
+//            updatedNotifications.add(notificationId);
+//            prefs.putStringSet(SENT_NOTIFICATIONS_KEY, updatedNotifications);
+//            saveNotificationText(notificationText);
+//        }
+//    }
+//
+//    private void addNotificationToScreen(String text) {
+//        // Проверка на дубликаты
+//        if (isNotificationAlreadyDisplayed(text)) return;
+//
+//        TextView textView = new TextView(this);
+//        textView.setText(text);
+//        textView.setPadding(16, 16, 16, 16);
+//        textView.setTextSize(18);
+//        textView.setBackgroundResource(R.drawable.rounded_backgroun);
+//
+//        // Добавляем в начало списка
+//        notificationsContainer.addView(textView, 0);
+//    }
+//
+//    private boolean isNotificationAlreadyDisplayed(String text) {
+//        for (int i = 0; i < notificationsContainer.getChildCount(); i++) {
+//            TextView view = (TextView) notificationsContainer.getChildAt(i);
+//            if (view.getText().toString().equals(text)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    private void sendSystemNotification(String text) {
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setContentTitle("Обновление статуса заказа")
+//                .setContentText(text)
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                .setAutoCancel(true);
+//
+//        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+//    }
+//
+//    private void createNotificationChannel() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel(
+//                    CHANNEL_ID,
+//                    "Order Notifications",
+//                    NotificationManager.IMPORTANCE_DEFAULT);
+//            channel.setDescription("Channel for order status updates");
+//
+//            NotificationManager manager = getSystemService(NotificationManager.class);
+//            if (manager != null) {
+//                manager.createNotificationChannel(channel);
+//            }
+//        }
+//    }
+//
+//    private void loadSavedNotifications() {
+//        Set<String> savedNotifications = prefs.getStringSet(NOTIFICATIONS_KEY, new HashSet<>());
+//        for (String notification : savedNotifications) {
+//            addNotificationToScreen(notification);
+//        }
+//    }
+//
+//    private void saveNotificationText(String notificationText) {
+//        Set<String> currentNotifications = new HashSet<>(prefs.getStringSet(NOTIFICATIONS_KEY, new HashSet<>()));
+//        currentNotifications.add(notificationText);
+//        prefs.putStringSet(NOTIFICATIONS_KEY, currentNotifications);
+//    }
+//
+//    private void showToast(String message) {
+//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        handler.removeCallbacks(runnable);
+//    }
+//}

@@ -7,12 +7,14 @@
     android:padding="16dp">
 
     <!-- Логотип -->
-    <ImageView
-        android:id="@+id/myImageView"
-        android:layout_width="135dp"
-        android:layout_height="60dp"
-        android:layout_marginLeft="5dp"
-        android:src="@drawable/logo" />
+    <ImageButton
+        android:id="@+id/notificationButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/notification"
+        android:contentDescription="Уведомления" />
 
     <!-- Кнопка выхода -->
     <Button
@@ -37,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/myImageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="70dp"
         android:text="Добавить категорию"
         android:textColor="#FFFFFF"
         app:backgroundTint="#2260FF"

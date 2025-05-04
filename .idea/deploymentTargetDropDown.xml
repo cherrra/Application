@@ -2,6 +2,18 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AccountActivityTest">
+        <State />
+      </entry>
+      <entry key="HomeActivityTest">
+        <State />
+      </entry>
+      <entry key="MainActivityTest">
+        <State />
+      </entry>
+      <entry key="RegisterActivityTest">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>

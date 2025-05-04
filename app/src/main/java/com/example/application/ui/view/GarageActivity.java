@@ -279,7 +279,7 @@ public class GarageActivity extends AppCompatActivity {
 
     private void loadCarImage(String imageUrl, ImageView imageView) {
         try {
-            String baseUrl = "http://10.0.2.2:5000/";
+            String baseUrl = "https://automser.store/";
             String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
             String fullImageUrl = baseUrl + cleanPath;
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Application</string>
+    <string name="app_name">Automanservice</string>
     <string name="select_car">Выберите машину</string>
     <string name="home">Главная</string>
     <string name="garage">Гараж</string>

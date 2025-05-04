@@ -9,6 +9,7 @@ import androidx.security.crypto.MasterKeys;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Set;
 
 //public class EncryptedSharedPrefs {
 //    private static final String FILE_NAME = "encrypted_prefs";
@@ -72,4 +73,22 @@ public class EncryptedSharedPrefs {
                 .apply();
         Log.d("EncryptedSharedPrefs", "Токены очищены");
     }
+
+    public String getString(String key, String defaultValue) {
+        return sharedPreferences.getString(key, defaultValue);
+    }
+
+    public void putString(String key, String value) {
+        sharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public void putStringSet(String key, Set<String> values) {
+        sharedPreferences.edit().putStringSet(key, values).apply();
+    }
+
+    public Set<String> getStringSet(String key, Set<String> defaultValues) {
+        return sharedPreferences.getStringSet(key, defaultValues);
+    }
+
+
 }

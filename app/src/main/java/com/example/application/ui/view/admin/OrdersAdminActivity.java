@@ -83,7 +83,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
     private void fetchAllOrders(String token) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/orders/admin")
+                .url("https://automser.store/api/orders/admin")
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
 

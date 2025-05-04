@@ -4,23 +4,38 @@
     android:padding="16dp"
     android:background="#FFFFFF">
 
+    <!-- Кнопка уведомлений -->
+    <ImageButton
+        android:id="@+id/notificationButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/notification"
+        android:contentDescription="Уведомления" />
+
+    <!-- Логотип -->
+    <ImageView
+        android:id="@+id/myImageView"
+        android:layout_width="135dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/logo" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/linearLayout">
+        android:layout_below="@id/myImageView"
+        android:layout_above="@id/linearLayout"
+        android:layout_marginTop="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!-- Логотип -->
-            <ImageView
-                android:id="@+id/myImageView"
-                android:layout_width="135dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="5dp"
-                android:src="@drawable/logo" />
 
             <!-- Фото -->
             <ImageView
@@ -65,7 +80,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp" />
 
-            <!-- WebView (увеличена высота) -->
+            <!-- WebView -->
             <WebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
@@ -139,3 +154,4 @@
             android:textSize="16sp" />
     </LinearLayout>
 </RelativeLayout>
+

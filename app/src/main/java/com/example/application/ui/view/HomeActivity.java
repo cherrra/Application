@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +43,13 @@ public class HomeActivity extends AppCompatActivity {
 
         String url = "https://yandex.ru/maps/?ll=37.383833%2C55.725686&z=15&pt=37.383833,55.725686,pm2rdl&l=map";
         webView.loadUrl(url);
+
+        ImageButton notificationButton = findViewById(R.id.notificationButton);
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
+
 
         TextView homeButton = findViewById(R.id.homeButton);
         homeButton.setOnClickListener(v -> {
