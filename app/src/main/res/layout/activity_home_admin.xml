@@ -13,7 +13,7 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:background="@android:color/transparent"
-        android:src="@drawable/notification"
+        android:src="@drawable/ic_notification"
         android:contentDescription="Уведомления" />
 
     <!-- Кнопка выхода -->
