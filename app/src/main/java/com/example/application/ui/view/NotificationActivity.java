@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,7 +56,21 @@ public class NotificationActivity extends AppCompatActivity {
         ImageView backArrow = findViewById(R.id.backArrow);
 
         backArrow.setOnClickListener(v -> {
-            finish(); // Закрываем текущую активность и возвращаемся назад
+            finish();
+        });
+
+        backArrow.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    v.performClick();
+                    break;
+            }
+            return true;
         });
 
         try {
