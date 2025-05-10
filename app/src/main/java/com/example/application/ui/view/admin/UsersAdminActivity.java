@@ -393,7 +393,7 @@ public class UsersAdminActivity extends AppCompatActivity {
     private void setupRoundButton(Button button, String text) {
         GradientDrawable buttonShape = new GradientDrawable();
         buttonShape.setShape(GradientDrawable.RECTANGLE);
-        buttonShape.setCornerRadius(32f); // меньше скругление
+        buttonShape.setCornerRadius(32f);
         buttonShape.setColor(Color.parseColor("#2260FF"));
 
         button.setText(text);
@@ -402,7 +402,7 @@ public class UsersAdminActivity extends AppCompatActivity {
         button.setAllCaps(false);
         button.setGravity(Gravity.CENTER);
 
-        // Уменьшенные размеры кнопки
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 dpToPx(80),  // ширина
                 dpToPx(26)   // высота
@@ -410,7 +410,7 @@ public class UsersAdminActivity extends AppCompatActivity {
         params.setMargins(0, 0, 8, 0);
         button.setLayoutParams(params);
 
-        button.setTextSize(12f); // уменьшенный текст
+        button.setTextSize(12f);
         button.setPadding(0, 0, 0, 0);
     }
 

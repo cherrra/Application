@@ -5,13 +5,11 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +35,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class HomeAdminActivity extends AppCompatActivity {
-    private GridLayout categoryContainer;
+    private LinearLayout categoryContainer;
     private CategoryViewModel categoryViewModel;
     private EncryptedSharedPrefs encryptedSharedPrefs;
 
@@ -66,17 +64,15 @@ public class HomeAdminActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button addCategoryButton = findViewById(R.id.addCategoryButton);
+        addCategoryButton.setOnClickListener(v -> showAddCategoryDialog());
+
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
             String token = encryptedSharedPrefs.getAccessToken();
             Log.d("HomeAdminActivity", "Полученный токен: " + token);
-//
-//            if (token != null) {
-//                observeUserData(token, usernameTextView, emailTextView);
-//            } else {
-//                Log.e("AccountActivity", "Токен отсутствует");
-//            }
+
         } catch (Exception e) {
             Log.e("HomeAdminActivity", "Ошибка доступа к токену: " + e.getMessage());
         }
@@ -119,143 +115,191 @@ public class HomeAdminActivity extends AppCompatActivity {
         }
     }
 
-    private void addCategoryCard(Category category) {
-        // Убедимся, что контейнер вертикальный
-        categoryContainer.setOrientation(GridLayout.VERTICAL);
+    private void showAddCategoryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Добавить новую категорию");
 
-        // Основной контейнер карточки
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(16, 16, 16, 16);
+
+        EditText nameInput = new EditText(this);
+        nameInput.setHint("Введите название категории");
+        layout.addView(nameInput);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Добавить", (dialog, which) -> {
+            String categoryName = nameInput.getText().toString();
+            if (!categoryName.isEmpty()) {
+                createCategory(categoryName);
+            } else {
+                Toast.makeText(this, "Название не может быть пустым", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void createCategory(String categoryName) {
+        try {
+            EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
+            String token = encryptedSharedPrefs.getAccessToken();
+
+            if (token != null) {
+                categoryViewModel.createCategory(categoryName, token, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        runOnUiThread(() ->
+                                Toast.makeText(HomeAdminActivity.this,
+                                        "Ошибка создания категории",
+                                        Toast.LENGTH_SHORT).show());
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        runOnUiThread(() -> {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(HomeAdminActivity.this,
+                                        "Категория создана",
+                                        Toast.LENGTH_SHORT).show();
+                                // Обновляем список категорий
+                                observeCategories(token);
+                            } else {
+                                Toast.makeText(HomeAdminActivity.this,
+                                        "Ошибка создания категории",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            runOnUiThread(() ->
+                    Toast.makeText(this,
+                            "Ошибка получения токена",
+                            Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private void addCategoryCard(Category category) {
+        // Основной контейнер карточки (горизонтальный)
         LinearLayout card = new LinearLayout(this);
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(16, 16, 16, 16);
+        card.setOrientation(LinearLayout.HORIZONTAL);
+        card.setPadding(16, 16, 16, 16); // Уменьшенные отступы
+        card.setGravity(Gravity.CENTER_VERTICAL);
 
         // Стиль карточки
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
-        cardShape.setCornerRadius(20f);
+        cardShape.setCornerRadius(24f);
         cardShape.setColor(Color.parseColor("#FFFFFF"));
-        cardShape.setStroke(4, Color.parseColor("#E3F2FD"));
+        cardShape.setStroke(2, Color.parseColor("#E3F2FD")); // Более тонкая обводка
         card.setBackground(cardShape);
 
-        // Параметры карточки - важно WRAP_CONTENT для высоты
+        // Параметры карточки
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        cardParams.setMargins(16, 8, 16, 8);
+        cardParams.setMargins(16, 16, 16, 16);
+        card.setMinimumHeight(dpToPx(70));
         card.setLayoutParams(cardParams);
 
-        // Иконка категории
-        ImageView iconView = new ImageView(this);
-        iconView.setImageResource(R.drawable.ic_category);
-        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
-                100, 100
-        );
-        iconParams.gravity = Gravity.CENTER;
-        iconParams.setMargins(0, 0, 0, 12);
-        iconView.setLayoutParams(iconParams);
-        card.addView(iconView);
+        // Контейнер для текста и кнопок (вертикальный)
+        LinearLayout contentContainer = new LinearLayout(this);
+        contentContainer.setOrientation(LinearLayout.VERTICAL);
+        contentContainer.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         // Название категории
         TextView nameView = new TextView(this);
         nameView.setText(category.getCategoryName());
-        nameView.setTextSize(20f);
+        nameView.setTextSize(16f);
         nameView.setTextColor(Color.parseColor("#2260FF"));
-        nameView.setGravity(Gravity.CENTER);
         nameView.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+        nameView.setMaxLines(1);
+        nameView.setEllipsize(TextUtils.TruncateAt.END);
+        nameView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        textParams.setMargins(0, 0, 0, 16);
-        nameView.setLayoutParams(textParams);
-        card.addView(nameView);
+        ));
+        contentContainer.addView(nameView);
 
         // Контейнер для кнопок
         LinearLayout buttonsContainer = new LinearLayout(this);
         buttonsContainer.setOrientation(LinearLayout.HORIZONTAL);
-        buttonsContainer.setGravity(Gravity.CENTER);
-        buttonsContainer.setPadding(8, 8, 8, 8);
-
-        GradientDrawable buttonsBg = new GradientDrawable();
-        buttonsBg.setShape(GradientDrawable.RECTANGLE);
-        buttonsBg.setCornerRadius(20f);
-        buttonsBg.setColor(Color.parseColor("#F5F5F5"));
-        buttonsContainer.setBackground(buttonsBg);
-
-        LinearLayout.LayoutParams buttonsParams = new LinearLayout.LayoutParams(
+        buttonsContainer.setGravity(Gravity.END);
+        buttonsContainer.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        buttonsContainer.setLayoutParams(buttonsParams);
+                LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        // Кнопка редактирования
+        // Кнопка редактирования (компактная)
         Button editButton = new Button(this);
-        editButton.setText("Изменить");
-        editButton.setTextSize(16f);
-        editButton.setBackground(createRoundedButtonBackground("#2260FF"));
-        editButton.setTextColor(Color.WHITE);
-        editButton.setPadding(24, 8, 24, 8);
-        LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        editParams.setMargins(4, 0, 2, 0);
-        editButton.setLayoutParams(editParams);
+        setupCompactButton(editButton, "Изменить");
+        editButton.setOnClickListener(v -> showEditCategoryDialog(category.getIdCategory(), category.getCategoryName()));
         buttonsContainer.addView(editButton);
 
-        // Кнопка удаления
+        // Кнопка удаления (компактная)
         Button deleteButton = new Button(this);
-        deleteButton.setText("Удалить");
-        deleteButton.setTextSize(16f);
-        deleteButton.setBackground(createRoundedButtonBackground("#2260FF"));
-        deleteButton.setTextColor(Color.WHITE);
-        deleteButton.setPadding(24, 8, 24, 8);
-        LinearLayout.LayoutParams deleteParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        deleteParams.setMargins(2, 0, 4, 0);
-        deleteButton.setLayoutParams(deleteParams);
+        setupCompactButton(deleteButton, "Удалить");
+        deleteButton.setBackground(createRoundedButtonBackground("#FF5252"));
+        deleteButton.setOnClickListener(v -> confirmAndDeleteCategory(category.getIdCategory(), card));
         buttonsContainer.addView(deleteButton);
 
-        card.addView(buttonsContainer);
+        contentContainer.addView(buttonsContainer);
+        card.addView(contentContainer);
 
-        // Обработчики событий
-        editButton.setOnClickListener(v -> showEditCategoryDialog(category.getIdCategory(), category.getCategoryName()));
-        deleteButton.setOnClickListener(v -> confirmAndDeleteCategory(category.getIdCategory(), card));
-
-        // Анимация
-        card.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    v.setAlpha(0.9f);
-                    v.animate().scaleX(0.98f).scaleY(0.98f).setDuration(100).start();
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    v.setAlpha(1f);
-                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
-                    break;
-            }
-            return false;
-        });
-
+        // Обработчик клика по карточке
         card.setOnClickListener(v -> {
             Intent intent = new Intent(HomeAdminActivity.this, ServicesAdminActivity.class);
             intent.putExtra("id_category", category.getIdCategory());
             startActivity(intent);
         });
 
-        // Очищаем контейнер перед добавлением новых карточек (если нужно)
-        // categoryContainer.removeAllViews();
-
         categoryContainer.addView(card);
     }
+
+    // Метод для настройки компактных кнопок
+    private void setupCompactButton(Button button, String text) {
+        GradientDrawable buttonShape = new GradientDrawable();
+        buttonShape.setShape(GradientDrawable.RECTANGLE);
+        buttonShape.setCornerRadius(32f);
+        buttonShape.setColor(Color.parseColor("#2260FF"));
+
+        button.setText(text);
+        button.setTextColor(Color.WHITE);
+        button.setBackground(buttonShape);
+        button.setAllCaps(false);
+        button.setGravity(Gravity.CENTER);
+
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                dpToPx(80),  // ширина
+                dpToPx(26)   // высота
+        );
+        params.setMargins(4, 0, 4, 0);
+        button.setLayoutParams(params);
+
+        button.setTextSize(12f);
+        button.setPadding(0, 0, 0, 0);
+    }
+
+    // Метод для конвертации dp в px
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
+    }
+
+    // Метод для создания фона кнопок с закругленными углами
     private GradientDrawable createRoundedButtonBackground(String color) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(24f); // Меньший радиус для кнопок
+        shape.setCornerRadius(32f);
         shape.setColor(Color.parseColor(color));
-        shape.setStroke(1, Color.parseColor("#BDBDBD")); // Тоньше обводка
         return shape;
     }
-
 
     private void showEditCategoryDialog(int categoryId, String currentName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

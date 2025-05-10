@@ -1,20 +1,57 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Назад"/>
+
+        <TextView
+            android:id="@+id/servicesTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/backArrow"
+            android:layout_marginStart="16dp"
+            android:text="Управление услугами"
+            android:textColor="#2260FF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/addServiceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/headerContainer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="#2260FF"
         android:text="Добавить услугу"
-        android:layout_margin="16dp" />
+        android:textColor="#FFFFFF" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/addServiceButton"
+        android:fillViewport="true">
 
         <GridLayout
             android:id="@+id/servicesContainer"
@@ -24,4 +61,4 @@
             android:padding="16dp"
             android:useDefaultMargins="true" />
     </ScrollView>
-</LinearLayout>
+</RelativeLayout>
