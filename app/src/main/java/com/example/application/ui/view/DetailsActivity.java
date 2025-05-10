@@ -144,7 +144,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         try {
-            String baseUrl = "http://10.0.2.2:5000/";
+            String baseUrl = "https://automser.store/";
             String cleanPath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
             String fullImageUrl = baseUrl + cleanPath;
             Log.d("ImageLoad", "Final image URL: " + fullImageUrl);

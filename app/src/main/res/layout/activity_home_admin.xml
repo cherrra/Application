@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:padding="16dp">
+    android:background="#FFFFFF">
 
     <!-- Логотип -->
     <ImageButton
@@ -12,6 +11,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_notification"
         android:contentDescription="Уведомления" />
@@ -23,27 +23,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Выйти"
         android:textColor="#FFFFFF"
         app:backgroundTint="#2260FF"
         app:cornerRadius="24dp" />
 
-    <!-- Заголовок "Категории услуг" (перемещен выше) -->
+    <!-- Заголовок "Категории услуг" -->
     <TextView
         android:id="@+id/categoriesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="80dp"
         android:text="Категории услуг"
-        android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textColor="#2260FF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-    <!-- Кнопка добавления категории (теперь ниже заголовка) -->
+    <!-- Кнопка добавления категории -->
     <Button
         android:id="@+id/addCategoryButton"
         android:layout_width="wrap_content"
@@ -60,9 +59,10 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/linearLayout"
+        android:layout_above="@id/bottomNavigation"
         android:layout_below="@id/addCategoryButton"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:padding="16dp">
 
         <LinearLayout
             android:id="@+id/categoryContainer"
@@ -74,51 +74,57 @@
 
     <!-- Нижнее меню -->
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:gravity="center"
+        android:background="@drawable/bottom_nav_background"
+        android:elevation="8dp"
         android:orientation="horizontal"
-        android:paddingBottom="16dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
+        <!-- Главная -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:padding="8dp"
             android:text="Главная"
-            android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textColor="#2260FF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
+        <!-- Пользователи -->
         <TextView
             android:id="@+id/usersButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:padding="8dp"
             android:text="Пользователи"
-            android:textColor="#000000"
+            android:textColor="#8A8A8A"
             android:textSize="16sp" />
 
+        <!-- Заказы -->
         <TextView
             android:id="@+id/orderButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:padding="8dp"
             android:text="Заказы"
-            android:textColor="#000000"
+            android:textColor="#8A8A8A"
             android:textSize="16sp" />
     </LinearLayout>
 </RelativeLayout>
