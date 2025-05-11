@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,12 @@ public class HomeAdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_admin);
 
         categoryContainer = findViewById(R.id.categoryContainer);
+
+        ImageButton notificationButton = findViewById(R.id.notificationButton);
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeAdminActivity.this, NotificationAdminActivity.class);
+            startActivity(intent);
+        });
 
         TextView homeButton = findViewById(R.id.homeButton);
         homeButton.setOnClickListener(v -> {
