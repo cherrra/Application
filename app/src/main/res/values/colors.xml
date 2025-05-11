@@ -10,4 +10,8 @@
     <color name="light_steel_blue_t">#ECF1FF</color>
     <color name="grey">#6C7385</color>
     <color name="grey_blue">#A9BCFE</color>
+
+    <color name="blue_light">#80CAD6FF</color>
+    <color name="blue_dark">#1A4FCB</color>
+
 </resources>
