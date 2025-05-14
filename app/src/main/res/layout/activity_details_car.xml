@@ -8,40 +8,34 @@
     android:background="@color/white"
     android:fitsSystemWindows="true">
 
-    <!-- App Bar -->
-
-    <!-- Content -->
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
+        android:id="@+id/headerContainer"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        android:elevation="0dp"
-        app:elevation="0dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp">
 
-        <!-- Стрелка "назад" слева -->
         <ImageView
             android:id="@+id/backArrow"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start|center_vertical"
             android:layout_marginStart="16dp"
-            android:contentDescription="Назад"
+            android:layout_centerVertical="true"
             android:src="@drawable/ic_arrow_back"
-            android:tint="@color/blue" />
+            android:contentDescription="Назад"/>
 
-        <!-- Заголовок рядом со стрелкой -->
+
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/detailsTitle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/backArrow"
+            android:layout_marginStart="16dp"
             android:text="Детали автомобиля"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@color/blue" />
-
-    </com.google.android.material.appbar.MaterialToolbar>
+            android:textColor="#2260FF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
 
     <ScrollView
