@@ -23,7 +23,7 @@
         android:layout_below="@id/userTitle"
         android:layout_margin="16dp"
         android:background="@drawable/search_view_background"
-        android:hint="Поиск по имени"
+        android:hint="Введите имя пользователя"
         android:inputType="text"
         android:padding="16dp"
         android:textColor="#000000"

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -123,167 +124,79 @@ public class UsersAdminActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(UsersAdminActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(UsersAdminActivity.this, "Ошибка сети: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseBody = response.body().string();
-                Log.d("API_RESPONSE", "Ответ сервера: " + responseBody);
+                try {
+                    String responseBody = response.body() != null ? response.body().string() : "{}";
+                    Log.d("API_RESPONSE", "Полный ответ: " + responseBody);
 
-                if (response.isSuccessful()) {
-                    try {
-                        allUsers = new JSONArray(responseBody);
-                        runOnUiThread(() -> {
-                            userContainer.removeAllViews();
-                            for (int i = 0; i < allUsers.length(); i++) {
-                                try {
-                                    addUserCard(allUsers.getJSONObject(i));
-                                } catch (JSONException e) {
-                                    Log.e("PARSE_ERROR", "Ошибка парсинга пользователя", e);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONArray usersArray = new JSONArray(responseBody);
+                            allUsers = usersArray;
+
+                            runOnUiThread(() -> {
+                                userContainer.removeAllViews();
+
+                                if (usersArray.length() == 0) {
+                                    TextView emptyView = new TextView(UsersAdminActivity.this);
+                                    emptyView.setText("Нет пользователей");
+                                    emptyView.setGravity(Gravity.CENTER);
+                                    userContainer.addView(emptyView);
+                                    return;
                                 }
-                            }
-                        });
-                    } catch (JSONException e) {
-                        Log.e("JSON_ERROR", "Ошибка JSON", e);
+
+                                for (int i = 0; i < usersArray.length(); i++) {
+                                    try {
+                                        JSONObject userJson = usersArray.getJSONObject(i);
+                                        Log.d("USER_JSON", "User data: " + userJson.toString());
+                                        addUserCard(userJson);
+                                    } catch (JSONException e) {
+                                        Log.e("PARSE_ERROR", "Ошибка парсинга пользователя", e);
+                                    }
+                                }
+                            });
+                        } catch (JSONException e) {
+                            Log.e("JSON_ERROR", "Ошибка формата данных", e);
+                            runOnUiThread(() ->
+                                    Toast.makeText(UsersAdminActivity.this, "Ошибка формата данных", Toast.LENGTH_LONG).show()
+                            );
+                        }
+                    } else {
                         runOnUiThread(() ->
-                                Toast.makeText(UsersAdminActivity.this, "Ошибка обработки данных", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(UsersAdminActivity.this,
+                                        "Ошибка сервера: " + response.code(),
+                                        Toast.LENGTH_LONG).show()
                         );
                     }
-                } else {
+                } catch (Exception e) {
+                    Log.e("FETCH_ERROR", "Неожиданная ошибка", e);
                     runOnUiThread(() ->
-                            Toast.makeText(UsersAdminActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(UsersAdminActivity.this, "Неожиданная ошибка", Toast.LENGTH_LONG).show()
                     );
+                } finally {
+                    if (response != null && response.body() != null) {
+                        response.body().close();
+                    }
                 }
             }
         });
     }
 
-//    private void addUserCard(JSONObject userObject) throws JSONException {
-//        int userId = userObject.getInt("id");
-//        String username = userObject.getString("username");
-//        String email = userObject.getString("email");
-//        String imageUrl = userObject.optString("link_img", null);
-//
-//        // Получаем список автомобилей
-//        JSONArray carsArray = userObject.optJSONArray("cars");
-//        String carsInfo = "Нет автомобилей";
-//
-//        if (carsArray != null && carsArray.length() > 0) {
-//            StringBuilder carsBuilder = new StringBuilder();
-//            for (int i = 0; i < carsArray.length(); i++) {
-//                JSONObject car = carsArray.getJSONObject(i);
-//                JSONObject model = car.getJSONObject("model");
-//                JSONObject brand = model.getJSONObject("brand");
-//
-//                if (i > 0) carsBuilder.append(", ");
-//                carsBuilder.append(brand.getString("brand_name"))
-//                        .append(" ")
-//                        .append(model.getString("model_name"));
-//            }
-//            carsInfo = carsBuilder.toString();
-//        }
-//
-//        // Создаем карточку
-//        RelativeLayout card = new RelativeLayout(this);
-//        card.setPadding(16, 16, 16, 16);
-//
-//        // Стиль карточки
-//        GradientDrawable cardShape = new GradientDrawable();
-//        cardShape.setShape(GradientDrawable.RECTANGLE);
-//        cardShape.setCornerRadius(24f);
-//        cardShape.setColor(Color.parseColor("#FFFFFF"));
-//        cardShape.setStroke(4, Color.parseColor("#E3F2FD"));
-//        card.setBackground(cardShape);
-//
-//        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT
-//        );
-//        cardParams.setMargins(8, 8, 8, 12);
-//        card.setLayoutParams(cardParams);
-//
-//        // Аватар (слева)
-//        ImageView avatarView = new ImageView(this);
-//        avatarView.setId(View.generateViewId());
-//        RelativeLayout.LayoutParams avatarParams = new RelativeLayout.LayoutParams(
-//                dpToPx(48),
-//                dpToPx(48)
-//        );
-//        avatarParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-//        avatarParams.addRule(RelativeLayout.CENTER_VERTICAL);
-//        avatarView.setLayoutParams(avatarParams);
-//
-//        loadUserAvatar(avatarView, imageUrl);
-//        card.addView(avatarView);
-//
-//        // Контейнер информации (справа от аватара)
-//        LinearLayout infoLayout = new LinearLayout(this);
-//        infoLayout.setOrientation(LinearLayout.VERTICAL);
-//        infoLayout.setId(View.generateViewId());
-//        RelativeLayout.LayoutParams infoParams = new RelativeLayout.LayoutParams(
-//                RelativeLayout.LayoutParams.MATCH_PARENT,
-//                RelativeLayout.LayoutParams.WRAP_CONTENT
-//        );
-//        infoParams.addRule(RelativeLayout.END_OF, avatarView.getId());
-//        infoParams.addRule(RelativeLayout.CENTER_VERTICAL);
-//        infoParams.setMargins(16, 0, 0, 0);
-//        infoLayout.setLayoutParams(infoParams);
-//
-//        // Имя пользователя
-//        TextView usernameView = new TextView(this);
-//        usernameView.setText(username);
-//        usernameView.setTextSize(16f);
-//        usernameView.setTextColor(Color.parseColor("#2260FF"));
-//        usernameView.setTypeface(Typeface.DEFAULT_BOLD);
-//        infoLayout.addView(usernameView);
-//
-//        // Email
-//        TextView emailView = new TextView(this);
-//        emailView.setText(email);
-//        emailView.setTextSize(14f);
-//        emailView.setTextColor(Color.parseColor("#555555"));
-//        infoLayout.addView(emailView);
-//
-//        // Машины
-//        TextView carsView = new TextView(this);
-//        carsView.setText("Автомобили: " + carsInfo);
-//        carsView.setTextSize(12f);
-//        carsView.setTextColor(Color.parseColor("#777777"));
-//        infoLayout.addView(carsView);
-//
-//        // Кнопка удаления
-//        Button deleteButton = new Button(this);
-//        setupRoundButton(deleteButton, "Удалить");
-//        deleteButton.setOnClickListener(v -> deleteUser(userId, card));
-//        setupButtonAnimation(deleteButton);
-//
-//        // Контейнер для кнопки (выравнивание по правому краю)
-//        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
-//                RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                RelativeLayout.LayoutParams.WRAP_CONTENT
-//        );
-//        buttonParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-//        buttonParams.addRule(RelativeLayout.CENTER_VERTICAL);
-//        deleteButton.setLayoutParams(buttonParams);
-//
-//        card.addView(deleteButton);
-//        card.addView(infoLayout);
-//        userContainer.addView(card);
-//    }
-
-
     private void addUserCard(JSONObject userObject) throws JSONException {
+        // Основные данные
         int userId = userObject.getInt("id");
         String username = userObject.getString("username");
         String email = userObject.getString("email");
         String imageUrl = userObject.optString("link_img", null);
 
-        // Получаем список автомобилей
+        // Автомобили
         JSONArray carsArray = userObject.optJSONArray("cars");
         String carsInfo = "Нет автомобилей";
-
         if (carsArray != null && carsArray.length() > 0) {
             StringBuilder carsBuilder = new StringBuilder();
             for (int i = 0; i < carsArray.length(); i++) {
@@ -299,11 +212,10 @@ public class UsersAdminActivity extends AppCompatActivity {
             carsInfo = carsBuilder.toString();
         }
 
-        // Создаем карточку
+        // Создание карточки
         RelativeLayout card = new RelativeLayout(this);
-        card.setPadding(24, 24, 24, 24); // Увеличен паддинг
+        card.setPadding(24, 24, 24, 24);
 
-        // Стиль карточки
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
         cardShape.setCornerRadius(24f);
@@ -315,7 +227,7 @@ public class UsersAdminActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        cardParams.setMargins(8, 8, 8, 16); // Чуть больше нижний отступ
+        cardParams.setMargins(8, 8, 8, 16);
         card.setLayoutParams(cardParams);
 
         // Аватар
@@ -331,44 +243,22 @@ public class UsersAdminActivity extends AppCompatActivity {
         loadUserAvatar(avatarView, imageUrl);
         card.addView(avatarView);
 
-        // Контейнер информации
-        LinearLayout infoLayout = new LinearLayout(this);
-        infoLayout.setOrientation(LinearLayout.VERTICAL);
-        infoLayout.setId(View.generateViewId());
-        RelativeLayout.LayoutParams infoParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-        infoParams.addRule(RelativeLayout.END_OF, avatarView.getId());
-        infoParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        infoParams.setMargins(16, 0, 0, 0);
-        infoLayout.setLayoutParams(infoParams);
-
-        // Имя
+        // Имя пользователя
         TextView usernameView = new TextView(this);
         usernameView.setText(username);
         usernameView.setTextSize(16f);
         usernameView.setTextColor(Color.parseColor("#2260FF"));
         usernameView.setTypeface(Typeface.DEFAULT_BOLD);
-        infoLayout.addView(usernameView);
 
-        // Email
-        TextView emailView = new TextView(this);
-        emailView.setText(email);
-        emailView.setTextSize(14f);
-        emailView.setTextColor(Color.parseColor("#555555"));
-        emailView.setPadding(0, 4, 0, 4); // Добавим вертикальный отступ
-        infoLayout.addView(emailView);
-
-        // Автомобили
-        TextView carsView = new TextView(this);
-        carsView.setText("Автомобили: " + carsInfo);
-        carsView.setTextSize(12f);
-        carsView.setTextColor(Color.parseColor("#777777"));
-        carsView.setMaxLines(2); // максимум 2 строки
-        carsView.setEllipsize(TextUtils.TruncateAt.END); // троеточие в конце
-        carsView.setPadding(0, 4, 0, 4);
-        infoLayout.addView(carsView);
+        RelativeLayout.LayoutParams usernameParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        usernameParams.addRule(RelativeLayout.END_OF, avatarView.getId());
+        usernameParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        usernameParams.setMargins(16, 0, 0, 0);
+        usernameView.setLayoutParams(usernameParams);
+        card.addView(usernameView);
 
         // Кнопка удаления
         Button deleteButton = new Button(this);
@@ -383,12 +273,48 @@ public class UsersAdminActivity extends AppCompatActivity {
         buttonParams.addRule(RelativeLayout.ALIGN_PARENT_END);
         buttonParams.addRule(RelativeLayout.CENTER_VERTICAL);
         deleteButton.setLayoutParams(buttonParams);
-
         card.addView(deleteButton);
-        card.addView(infoLayout);
-        userContainer.addView(card);
-    }
 
+        // Выпадающее меню
+        LinearLayout dropdownMenu = new LinearLayout(this);
+        dropdownMenu.setOrientation(LinearLayout.VERTICAL);
+        dropdownMenu.setVisibility(View.GONE);
+        dropdownMenu.setPadding(dpToPx(16), dpToPx(8), 0, dpToPx(8));
+
+        // Email
+        TextView emailView = new TextView(this);
+        emailView.setText("Email: " + email);
+        emailView.setTextSize(14f);
+        emailView.setTextColor(Color.parseColor("#555555"));
+        dropdownMenu.addView(emailView);
+
+       // Автомобили
+        TextView carsView = new TextView(this);
+        carsView.setText("Автомобили: " + carsInfo);
+        carsView.setTextSize(12f);
+        carsView.setTextColor(Color.parseColor("#777777"));
+        carsView.setMaxLines(2);
+        carsView.setEllipsize(TextUtils.TruncateAt.END);
+        carsView.setPadding(0, dpToPx(4), 0, 0);
+        dropdownMenu.addView(carsView);
+
+        // Контейнер для карточки и меню
+        LinearLayout cardContainer = new LinearLayout(this);
+        cardContainer.setOrientation(LinearLayout.VERTICAL);
+        cardContainer.addView(card);
+        cardContainer.addView(dropdownMenu);
+
+        // Обработчик клика
+        card.setOnClickListener(v -> {
+            if (dropdownMenu.getVisibility() == View.VISIBLE) {
+                dropdownMenu.setVisibility(View.GONE);
+            } else {
+                dropdownMenu.setVisibility(View.VISIBLE);
+            }
+        });
+
+        userContainer.addView(cardContainer);
+    }
 
     private void setupRoundButton(Button button, String text) {
         GradientDrawable buttonShape = new GradientDrawable();
@@ -402,10 +328,9 @@ public class UsersAdminActivity extends AppCompatActivity {
         button.setAllCaps(false);
         button.setGravity(Gravity.CENTER);
 
-
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dpToPx(80),  // ширина
-                dpToPx(26)   // высота
+                dpToPx(80),
+                dpToPx(26)
         );
         params.setMargins(0, 0, 8, 0);
         button.setLayoutParams(params);
@@ -413,7 +338,6 @@ public class UsersAdminActivity extends AppCompatActivity {
         button.setTextSize(12f);
         button.setPadding(0, 0, 0, 0);
     }
-
 
     private void loadUserAvatar(ImageView imageView, String imageUrl) {
         try {
@@ -460,7 +384,10 @@ public class UsersAdminActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     runOnUiThread(() -> {
                         if (response.isSuccessful()) {
-                            userContainer.removeView(card);
+                            View parent = (View) card.getParent();
+                            if (parent != null && parent.getParent() instanceof ViewGroup) {
+                                ((ViewGroup) parent.getParent()).removeView(parent);
+                            }
                             Toast.makeText(UsersAdminActivity.this, "Пользователь удален", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(UsersAdminActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();

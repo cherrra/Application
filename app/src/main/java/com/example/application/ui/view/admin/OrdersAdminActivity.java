@@ -5,11 +5,14 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,7 +44,9 @@ public class OrdersAdminActivity extends AppCompatActivity {
     private LinearLayout adminOrderContainer;
     private EncryptedSharedPrefs encryptedSharedPrefs;
     private JSONArray ordersArray;
+    private JSONArray allOrdersArray; // Для хранения всех заказов
     private boolean showFinishedOrders = false;
+    private EditText searchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +54,16 @@ public class OrdersAdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders_admin);
 
         adminOrderContainer = findViewById(R.id.adminOrderContainer);
+        searchEditText = findViewById(R.id.searchEditText);
 
         Button finishedOrdersButton = findViewById(R.id.finishedOrdersButton);
         finishedOrdersButton.setOnClickListener(v -> {
             showFinishedOrders = !showFinishedOrders;
             finishedOrdersButton.setText(showFinishedOrders ? "Все заказы" : "Завершенные заказы");
-            displayOrders();
+            filterOrders(searchEditText.getText().toString());
         });
+
+        setupSearchView();
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
@@ -67,17 +77,59 @@ public class OrdersAdminActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         setupNavigation();
     }
 
-    private void setupNavigation() {
-        findViewById(R.id.homeButton).setOnClickListener(v ->
-                startActivity(new Intent(this, HomeAdminActivity.class)));
-        findViewById(R.id.usersButton).setOnClickListener(v ->
-                startActivity(new Intent(this, UsersAdminActivity.class)));
-        findViewById(R.id.orderButton).setOnClickListener(v ->
-                startActivity(new Intent(this, OrdersAdminActivity.class)));
+    private void setupSearchView() {
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            private Timer timer = new Timer();
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                timer.cancel();
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(() -> filterOrders(s.toString()));
+                    }
+                }, 300);
+            }
+        });
+    }
+
+    private void filterOrders(String query) {
+        adminOrderContainer.removeAllViews();
+
+        if (ordersArray == null) return;
+
+        try {
+            for (int i = 0; i < ordersArray.length(); i++) {
+                JSONObject orderObject = ordersArray.getJSONObject(i);
+                String status = orderObject.getString("status");
+
+                // Проверяем фильтр по статусу
+                boolean statusMatch = (showFinishedOrders && "finished".equalsIgnoreCase(status)) ||
+                        (!showFinishedOrders && !"finished".equalsIgnoreCase(status));
+
+                if (statusMatch) {
+                    // Если поисковый запрос пустой или совпадает с номером заказа или именем пользователя
+                    if (query.isEmpty() ||
+                            String.valueOf(orderObject.getInt("id_order")).contains(query) ||
+                            orderObject.getString("user_name").toLowerCase().contains(query.toLowerCase())) {
+                        addOrderCard(orderObject);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("OrdersAdminActivity", "Ошибка фильтрации заказов", e);
+        }
     }
 
     private void fetchAllOrders(String token) {
@@ -101,7 +153,8 @@ public class OrdersAdminActivity extends AppCompatActivity {
                         String responseBody = response.body().string();
                         Log.d("OrdersAdminResponse", "Ответ сервера: " + responseBody);
                         ordersArray = new JSONArray(responseBody);
-                        runOnUiThread(() -> displayOrders());
+                        allOrdersArray = new JSONArray(responseBody); // Сохраняем все заказы
+                        runOnUiThread(() -> filterOrders(searchEditText.getText().toString()));
                     } catch (Exception e) {
                         Log.e("OrdersAdminActivity", "Ошибка обработки ответа", e);
                     }
@@ -118,6 +171,15 @@ public class OrdersAdminActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setupNavigation() {
+        findViewById(R.id.homeButton).setOnClickListener(v ->
+                startActivity(new Intent(this, HomeAdminActivity.class)));
+        findViewById(R.id.usersButton).setOnClickListener(v ->
+                startActivity(new Intent(this, UsersAdminActivity.class)));
+        findViewById(R.id.orderButton).setOnClickListener(v ->
+                startActivity(new Intent(this, OrdersAdminActivity.class)));
     }
 
     private void displayOrders() {
