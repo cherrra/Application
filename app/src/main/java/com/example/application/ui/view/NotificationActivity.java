@@ -5,11 +5,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -150,7 +154,7 @@ public class NotificationActivity extends AppCompatActivity {
     private void processOrderStatus(JSONObject order) throws JSONException {
         String orderId = order.getString("id_order");
         String status = order.getString("status");
-        String notificationText = "Статус заказа #" + orderId + ": " + status;
+        String notificationText = "Статус заказа #" + orderId + "изменен на: " + status;
 
         // Получаем последний известный статус этого заказа
         String lastStatusKey = "last_status_" + orderId;
@@ -169,34 +173,94 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
-    private void addNotificationToScreen(String text) {
-        if (isNotificationAlreadyDisplayed(text)) return;
+//    private void addNotificationToScreen(String text) {
+//        if (isNotificationAlreadyDisplayed(text)) return;
+//
+//        // Создаем контейнер для уведомления
+//        LinearLayout notificationLayout = new LinearLayout(this);
+//        notificationLayout.setOrientation(LinearLayout.HORIZONTAL);
+//        notificationLayout.setLayoutParams(new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT));
+//        notificationLayout.setPadding(8, 8, 8, 8);
+//
+//        // Создаем TextView для текста уведомления
+//        TextView textView = new TextView(this);
+//        textView.setText(text);
+//        textView.setTextSize(18);
+//        textView.setPadding(16, 16, 16, 16);
+//        textView.setBackgroundResource(R.drawable.rounded_background);
+//
+//        // Добавляем TextView в контейнер
+//        notificationLayout.addView(textView);
+//
+//        // Добавляем контейнер в основной layout
+//        notificationsContainer.addView(notificationLayout, 0);
+//
+//        // Добавляем разделитель (если нужно)
+//        if (notificationsContainer.getChildCount() > 1) {
+//            addDivider();
+//        }
+//    }
+private void addNotificationToScreen(String text) {
+    if (isNotificationAlreadyDisplayed(text)) return;
 
-        // Создаем контейнер для уведомления
-        LinearLayout notificationLayout = new LinearLayout(this);
-        notificationLayout.setOrientation(LinearLayout.HORIZONTAL);
-        notificationLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        notificationLayout.setPadding(8, 8, 8, 8);
+    // Создаем контейнер для уведомления
+    LinearLayout notificationLayout = new LinearLayout(this);
+    notificationLayout.setOrientation(LinearLayout.VERTICAL);
+    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT);
+    layoutParams.setMargins(0, 0, 0, 16); // Отступ снизу
+    notificationLayout.setLayoutParams(layoutParams);
 
-        // Создаем TextView для текста уведомления
-        TextView textView = new TextView(this);
-        textView.setText(text);
-        textView.setTextSize(18);
-        textView.setPadding(16, 16, 16, 16);
-        textView.setBackgroundResource(R.drawable.rounded_background);
+    // Создаем карточку уведомления
+    LinearLayout cardLayout = new LinearLayout(this);
+    cardLayout.setOrientation(LinearLayout.HORIZONTAL);
+    cardLayout.setLayoutParams(new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT));
+    cardLayout.setBackgroundResource(R.drawable.card_background);
+    cardLayout.setElevation(2f);
 
-        // Добавляем TextView в контейнер
-        notificationLayout.addView(textView);
+    // Иконка уведомления
+    ImageView icon = new ImageView(this);
+    icon.setImageResource(R.drawable.ic_notification);
+    LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+            dpToPx(24), dpToPx(24));
+    iconParams.gravity = Gravity.CENTER_VERTICAL;
+    iconParams.setMargins(dpToPx(16), dpToPx(16), 0, dpToPx(16));
+    icon.setLayoutParams(iconParams);
 
-        // Добавляем контейнер в основной layout
-        notificationsContainer.addView(notificationLayout, 0);
+    // Текст уведомления
+    TextView textView = new TextView(this);
+    textView.setText(text);
+    textView.setTextSize(16);
+    textView.setTextColor(Color.parseColor("#4c5866"));
+    textView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+    textView.setLineSpacing(dpToPx(4), 1f);
+    LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+            0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+    textParams.setMargins(dpToPx(12), dpToPx(16), dpToPx(16), dpToPx(16));
+    textView.setLayoutParams(textParams);
 
-        // Добавляем разделитель (если нужно)
-        if (notificationsContainer.getChildCount() > 1) {
-            addDivider();
-        }
+    // Добавляем элементы в карточку
+    cardLayout.addView(icon);
+    cardLayout.addView(textView);
+
+    // Добавляем карточку в контейнер
+    notificationLayout.addView(cardLayout);
+
+    // Добавляем контейнер в основной layout
+    notificationsContainer.addView(notificationLayout, 0);
+
+    // Добавляем анимацию
+    Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+    notificationLayout.startAnimation(fadeIn);
+}
+
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
     private void addDivider() {
