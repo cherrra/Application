@@ -376,7 +376,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
         );
 
         Request request = new Request.Builder()
-                .url("http://10.0.2.2:5000/api/orders/admin/" + orderId)
+                .url("https://automser.store/api/orders/admin/" + orderId)
                 .put(body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();

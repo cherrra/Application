@@ -173,35 +173,6 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
-//    private void addNotificationToScreen(String text) {
-//        if (isNotificationAlreadyDisplayed(text)) return;
-//
-//        // Создаем контейнер для уведомления
-//        LinearLayout notificationLayout = new LinearLayout(this);
-//        notificationLayout.setOrientation(LinearLayout.HORIZONTAL);
-//        notificationLayout.setLayoutParams(new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT));
-//        notificationLayout.setPadding(8, 8, 8, 8);
-//
-//        // Создаем TextView для текста уведомления
-//        TextView textView = new TextView(this);
-//        textView.setText(text);
-//        textView.setTextSize(18);
-//        textView.setPadding(16, 16, 16, 16);
-//        textView.setBackgroundResource(R.drawable.rounded_background);
-//
-//        // Добавляем TextView в контейнер
-//        notificationLayout.addView(textView);
-//
-//        // Добавляем контейнер в основной layout
-//        notificationsContainer.addView(notificationLayout, 0);
-//
-//        // Добавляем разделитель (если нужно)
-//        if (notificationsContainer.getChildCount() > 1) {
-//            addDivider();
-//        }
-//    }
 private void addNotificationToScreen(String text) {
     if (isNotificationAlreadyDisplayed(text)) return;
 

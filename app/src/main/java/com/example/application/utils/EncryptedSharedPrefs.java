@@ -90,5 +90,33 @@ public class EncryptedSharedPrefs {
         return sharedPreferences.getStringSet(key, defaultValues);
     }
 
+    // Новые методы для работы с long через String
+    public long getLongAsString(String key, long defaultValue) {
+        String value = sharedPreferences.getString(key, null);
+        return value != null ? Long.parseLong(value) : defaultValue;
+    }
+
+    public void putLongAsString(String key, long value) {
+        sharedPreferences.edit().putString(key, String.valueOf(value)).apply();
+    }
+
+    // Альтернативная реализация с обработкой ошибок
+    public long getLongSafe(String key, long defaultValue) {
+        try {
+            String value = sharedPreferences.getString(key, null);
+            return value != null ? Long.parseLong(value) : defaultValue;
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    public void putLongSafe(String key, long value) {
+        try {
+            sharedPreferences.edit().putString(key, String.valueOf(value)).apply();
+        } catch (Exception e) {
+            Log.e("EncryptedSharedPrefs", "Error saving long value", e);
+        }
+    }
+
 
 }
