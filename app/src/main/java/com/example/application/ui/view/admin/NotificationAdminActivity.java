@@ -266,57 +266,68 @@ public class NotificationAdminActivity extends AppCompatActivity {
     private void addNotificationToScreen(String text) {
         if (isNotificationAlreadyDisplayed(text)) return;
 
-        LinearLayout notificationLayout = new LinearLayout(this);
-        notificationLayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+        // Hide empty state if visible
+        TextView emptyStateText = findViewById(R.id.emptyStateText);
+        emptyStateText.setVisibility(View.GONE);
+
+        // Main notification card
+        LinearLayout notificationCard = new LinearLayout(this);
+        notificationCard.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 0, 0, dpToPx(16));
-        notificationLayout.setLayoutParams(layoutParams);
+        cardParams.setMargins(0, 0, 0, dpToPx(8));
+        notificationCard.setLayoutParams(cardParams);
 
-        // Карточка уведомления
-        LinearLayout cardLayout = new LinearLayout(this);
-        cardLayout.setOrientation(LinearLayout.HORIZONTAL);
-        cardLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        cardLayout.setBackgroundResource(R.drawable.card_background);
-        cardLayout.setElevation(dpToPx(2));
-        cardLayout.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
+        // Card styling
+        notificationCard.setBackgroundResource(R.drawable.card_background);
+        notificationCard.setElevation(dpToPx(2));
+        notificationCard.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
-        // Иконка
+        // Icon
         ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_notification);
         LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
-                dpToPx(24), dpToPx(24));
+                dpToPx(32), dpToPx(32));
         iconParams.gravity = Gravity.CENTER_VERTICAL;
         iconParams.setMargins(0, 0, dpToPx(12), 0);
         icon.setLayoutParams(iconParams);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.blue));
 
-        // Текст уведомления
+        // Text container
+        LinearLayout textContainer = new LinearLayout(this);
+        textContainer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams textContainerParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+        textContainer.setLayoutParams(textContainerParams);
+
+        // Notification text
         TextView textView = new TextView(this);
         textView.setText(text);
         textView.setTextSize(16);
-        textView.setTextColor(ContextCompat.getColor(this, android.R.color.tertiary_text_dark));
+        textView.setTextColor(ContextCompat.getColor(this, R.color.blue));
         textView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         textView.setLineSpacing(dpToPx(4), 1f);
-        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-        textView.setLayoutParams(textParams);
 
-        cardLayout.addView(icon);
-        cardLayout.addView(textView);
-        notificationLayout.addView(cardLayout);
-        notificationsContainer.addView(notificationLayout, 0);
+        // Timestamp
+        TextView timeView = new TextView(this);
+        timeView.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+        timeView.setTextSize(12);
+        timeView.setTextColor(ContextCompat.getColor(this, R.color.blue));
+        timeView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        timeView.setPadding(0, dpToPx(4), 0, 0);
 
-        // Анимация
-        Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        notificationLayout.startAnimation(fadeIn);
+        textContainer.addView(textView);
+        textContainer.addView(timeView);
 
-        // Добавляем разделитель если нужно
-        if (notificationsContainer.getChildCount() > 1) {
-            addDivider();
-        }
+        notificationCard.addView(icon);
+        notificationCard.addView(textContainer);
+
+        // Add to container with animation
+        notificationsContainer.addView(notificationCard, 0);
+
+        Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_top);
+        notificationCard.startAnimation(slideIn);
     }
 
     private void addDivider() {
