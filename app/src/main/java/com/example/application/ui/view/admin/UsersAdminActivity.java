@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -424,39 +425,63 @@ public class UsersAdminActivity extends AppCompatActivity {
     }
 
     private void deleteUser(int userId, RelativeLayout card) {
-        try {
-            String token = encryptedSharedPrefs.getAccessToken();
-            if (token == null) {
-                Toast.makeText(this, "Необходима авторизация", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_user, null);
 
-            usersViewModel.deleteUser(userId, token, new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    runOnUiThread(() ->
-                            Toast.makeText(UsersAdminActivity.this, "Ошибка при удалении", Toast.LENGTH_SHORT).show()
-                    );
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            try {
+                String token = encryptedSharedPrefs.getAccessToken();
+                if (token == null) {
+                    Toast.makeText(this, "Необходима авторизация", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    return;
                 }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    runOnUiThread(() -> {
-                        if (response.isSuccessful()) {
-                            View parent = (View) card.getParent();
-                            if (parent != null && parent.getParent() instanceof ViewGroup) {
-                                ((ViewGroup) parent.getParent()).removeView(parent);
+                usersViewModel.deleteUser(userId, token, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(UsersAdminActivity.this, "Ошибка при удалении", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        runOnUiThread(() -> {
+                            if (response.isSuccessful()) {
+                                View parent = (View) card.getParent();
+                                if (parent != null && parent.getParent() instanceof ViewGroup) {
+                                    ((ViewGroup) parent.getParent()).removeView(parent);
+                                }
+                                Toast.makeText(UsersAdminActivity.this, "Пользователь удален", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(UsersAdminActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();
                             }
-                            Toast.makeText(UsersAdminActivity.this, "Пользователь удален", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(UsersAdminActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
-        } catch (Exception e) {
-            Log.e("UsersAdminActivity", "Ошибка удаления пользователя", e);
-        }
+                            dialog.dismiss();
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("UsersAdminActivity", "Ошибка удаления пользователя", e);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void setupNavigationButtons() {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -398,15 +399,66 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void confirmAndDeleteCategory(int categoryId, LinearLayout card) {
-        new AlertDialog.Builder(this)
-                .setTitle("Удалить категорию")
-                .setMessage("Вы уверены, что хотите удалить эту категорию?")
-                .setPositiveButton("Удалить", (dialog, which) -> deleteCategory(categoryId, card))
-                .setNegativeButton("Отмена", null)
-                .create()
-                .show();
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_category, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            deleteCategory(categoryId, card);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
+    private void logout() {
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            try {
+                EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
+                encryptedSharedPrefs.clearTokens();
+
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Ошибка при выходе", Toast.LENGTH_SHORT).show();
+            } finally {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
     private final ActivityResultLauncher<Intent> serviceLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -418,23 +470,4 @@ public class HomeAdminActivity extends AppCompatActivity {
     );
 
 
-    private void logout() {
-        try {
-            EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            encryptedSharedPrefs.clearTokens();
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        }
-    }
 }

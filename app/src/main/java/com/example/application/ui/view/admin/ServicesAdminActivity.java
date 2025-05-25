@@ -320,12 +320,28 @@ public class ServicesAdminActivity extends AppCompatActivity {
     }
 
     private void confirmDeleteService(Service service) {
-        new AlertDialog.Builder(this)
-                .setTitle("Удаление услуги")
-                .setMessage("Вы уверены, что хотите удалить услугу \"" + service.getServiceName() + "\"?")
-                .setPositiveButton("Удалить", (dialog, which) -> deleteService(service))
-                .setNegativeButton("Отмена", null)
-                .show();
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_service, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            deleteService(service);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void deleteService(Service service) {
