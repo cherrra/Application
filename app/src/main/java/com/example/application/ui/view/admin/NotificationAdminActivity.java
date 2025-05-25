@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -273,16 +274,24 @@ public class NotificationAdminActivity extends AppCompatActivity {
         // Main notification card
         LinearLayout notificationCard = new LinearLayout(this);
         notificationCard.setOrientation(LinearLayout.HORIZONTAL);
+        notificationCard.setGravity(Gravity.CENTER_VERTICAL);
+        notificationCard.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
+
+        // Card styling - аналогично карточкам категорий
+        GradientDrawable cardShape = new GradientDrawable();
+        cardShape.setShape(GradientDrawable.RECTANGLE);
+        cardShape.setCornerRadius(dpToPx(24));
+        cardShape.setColor(Color.parseColor("#FFFFFF")); // Белый фон
+        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD")); // Голубая обводка
+        notificationCard.setBackground(cardShape);
+
+        // Параметры карточки
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        cardParams.setMargins(0, 0, 0, dpToPx(8));
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        cardParams.setMargins(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
         notificationCard.setLayoutParams(cardParams);
-
-        // Card styling
-        notificationCard.setBackgroundResource(R.drawable.card_background);
-        notificationCard.setElevation(dpToPx(2));
-        notificationCard.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
         // Icon
         ImageView icon = new ImageView(this);
@@ -292,7 +301,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
         iconParams.gravity = Gravity.CENTER_VERTICAL;
         iconParams.setMargins(0, 0, dpToPx(12), 0);
         icon.setLayoutParams(iconParams);
-        icon.setColorFilter(ContextCompat.getColor(this, R.color.blue));
 
         // Text container
         LinearLayout textContainer = new LinearLayout(this);
@@ -305,20 +313,11 @@ public class NotificationAdminActivity extends AppCompatActivity {
         TextView textView = new TextView(this);
         textView.setText(text);
         textView.setTextSize(16);
-        textView.setTextColor(ContextCompat.getColor(this, R.color.blue));
+        textView.setTextColor(ContextCompat.getColor(this, R.color.dark_blue));
         textView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         textView.setLineSpacing(dpToPx(4), 1f);
 
-        // Timestamp
-        TextView timeView = new TextView(this);
-        timeView.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-        timeView.setTextSize(12);
-        timeView.setTextColor(ContextCompat.getColor(this, R.color.blue));
-        timeView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-        timeView.setPadding(0, dpToPx(4), 0, 0);
-
         textContainer.addView(textView);
-        textContainer.addView(timeView);
 
         notificationCard.addView(icon);
         notificationCard.addView(textContainer);
