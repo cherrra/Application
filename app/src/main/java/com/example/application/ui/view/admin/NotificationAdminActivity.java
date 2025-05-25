@@ -314,7 +314,15 @@ public class NotificationAdminActivity extends AppCompatActivity {
         textView.setText(text);
         textView.setTextSize(16);
         textView.setTextColor(ContextCompat.getColor(this, R.color.dark_blue));
-        textView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        try {
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nunitosans_regular.ttf");
+            textView.setTypeface(typeface);
+        } catch (Exception e) {
+            // В случае ошибки загрузки шрифта используем стандартный
+            textView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            Log.e("NotificationAdmin", "Error loading NunitoSans font", e);
+        }
+
         textView.setLineSpacing(dpToPx(4), 1f);
 
         textContainer.addView(textView);
