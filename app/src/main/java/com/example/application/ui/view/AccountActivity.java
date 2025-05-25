@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -77,7 +80,7 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
-       logoutButton.setOnClickListener(v -> logout());
+        logoutButton.setOnClickListener(v -> logout());
     }
 
     private void setupNavigationButtons() {
@@ -143,22 +146,46 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        try {
-            EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            encryptedSharedPrefs.clearTokens();
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout, null);
 
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
 
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            try {
+                EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
+                encryptedSharedPrefs.clearTokens();
+
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Ошибка при выходе", Toast.LENGTH_SHORT).show();
+            } finally {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+        // Добавляем анимации
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setWindowAnimations(R.style.DialogAnimation);
         }
+
     }
 }

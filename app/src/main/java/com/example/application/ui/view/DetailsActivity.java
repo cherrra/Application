@@ -5,9 +5,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -86,15 +88,40 @@ public class DetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        deleteAccountButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(DetailsActivity.this)
-                    .setMessage("Вы уверены, что хотите удалить аккаунт?")
-                    .setPositiveButton("Да", (dialog, which) -> deleteAccount())
-                    .setNegativeButton("Нет", null)
-                    .show();
-        });
+//        deleteAccountButton.setOnClickListener(v -> {
+//            new AlertDialog.Builder(DetailsActivity.this)
+//                    .setMessage("Вы уверены, что хотите удалить аккаунт?")
+//                    .setPositiveButton("Да", (dialog, which) -> deleteAccount())
+//                    .setNegativeButton("Нет", null)
+//                    .show();
+//        });
+        deleteAccountButton.setOnClickListener(v -> showDeleteAccountDialog());
     }
 
+    private void showDeleteAccountDialog() {
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_account, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            deleteAccount();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
     private void fetchUserDetails() {
         try {
             String token = new EncryptedSharedPrefs(this).getAccessToken();
@@ -189,28 +216,47 @@ public class DetailsActivity extends AppCompatActivity {
                 ApiClient.getInstance().deleteAccount(token, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(DetailsActivity.this,
+                                    "Ошибка сети при удалении аккаунта",
+                                    Toast.LENGTH_SHORT).show();
+                        });
                         Log.e("DetailsActivity", "Ошибка удаления аккаунта: " + e.getMessage());
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            runOnUiThread(() -> {
+                        runOnUiThread(() -> {
+                            if (response.isSuccessful()) {
+                                try {
+                                    new EncryptedSharedPrefs(DetailsActivity.this).clearTokens();
+                                } catch (Exception e) {
+                                    Log.e("DetailsActivity", "Ошибка очистки токенов: " + e.getMessage());
+                                }
                                 Intent intent = new Intent(DetailsActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
-                            });
-                        } else {
-                            Log.e("DetailsActivity", "Ошибка сервера при удалении аккаунта: " + response.code());
-                        }
+                                Toast.makeText(DetailsActivity.this,
+                                        "Аккаунт успешно удален",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(DetailsActivity.this,
+                                        "Ошибка сервера: " + response.code(),
+                                        Toast.LENGTH_SHORT).show();
+                                Log.e("DetailsActivity",
+                                        "Ошибка сервера при удалении аккаунта: " + response.code());
+                            }
+                        });
                     }
                 });
             }
         } catch (Exception e) {
             Log.e("DetailsActivity", "Ошибка при удалении аккаунта: " + e.getMessage());
+            Toast.makeText(this,
+                    "Ошибка при удалении аккаунта",
+                    Toast.LENGTH_SHORT).show();
         }
     }
-
     private void setupButtonAnimation(Button button) {
         button.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {

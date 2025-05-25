@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.application.R;
@@ -296,39 +297,64 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     private void deleteOrder(int orderId, View cardView) {
-        String token;
-        try {
-            token = new EncryptedSharedPrefs(this).getAccessToken();
-        } catch (GeneralSecurityException | IOException e) {
-            Log.e("OrdersActivity", "Ошибка получения токена: " + e.getMessage());
-            return;
-        }
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_cancel_order, null);
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("https://automser.store/api/orders/" + orderId)
-                .delete()
-                .addHeader("Authorization", "Bearer " + token)
-                .build();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(OrdersActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show());
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            String token;
+            try {
+                token = new EncryptedSharedPrefs(OrdersActivity.this).getAccessToken();
+            } catch (GeneralSecurityException | IOException e) {
+                Log.e("OrdersActivity", "Ошибка получения токена: " + e.getMessage());
+                dialog.dismiss();
+                return;
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                runOnUiThread(() -> {
-                    if (response.isSuccessful()) {
-                        orderContainer.removeView(cardView);
-                        Toast.makeText(OrdersActivity.this, "Заказ удалён", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(OrdersActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("https://automser.store/api/orders/" + orderId)
+                    .delete()
+                    .addHeader("Authorization", "Bearer " + token)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(OrdersActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(() -> {
+                        if (response.isSuccessful()) {
+                            orderContainer.removeView(cardView);
+                            Toast.makeText(OrdersActivity.this, "Заказ отменён", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(OrdersActivity.this, "Ошибка отмены заказа", Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.dismiss();
+                    });
+                }
+            });
         });
+
+        dialog.show();
     }
 
     private String formatDate(String rawDate) {

@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -246,36 +247,60 @@ public class GarageActivity extends AppCompatActivity {
     }
 
     private void deleteCar(int carId, RelativeLayout card) {
-        String token;
-        try {
-            token = new EncryptedSharedPrefs(this).getAccessToken();
-        } catch (Exception e) {
-            Log.e(TAG, "Ошибка получения токена: " + e.getMessage());
-            return;
-        }
+        // Создаем кастомное диалоговое окно
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_car, null);
 
-        ApiClient.getInstance().deleteCar(carId, token, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(GarageActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show());
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button confirmButton = dialogView.findViewById(R.id.confirmButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        confirmButton.setOnClickListener(v -> {
+            String token;
+            try {
+                token = new EncryptedSharedPrefs(GarageActivity.this).getAccessToken();
+            } catch (Exception e) {
+                Log.e(TAG, "Ошибка получения токена: " + e.getMessage());
+                dialog.dismiss();
+                return;
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                runOnUiThread(() -> {
-                    if (response.isSuccessful()) {
-                        carContainer.removeView(card);
-                        if (carContainer.getChildCount() == 0) {
-                            pustoTextView.setVisibility(View.VISIBLE);
+            ApiClient.getInstance().deleteCar(carId, token, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(GarageActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    });
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(() -> {
+                        if (response.isSuccessful()) {
+                            carContainer.removeView(card);
+                            if (carContainer.getChildCount() == 0) {
+                                emptyStateContainer.setVisibility(View.VISIBLE);
+                            }
+                            Toast.makeText(GarageActivity.this, "Автомобиль удален", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(GarageActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(GarageActivity.this, "Машина удалена", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(GarageActivity.this, "Ошибка удаления", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                        dialog.dismiss();
+                    });
+                }
+            });
         });
+
+        dialog.show();
     }
 
     private void loadCarImage(String imageUrl, ImageView imageView) {
