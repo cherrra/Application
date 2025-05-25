@@ -37,6 +37,7 @@ import okhttp3.Response;
 public class GarageActivity extends AppCompatActivity {
 
     private LinearLayout carContainer;
+    private LinearLayout emptyStateContainer;
     private TextView pustoTextView;
     private CarViewModel carViewModel;
     private static final String TAG = "GarageActivity";
@@ -47,7 +48,7 @@ public class GarageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_garage);
 
         carContainer = findViewById(R.id.carContainer);
-        pustoTextView = findViewById(R.id.pustoTextView);
+        emptyStateContainer = findViewById(R.id.emptyStateContainer);
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
         Button addCarButton = findViewById(R.id.addCarButton);
@@ -69,11 +70,11 @@ public class GarageActivity extends AppCompatActivity {
         carViewModel.getCars(token).observe(this, cars -> {
             if (cars != null && !cars.isEmpty()) {
                 Log.d(TAG, "Загружено " + cars.size() + " автомобилей");
-                pustoTextView.setVisibility(View.GONE);
+                emptyStateContainer.setVisibility(View.GONE);
                 updateUI(cars);
             } else {
                 Log.d(TAG, "Нет автомобилей в гараже");
-                pustoTextView.setVisibility(View.VISIBLE);
+                emptyStateContainer.setVisibility(View.VISIBLE);
                 carContainer.removeAllViews();
             }
         });

@@ -1,122 +1,162 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp"
+    android:fillViewport="true"
     android:background="#FFFFFF">
 
-    <RelativeLayout
-        android:id="@+id/headerContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="10dp">
-
-        <ImageView
-            android:id="@+id/backArrow"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow_back"
-            android:contentDescription="Назад"/>
-
-        <TextView
-            android:id="@+id/editTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/backArrow"
-            android:layout_marginStart="16dp"
-            android:text="Редактирование"
-            android:textColor="#2260FF"
-            android:textSize="24sp"
-            android:textStyle="bold"/>
-    </RelativeLayout>
-
-    <EditText
-        android:id="@+id/editModel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Марка"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editBrand"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Модель"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editYear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Год"
-        android:inputType="number"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editMileage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Пробег"
-        android:inputType="number"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editVinCode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="VIN код"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editLicensePlate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Государственный номер"
-        android:layout_marginBottom="16dp"/>
-    <!-- Добавленный блок для изображения автомобиля -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:padding="24dp">
 
-        <ImageView
-            android:id="@+id/carImageView"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/rounded_backgroun"
-            android:contentDescription="Фото автомобиля"/>
-
-        <Button
-            android:id="@+id/uploadImageButton"
-            android:layout_width="wrap_content"
+        <!-- Улучшенный заголовок -->
+        <RelativeLayout
+            android:id="@+id/headerContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp">
+
+            <ImageView
+                android:id="@+id/backArrow"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Назад"/>
+
+            <TextView
+                android:id="@+id/editTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/backArrow"
+                android:layout_marginStart="16dp"
+                android:text="Автомобиль"
+                android:textColor="#2260FF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/nunitosans_bold"/>
+        </RelativeLayout>
+
+        <!-- Изображение автомобиля с эффектом поднятия -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#CAD6FF">
+
+            <ImageView
+                android:id="@+id/carImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_placeholder"
+                android:contentDescription="Фото автомобиля"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Кнопка загрузки с иконкой -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/uploadImageButton"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="32dp"
             android:text="Загрузить фото"
-            android:textColor="#2260FF"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/saveButtonContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp">
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:fontFamily="@font/nunitosans_semibold"
+            app:backgroundTint="#2260FF"
+            app:cornerRadius="24dp"/>
+
+        <!-- Контейнер для полей ввода -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/white_background"
+            android:elevation="2dp">
+
+            <EditText
+                android:id="@+id/editModel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Марка"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#2260FF"/>
+
+            <EditText
+                android:id="@+id/editBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Модель"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#2260FF"/>
+
+            <EditText
+                android:id="@+id/editYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Год"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:inputType="number"
+                android:backgroundTint="#2260FF"/>
+
+            <EditText
+                android:id="@+id/editMileage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Пробег"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:inputType="number"
+                android:backgroundTint="#2260FF"/>
+
+            <EditText
+                android:id="@+id/editVinCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="VIN код"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#2260FF"/>
+
+            <EditText
+                android:id="@+id/editLicensePlate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Государственный номер"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#2260FF"/>
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:text="Сохранить"
             android:textColor="@color/white"
             android:textSize="16sp"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:layout_gravity="center_horizontal"
             app:backgroundTint="@color/blue"
             app:cornerRadius="24dp"/>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

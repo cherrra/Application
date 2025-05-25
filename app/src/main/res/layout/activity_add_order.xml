@@ -7,15 +7,34 @@
     android:padding="24dp"
     android:background="#FFFFFF">
 
-    <!-- Заголовок -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Запись на обслуживание"
-        android:textColor="#2260FF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Назад"/>
+
+
+        <TextView
+            android:id="@+id/addOrderTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/backArrow"
+            android:layout_marginStart="16dp"
+            android:text="Запись на обслуживание"
+            android:textColor="#2260FF"
+            android:textSize="24sp"
+            android:fontFamily="@font/nunitosans_bold"/>
+    </RelativeLayout>
 
     <!-- Выбор автомобиля -->
     <com.google.android.material.textfield.TextInputLayout
@@ -115,6 +134,7 @@
         android:layout_height="wrap_content"
         android:text="Выбранные услуги:"
         android:textColor="#2260FF"
+        android:fontFamily="@font/nunitosans_semibold"
         android:textSize="16sp"
         android:layout_marginTop="24dp"/>
 
@@ -137,7 +157,7 @@
         android:text="Предварительная стоимость: 0 ₽*"
         android:textColor="#2260FF"
         android:textSize="18sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/nunitosans_semibold"
         android:layout_marginTop="16dp"
         android:gravity="end"/>
 
@@ -148,6 +168,7 @@
         android:text="*итоговая стоимость может измениться на месте
         в зависимости от необходимых запчастей"
         android:textColor="#A9BCFE"
+        android:fontFamily="@font/nunitosans_regular"
         android:textSize="14sp"
         android:layout_marginTop="16dp"
         android:gravity="start"/>
@@ -168,6 +189,7 @@
             android:textColor="#2260FF"
             app:strokeColor="#2260FF"
             app:strokeWidth="1dp"
+            android:fontFamily="@font/nunitosans_semibold"
             app:backgroundTint="@android:color/transparent"
             app:cornerRadius="24dp"
             android:layout_marginEnd="8dp"/>
@@ -177,6 +199,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:text="Записаться"
+            android:fontFamily="@font/nunitosans_semibold"
             android:textColor="#FFFFFF"
             app:backgroundTint="#2260FF"
             app:cornerRadius="24dp"/>

@@ -26,6 +26,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="Выйти"
+        android:fontFamily="@font/nunitosans_semibold"
         android:textColor="#FFFFFF"
         app:backgroundTint="#2260FF"
         app:cornerRadius="24dp" />
@@ -40,7 +41,7 @@
         android:text="Категории услуг"
         android:textColor="#2260FF"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:fontFamily="@font/nunitosans_bold" />
 
     <!-- Кнопка добавления категории -->
     <Button
@@ -50,6 +51,7 @@
         android:layout_below="@id/categoriesTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/nunitosans_semibold"
         android:text="Добавить категорию"
         android:textColor="#FFFFFF"
         app:backgroundTint="#2260FF"
@@ -96,8 +98,8 @@
             android:gravity="center"
             android:text="Главная"
             android:textColor="#2260FF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:fontFamily="@font/nunitosans_bold" />
 
         <!-- Пользователи -->
         <TextView
@@ -110,8 +112,9 @@
             android:focusable="true"
             android:gravity="center"
             android:text="Пользователи"
-            android:textColor="#8A8A8A"
-            android:textSize="16sp" />
+            android:textColor="@color/grey_blue"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:textSize="18sp" />
 
         <!-- Заказы -->
         <TextView
@@ -124,7 +127,8 @@
             android:focusable="true"
             android:gravity="center"
             android:text="Заказы"
-            android:textColor="#8A8A8A"
-            android:textSize="16sp" />
+            android:textColor="@color/grey_blue"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:textSize="18sp" />
     </LinearLayout>
 </RelativeLayout>

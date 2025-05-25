@@ -1,23 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:padding="16dp">
 
+    <!-- Шапка с кнопкой назад и заголовком -->
     <RelativeLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="24dp">
 
         <ImageView
             android:id="@+id/backArrow"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="Назад"/>
@@ -31,90 +33,141 @@
             android:text="Аккаунт"
             android:textColor="#2260FF"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/nunitosans_bold"/>
     </RelativeLayout>
 
-     <LinearLayout
+    <!-- Карточка профиля с новым цветом фона -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/rounded_background"
-        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#80CAD6FF"
+        app:strokeColor="#2260FF"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center">
+
+            <!-- Аватарка в круглой рамке -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/avatarCard"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="65dp"
+                app:strokeColor="#A9BCFE"
+                app:strokeWidth="2dp"
+                app:elevation="6dp">
+
+                <ImageView
+                    android:id="@+id/profileImageViewDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_background"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Аватар пользователя"/>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Информация о пользователе -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:id="@+id/usernameDetailsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="#2260FF"
+                    android:fontFamily="@font/nunitosans_semibold"
+                    android:text="Имя пользователя"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="12dp"
+                    android:background="#A0B4FF"/>
+
+                <TextView
+                    android:id="@+id/birthDateDetailsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#2E3A59"
+                    android:fontFamily="@font/nunitosans_regular"
+                    android:text="Дата рождения"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="12dp"
+                    android:background="#A0B4FF"/>
+
+                <TextView
+                    android:id="@+id/emailDetailsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#2E3A59"
+                    android:fontFamily="@font/nunitosans_regular"
+                    android:text="Email пользователя"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="12dp"
+                    android:background="#A0B4FF"/>
+
+                <TextView
+                    android:id="@+id/phoneNumberDetailsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#2E3A59"
+                    android:fontFamily="@font/nunitosans_regular"
+                    android:text="Номер телефона"/>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Кнопки действий -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal">
 
-        <ImageView
-            android:id="@+id/profileImageViewDetails"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/circle_background"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/editButton"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:text="Редактировать"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:fontFamily="@font/nunitosans_semibold"
+            app:backgroundTint="#2260FF"
+            app:cornerRadius="24dp"
+            android:layout_marginBottom="16dp"/>
 
-
-        <TextView
-        android:id="@+id/usernameDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:text="Имя пользователя" />
-
-        <TextView
-        android:id="@+id/birthDateDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:text="Дата рождения" />
-
-    <TextView
-        android:id="@+id/emailDetailsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:text="Email пользователя" />
-
-         <TextView
-             android:id="@+id/phoneNumberDetailsTextView"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="16dp"
-             android:textSize="20sp"
-             android:gravity="center"
-             android:textColor="#000000"
-             android:text="Номер телефона" />
-
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteAccountButton"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:text="Удалить аккаунт"
+            android:textColor="#FF5252"
+            android:textSize="16sp"
+            android:fontFamily="@font/nunitosans_semibold"
+            app:backgroundTint="#20FF5252"
+            app:cornerRadius="24dp"/>
     </LinearLayout>
-
-
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Редактировать"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@color/blue"
-        app:cornerRadius="24dp"/>
-
-    <Button
-        android:id="@+id/deleteAccountButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Удалить аккаунт"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@color/blue"
-        app:cornerRadius="24dp"/>
-
 </LinearLayout>

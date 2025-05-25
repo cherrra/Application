@@ -8,7 +8,7 @@
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp">
 
         <ImageView
@@ -30,7 +30,7 @@
             android:text="Услуги"
             android:textColor="#2260FF"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/nunitosans_bold"/>
     </RelativeLayout>
 
     <ScrollView
@@ -55,6 +55,7 @@
         android:layout_height="wrap_content"
         android:text="Добавлена услуга на сумму: 0 ₽"
         android:textSize="18sp"
+        android:fontFamily="@font/nunitosans_regular"
         android:textColor="#2260FF"
         android:gravity="center"
         android:layout_alignParentBottom="true"

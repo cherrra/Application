@@ -30,7 +30,7 @@
             android:text="Управление услугами"
             android:textColor="#2260FF"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/nunitosans_bold"/>
     </RelativeLayout>
 
     <Button
@@ -44,6 +44,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:backgroundTint="#2260FF"
+        android:fontFamily="@font/nunitosans_semibold"
         android:text="Добавить услугу"
         android:textColor="#FFFFFF" />
 

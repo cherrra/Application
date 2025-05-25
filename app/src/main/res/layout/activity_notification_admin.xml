@@ -13,7 +13,7 @@
     android:id="@+id/headerContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="40dp"
+    android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -33,13 +33,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/backArrow"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="24dp"
         android:text="Уведомления"
         android:textColor="#2260FF"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"/>
+        android:fontFamily="@font/nunitosans_bold" />
 </RelativeLayout>
 
 
