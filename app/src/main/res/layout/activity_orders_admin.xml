@@ -54,7 +54,8 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottomNavigation"
         android:layout_below="@id/searchEditText"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:id="@+id/adminOrderContainer"

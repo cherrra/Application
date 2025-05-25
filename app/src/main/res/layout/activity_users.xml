@@ -35,7 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchEditText"
-        android:layout_above="@id/bottomNavigation"> <!-- Changed to bottomNavigation -->
+        android:layout_above="@id/bottomNavigation"
+        android:paddingTop="8dp">
+
 
         <!-- Single LinearLayout (removed duplicates) -->
         <LinearLayout

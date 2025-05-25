@@ -11,13 +11,16 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.application.R;
 import com.example.application.utils.EncryptedSharedPrefs;
@@ -109,6 +112,8 @@ public class OrdersAdminActivity extends AppCompatActivity {
 
         if (ordersArray == null) return;
 
+        addOrdersCountView(ordersArray.length());
+
         try {
             for (int i = 0; i < ordersArray.length(); i++) {
                 JSONObject orderObject = ordersArray.getJSONObject(i);
@@ -153,8 +158,13 @@ public class OrdersAdminActivity extends AppCompatActivity {
                         String responseBody = response.body().string();
                         Log.d("OrdersAdminResponse", "Ответ сервера: " + responseBody);
                         ordersArray = new JSONArray(responseBody);
-                        allOrdersArray = new JSONArray(responseBody); // Сохраняем все заказы
-                        runOnUiThread(() -> filterOrders(searchEditText.getText().toString()));
+                        allOrdersArray = new JSONArray(responseBody);
+
+                        runOnUiThread(() -> {
+                            // Добавляем плашку с количеством заказов
+                            addOrdersCountView(ordersArray.length());
+                            filterOrders(searchEditText.getText().toString());
+                        });
                     } catch (Exception e) {
                         Log.e("OrdersAdminActivity", "Ошибка обработки ответа", e);
                     }
@@ -171,6 +181,68 @@ public class OrdersAdminActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void addOrdersCountView(int ordersCount) {
+        // Удаляем предыдущую плашку, если она есть
+        View existingCountView = findViewById(R.id.ordersCountContainer);
+        if (existingCountView != null) {
+            ((ViewGroup) existingCountView.getParent()).removeView(existingCountView);
+        }
+
+        // Создаем контейнер для плашки
+        LinearLayout countContainer = new LinearLayout(this);
+        countContainer.setId(R.id.ordersCountContainer);
+        countContainer.setOrientation(LinearLayout.HORIZONTAL);
+        countContainer.setPadding(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
+
+        // Стиль плашки
+        GradientDrawable countShape = new GradientDrawable();
+        countShape.setShape(GradientDrawable.RECTANGLE);
+        countShape.setCornerRadius(dpToPx(12));
+        countShape.setColor(Color.parseColor("#E3F2FD")); // Светло-голубой фон
+        countContainer.setBackground(countShape);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(dpToPx(16), 0, dpToPx(16), dpToPx(16));
+        countContainer.setLayoutParams(params);
+
+        // Иконка
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(R.drawable.ic_orders);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.dark_blue));
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+                dpToPx(24), dpToPx(24));
+        iconParams.gravity = Gravity.CENTER_VERTICAL;
+        iconParams.setMargins(0, 0, dpToPx(8), 0);
+        icon.setLayoutParams(iconParams);
+        countContainer.addView(icon);
+
+        // Текст с количеством
+        TextView countText = new TextView(this);
+        String countString = "Всего: " + ordersCount + " " + getCorrectPlural(ordersCount, "заказ", "заказа", "заказов");
+        countText.setText(countString);
+        countText.setTextSize(16);
+        countText.setTextColor(ContextCompat.getColor(this, R.color.dark_blue));
+        countText.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        countContainer.addView(countText);
+
+        // Добавляем плашку перед всеми заказами
+        adminOrderContainer.addView(countContainer, 0);
+    }
+
+    // Метод для правильного склонения слова "заказ"
+    private String getCorrectPlural(int number, String one, String few, String many) {
+        int n = Math.abs(number) % 100;
+        int n1 = n % 10;
+
+        if (n > 10 && n < 20) return many;
+        if (n1 > 1 && n1 < 5) return few;
+        if (n1 == 1) return one;
+        return many;
     }
 
     private void setupNavigation() {

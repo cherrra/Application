@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.application.R;
@@ -142,6 +143,9 @@ public class UsersAdminActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 userContainer.removeAllViews();
 
+                                // Добавляем плашку с количеством пользователей
+                                addUsersCountView(usersArray.length());
+
                                 if (usersArray.length() == 0) {
                                     TextView emptyView = new TextView(UsersAdminActivity.this);
                                     emptyView.setText("Нет пользователей");
@@ -185,6 +189,61 @@ public class UsersAdminActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void addUsersCountView(int usersCount) {
+        // Создаем контейнер для плашки
+        LinearLayout countContainer = new LinearLayout(this);
+        countContainer.setOrientation(LinearLayout.HORIZONTAL);
+        countContainer.setPadding(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
+
+        // Стиль плашки
+        GradientDrawable countShape = new GradientDrawable();
+        countShape.setShape(GradientDrawable.RECTANGLE);
+        countShape.setCornerRadius(dpToPx(12));
+        countShape.setColor(Color.parseColor("#E3F2FD")); // Светло-голубой фон
+        countContainer.setBackground(countShape);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(dpToPx(16), 0, dpToPx(16), dpToPx(16));
+        countContainer.setLayoutParams(params);
+
+        // Иконка
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(R.drawable.ic_users);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.dark_blue));
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+                dpToPx(24), dpToPx(24));
+        iconParams.gravity = Gravity.CENTER_VERTICAL;
+        iconParams.setMargins(0, 0, dpToPx(8), 0);
+        icon.setLayoutParams(iconParams);
+        countContainer.addView(icon);
+
+        // Текст с количеством
+        TextView countText = new TextView(this);
+        String countString = usersCount + " " + getCorrectPlural(usersCount, "пользователь", "пользователя", "пользователей");
+        countText.setText(countString);
+        countText.setTextSize(16);
+        countText.setTextColor(ContextCompat.getColor(this, R.color.dark_blue));
+        countText.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        countContainer.addView(countText);
+
+        // Добавляем плашку перед всеми пользователями
+        userContainer.addView(countContainer, 0);
+    }
+
+    // Метод для правильного склонения слова "пользователь"
+    private String getCorrectPlural(int number, String one, String few, String many) {
+        int n = Math.abs(number) % 100;
+        int n1 = n % 10;
+
+        if (n > 10 && n < 20) return many;
+        if (n1 > 1 && n1 < 5) return few;
+        if (n1 == 1) return one;
+        return many;
     }
 
     private void addUserCard(JSONObject userObject) throws JSONException {
