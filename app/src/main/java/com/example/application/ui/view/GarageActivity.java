@@ -2,13 +2,17 @@ package com.example.application.ui.view;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +57,7 @@ public class GarageActivity extends AppCompatActivity {
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
         Button addCarButton = findViewById(R.id.addCarButton);
-        setupButtonAnimation(addCarButton);
+//        setupButtonAnimation(addCarButton);
 
         setupNavigation();
         fetchGarageDetails();
@@ -91,35 +95,77 @@ public class GarageActivity extends AppCompatActivity {
     }
 
     private void addCarCard(Car car) {
+        // Основной контейнер карточки
         RelativeLayout card = new RelativeLayout(this);
-        card.setPadding(24, 24, 24, 24);
+        card.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
+        // Стиль карточки - белый фон с голубой обводкой (как в addUserCard)
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
-        cardShape.setCornerRadius(55f);
-        cardShape.setColor(Color.parseColor("#80CAD6FF"));
-        cardShape.setStroke(2, Color.parseColor("#CAD6FF"));
+        cardShape.setCornerRadius(dpToPx(24)); // Скругление углов 24dp
+        cardShape.setColor(Color.WHITE);
+        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD")); // Голубая обводка
         card.setBackground(cardShape);
+        card.setElevation(dpToPx(2)); // Легкая тень
 
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        cardParams.setMargins(8, 8, 8, 16);
+        cardParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(16));
         card.setLayoutParams(cardParams);
 
+        // Изображение автомобиля с небольшим скруглением
+        ImageView carImageView = new ImageView(this);
+        GradientDrawable imageShape = new GradientDrawable();
+        imageShape.setShape(GradientDrawable.RECTANGLE);
+        imageShape.setCornerRadius(dpToPx(12)); // Скругление углов изображения 12dp
+        imageShape.setColor(Color.parseColor("#F5F5F5")); // Цвет placeholder'а
+
+        // Для API >= 21 можно использовать ViewOutlineProvider для лучшего скругления
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            carImageView.setClipToOutline(true);
+            carImageView.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), dpToPx(12));
+                }
+            });
+        }
+        carImageView.setBackground(imageShape);
+
+        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                dpToPx(180) // Фиксированная высота изображения
+        );
+        imageParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8)); // Отступы вокруг изображения
+        carImageView.setLayoutParams(imageParams);
+        carImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        carImageView.setId(View.generateViewId());
+
+        // Загрузка изображения
+        if (car.getLinkImg() != null && !car.getLinkImg().isEmpty()) {
+            loadCarImage(car.getLinkImg(), carImageView);
+        } else {
+            carImageView.setImageResource(R.drawable.ic_placeholder);
+            carImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        }
+
+        card.addView(carImageView);
+
+        // Контейнер для текстовой информации
         LinearLayout infoLayout = new LinearLayout(this);
         infoLayout.setOrientation(LinearLayout.VERTICAL);
-        infoLayout.setId(View.generateViewId());
+        infoLayout.setPadding(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(16));
 
         RelativeLayout.LayoutParams infoParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
-        infoParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        infoParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        infoParams.addRule(RelativeLayout.BELOW, carImageView.getId());
         infoLayout.setLayoutParams(infoParams);
 
+        // Название автомобиля
         String brandName = "Не указано";
         String modelName = "Не указано";
 
@@ -130,73 +176,79 @@ public class GarageActivity extends AppCompatActivity {
             }
         }
 
-        TextView carView = createCarInfoTextView(brandName + " " + modelName);
-        infoLayout.addView(carView);
+        TextView carTitleView = new TextView(this);
+        carTitleView.setText(brandName + " " + modelName);
+        carTitleView.setTextSize(20);
+        carTitleView.setTextColor(Color.parseColor("#2260FF")); // Голубой цвет текста
+        try {
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nunitosans_bold.ttf");
+            carTitleView.setTypeface(typeface);
+        } catch (Exception e) {
+            // В случае ошибки загрузки шрифта используем стандартный
+            carTitleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            Log.e("Garage", "Error loading NunitoSans font", e);
+        }
+        carTitleView.setEllipsize(TextUtils.TruncateAt.END);
+        carTitleView.setMaxLines(1);
+        infoLayout.addView(carTitleView);
 
-        View spacer = new View(this);
-        LinearLayout.LayoutParams spacerParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(16)
-        );
-        spacer.setLayoutParams(spacerParams);
-        infoLayout.addView(spacer);
-
+        // Контейнер для кнопок
         LinearLayout buttonsLayout = new LinearLayout(this);
         buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
-        buttonsLayout.setGravity(Gravity.BOTTOM);
+        buttonsLayout.setGravity(Gravity.END);
 
+        LinearLayout.LayoutParams buttonsParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        buttonsParams.setMargins(0, dpToPx(12), 0, 0);
+        buttonsLayout.setLayoutParams(buttonsParams);
+
+        // Кнопка "Подробнее"
         Button detailsButton = new Button(this);
-        setupRoundButton(detailsButton, "подробнее");
+        setupModernButton(detailsButton, "Подробнее", "#2260FF");
         detailsButton.setOnClickListener(v -> {
             String carJson = new Gson().toJson(car);
             Intent intent = new Intent(GarageActivity.this, DetailsCarActivity.class);
             intent.putExtra("carDetails", carJson);
             startActivity(intent);
         });
-
-        setupButtonAnimation(detailsButton);
         buttonsLayout.addView(detailsButton);
 
+        // Кнопка "Удалить"
         Button deleteButton = new Button(this);
-        setupRoundButton(deleteButton, "удалить");
+        setupModernButton(deleteButton, "Удалить", "#FF5252");
         deleteButton.setOnClickListener(v -> deleteCar(car.getIdCar(), card));
-
-        setupButtonAnimation(deleteButton);
         buttonsLayout.addView(deleteButton);
 
         infoLayout.addView(buttonsLayout);
         card.addView(infoLayout);
 
-        ImageView carImageView = new ImageView(this);
-        GradientDrawable placeholderShape = new GradientDrawable();
-        placeholderShape.setShape(GradientDrawable.RECTANGLE);
-        placeholderShape.setCornerRadius(16f);
-        placeholderShape.setColor(Color.parseColor("#B0C6FF"));
-        carImageView.setBackground(placeholderShape);
-
-        RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
-                dpToPx(115),
-                dpToPx(150)
-        );
-        imageParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        imageParams.setMargins(16, 0, 0, 0);
-        carImageView.setLayoutParams(imageParams);
-        carImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-        // Загрузка изображения, если оно есть
-        if (car.getLinkImg() != null && !car.getLinkImg().isEmpty()) {
-            loadCarImage(car.getLinkImg(), carImageView);
-        } else {
-            carImageView.setImageResource(R.drawable.rounded_backgroun); // Замените на вашу заглушку
-        }
-
-        card.addView(carImageView);
+        // Добавляем карточку в контейнер
         carContainer.addView(card);
     }
 
-    // Остальные методы остаются без изменений
-    private void setupButtonAnimation(Button button) {
+    // Метод для создания стилизованных кнопок
+    private void setupModernButton(Button button, String text, String color) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(dpToPx(20));
+        shape.setColor(Color.parseColor(color));
+
+        button.setText(text);
+        button.setTextColor(Color.WHITE);
+        button.setBackground(shape);
+        button.setAllCaps(false);
+        button.setTextSize(14);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                dpToPx(120),
+                dpToPx(40)
+        );
+        params.setMargins(dpToPx(8), 0, 0, 0);
+        button.setLayoutParams(params);
+
+        // Анимация при нажатии
         button.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -211,6 +263,22 @@ public class GarageActivity extends AppCompatActivity {
         });
     }
 
+    // Остальные методы остаются без изменений
+//    private void setupButtonAnimation(Button button) {
+//        button.setOnTouchListener((v, event) -> {
+//            switch (event.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                case MotionEvent.ACTION_CANCEL:
+//                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+//                    break;
+//            }
+//            return false;
+//        });
+//    }
+
     private TextView createCarInfoTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
@@ -221,26 +289,26 @@ public class GarageActivity extends AppCompatActivity {
         return textView;
     }
 
-    private void setupRoundButton(Button button, String text) {
-        GradientDrawable buttonShape = new GradientDrawable();
-        buttonShape.setShape(GradientDrawable.RECTANGLE);
-        buttonShape.setCornerRadius(30f);
-        buttonShape.setColor(Color.parseColor("#2260FF"));
-
-        button.setText(text);
-        button.setTextColor(Color.WHITE);
-        button.setBackground(buttonShape);
-        button.setAllCaps(false);
-        button.setGravity(Gravity.CENTER);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dpToPx(100),
-                dpToPx(25)
-        );
-        params.setMargins(0, 8, 8, 0);
-        button.setLayoutParams(params);
-        button.setPadding(0, 0, 0, 0);
-    }
+//    private void setupRoundButton(Button button, String text) {
+//        GradientDrawable buttonShape = new GradientDrawable();
+//        buttonShape.setShape(GradientDrawable.RECTANGLE);
+//        buttonShape.setCornerRadius(30f);
+//        buttonShape.setColor(Color.parseColor("#2260FF"));
+//
+//        button.setText(text);
+//        button.setTextColor(Color.WHITE);
+//        button.setBackground(buttonShape);
+//        button.setAllCaps(false);
+//        button.setGravity(Gravity.CENTER);
+//
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                dpToPx(100),
+//                dpToPx(25)
+//        );
+//        params.setMargins(0, 8, 8, 0);
+//        button.setLayoutParams(params);
+//        button.setPadding(0, 0, 0, 0);
+//    }
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
