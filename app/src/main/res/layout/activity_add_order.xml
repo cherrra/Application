@@ -7,53 +7,65 @@
     android:padding="24dp"
     android:background="#FFFFFF">
 
+    <!-- Выбор автомобиля -->
+
     <RelativeLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="-24dp">
 
         <ImageView
             android:id="@+id/backArrow"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="16dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_arrow_back"
-            android:contentDescription="Назад"/>
-
+            android:layout_marginStart="16dp"
+            android:contentDescription="Назад"
+            android:src="@drawable/ic_arrow_back" />
 
         <TextView
             android:id="@+id/addOrderTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/backArrow"
             android:layout_marginStart="16dp"
+            android:layout_toEndOf="@id/backArrow"
+            android:fontFamily="@font/nunitosans_bold"
             android:text="Запись на обслуживание"
             android:textColor="#2260FF"
-            android:textSize="24sp"
-            android:fontFamily="@font/nunitosans_bold"/>
+            android:textSize="24sp" />
     </RelativeLayout>
 
-    <!-- Выбор автомобиля -->
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Автомобиль"
-        app:boxStrokeColor="#CAD6FF"
-        app:boxCornerRadiusTopStart="8dp"
-        app:boxCornerRadiusTopEnd="8dp"
-        app:boxCornerRadiusBottomEnd="8dp"
-        app:boxCornerRadiusBottomStart="8dp">
+        android:layout_marginBottom="16dp">
 
-        <Spinner
-            android:id="@+id/carSpinner"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Автомобиль"
+            app:boxStrokeColor="#CAD6FF"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:endIconTint="#2260FF">
+
+
+        <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/carSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_spinner_background"
+                android:popupBackground="@drawable/custom_spinner_dropdown"
+                android:spinnerMode="dropdown"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
 
     <!-- Дата и время в одной строке -->
     <LinearLayout

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -64,6 +65,9 @@ public class AddOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_order);
+
+        ImageView backArrow = findViewById(R.id.backArrow);
+        backArrow.setOnClickListener(v -> finish());
 
         Log.d(TAG, "Инициализация активности");
 
