@@ -5,39 +5,58 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Логотип -->
-    <ImageButton
-        android:id="@+id/notificationButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_notification"
-        android:contentDescription="Уведомления" />
-
-    <!-- Кнопка выхода -->
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+    <!-- Верхняя панель с логотипом, уведомлениями и выходом -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
+        android:orientation="horizontal"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Выйти"
-        android:fontFamily="@font/nunitosans_semibold"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#2260FF"
-        app:cornerRadius="24dp" />
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Кнопка уведомлений -->
+        <ImageButton
+            android:id="@+id/notificationButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_notification"
+            android:contentDescription="Уведомления" />
+
+        <!-- Отступ между кнопками -->
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="1dp" />
+
+        <!-- Кнопка выхода -->
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выйти"
+            android:fontFamily="@font/nunitosans_semibold"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#2260FF"
+            app:cornerRadius="24dp" />
+    </LinearLayout>
+
 
     <!-- Заголовок "Категории услуг" -->
     <TextView
         android:id="@+id/categoriesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/topBar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="32dp"
         android:text="Категории услуг"
         android:textColor="#2260FF"
         android:textSize="20sp"

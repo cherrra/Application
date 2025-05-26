@@ -6,7 +6,7 @@
 
     <!-- Круглый фон -->
     <path
-        android:fillColor="#CAD6FF"
+        android:fillColor="#80CAD6FF"
         android:pathData="M24,4C12.96,4 4,12.96 4,24s8.96,20 20,20 20,-8.96 20,-20S35.04,4 24,4z"/>
 
     <!-- Контур колокольчика -->
@@ -15,7 +15,7 @@
         android:translateY="12">
         <path
             android:fillColor="#00000000"
-            android:strokeColor="#000000"
+            android:strokeColor="@color/dark_blue"
             android:strokeWidth="1"
             android:strokeLineCap="round"
             android:strokeLineJoin="round"
