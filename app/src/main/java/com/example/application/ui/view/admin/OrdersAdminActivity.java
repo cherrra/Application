@@ -316,7 +316,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
 
             // Добавляем информацию о заказе
             card.addView(createOrderInfoTextView("Заказ #" + orderId, 18f, Color.parseColor("#2260FF"), true));
-            card.addView(createOrderInfoTextView("Статус: " + status, 18f, Color.DKGRAY, false));
+            card.addView(createOrderInfoTextView("Статус: " + translateStatus(status), 18f, getStatusColor(status), false));
             card.addView(createOrderInfoTextView("Пользователь: " + userName + " (" + userEmail + ")", 16f, Color.DKGRAY, false));
             card.addView(createOrderInfoTextView("Автомобиль: " + carInfo, 16f, Color.DKGRAY, false));
             card.addView(createOrderInfoTextView("Дата: " + formattedDate, 14f, Color.DKGRAY, false));
@@ -348,6 +348,40 @@ public class OrdersAdminActivity extends AppCompatActivity {
             adminOrderContainer.addView(card);
         } catch (Exception e) {
             Log.e("OrdersAdminActivity", "Ошибка создания карточки заказа", e);
+        }
+    }
+
+    private String translateStatus(String status) {
+        switch (status.toLowerCase()) {
+            case "created":
+                return "Создан";
+            case "accepted":
+                return "Принят";
+            case "in_progress":
+                return "В процессе";
+            case "finished":
+                return "Завершен";
+            case "canceled":
+                return "Отменён";
+            default:
+                return status;
+        }
+    }
+
+    private int getStatusColor(String status) {
+        switch (status.toLowerCase()) {
+            case "created": // Создан
+                return Color.parseColor("#2196F3"); // Синий
+            case "accepted": // Принят
+                return Color.parseColor("#4CAF50"); // Зеленый
+            case "in_progress": // В процессе
+                return Color.parseColor("#FF9800"); // Оранжевый
+            case "finished": // Завершён
+                return Color.parseColor("#673AB7"); // Фиолетовый
+            case "canceled": // Отменён
+                return Color.parseColor("#F44336"); // Красный
+            default:
+                return Color.parseColor("#9E9E9E"); // Серый по умолчанию
         }
     }
 
@@ -406,6 +440,8 @@ public class OrdersAdminActivity extends AppCompatActivity {
         builder.setTitle("Обновить статус заказа");
 
         String[] statuses = new String[]{"created", "accepted", "in_progress", "finished", "canceled"};
+        String[] statusesDisplay = new String[]{"Создан", "Принят", "В процессе", "Завершен", "Отменён"};
+
         int selectedIndex = 0;
         for (int i = 0; i < statuses.length; i++) {
             if (statuses[i].equalsIgnoreCase(currentStatus)) {
@@ -414,7 +450,7 @@ public class OrdersAdminActivity extends AppCompatActivity {
             }
         }
 
-        builder.setSingleChoiceItems(statuses, selectedIndex, null);
+        builder.setSingleChoiceItems(statusesDisplay, selectedIndex, null);
         builder.setPositiveButton("Обновить", (dialog, which) -> {
             android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialog;
             int selectedPosition = alertDialog.getListView().getCheckedItemPosition();

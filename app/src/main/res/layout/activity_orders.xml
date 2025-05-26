@@ -41,7 +41,17 @@
                 android:textSize="16sp"
                 app:backgroundTint="@color/blue"
                 app:cornerRadius="24dp"/>
+
+            <ImageView
+                android:id="@+id/infoIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_info_circle"
+                android:contentDescription="Информация о статусах"/>
         </RelativeLayout>
+
 
         <!-- Контейнер с заказами -->
         <ScrollView

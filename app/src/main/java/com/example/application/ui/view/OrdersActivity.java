@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,7 +63,8 @@ public class OrdersActivity extends AppCompatActivity {
         });
 
         setupNavigation();
-    }
+
+}
 
     private void setupNavigation() {
         findViewById(R.id.homeButton).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
@@ -70,6 +72,39 @@ public class OrdersActivity extends AppCompatActivity {
         findViewById(R.id.garageButton).setOnClickListener(v -> startActivity(new Intent(this, GarageActivity.class)));
         findViewById(R.id.orderButton).setOnClickListener(v -> startActivity(new Intent(this, OrdersActivity.class)));
         findViewById(R.id.addOrderButton).setOnClickListener(v -> startActivity(new Intent(this, AddOrderActivity.class)));
+
+        ImageView infoIcon = findViewById(R.id.infoIcon);
+        infoIcon.setOnClickListener(v -> showStatusInfoDialog());
+
+        infoIcon.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    break;
+            }
+            return false;
+        });
+    }
+
+
+    private void showStatusInfoDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_status_info, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button okButton = dialogView.findViewById(R.id.okButton);
+        okButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private void fetchOrders() {
@@ -226,7 +261,7 @@ public class OrdersActivity extends AppCompatActivity {
             card.addView(infoLayout);
 
             TextView statusTextView = new TextView(this);
-            statusTextView.setText(status.toUpperCase());
+            statusTextView.setText(translateStatus(status));
             statusTextView.setTextSize(14f);
             statusTextView.setTypeface(null, Typeface.BOLD);
             statusTextView.setTextColor(getStatusColor(status));
@@ -247,6 +282,25 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
+    private String translateStatus(String status) {
+        switch (status.toLowerCase()) {
+            case "created":
+                return "Создан";
+            case "accepted":
+                return "Принят";
+            case "in_progress":
+                return "В процессе";
+            case "completed":
+                return "Выполнен";
+            case "finished":
+                return "Завершен";
+            case "canceled":
+                return "Отменён";
+            default:
+                return status;
+        }
+    }
+
     private TextView createOrderInfoTextView(String text, float textSize, int color, boolean isBold) {
         TextView textView = new TextView(this);
         textView.setText(text);
@@ -261,17 +315,19 @@ public class OrdersActivity extends AppCompatActivity {
 
     private int getStatusColor(String status) {
         switch (status.toLowerCase()) {
-            case "completed":
-            case "finished":
-                return Color.BLUE;
-            case "cancelled":
-                return Color.RED;
-            case "in_progress":
-                return Color.parseColor("#FFA500"); // Оранжевый
-            case "new":
-                return Color.GREEN;
+            case "created": // Создан
+                return Color.parseColor("#2196F3"); // Синий
+            case "accepted": // Принят
+                return Color.parseColor("#4CAF50"); // Зеленый
+            case "in_progress": // В процессе
+                return Color.parseColor("#FF9800"); // Оранжевый
+            case "completed": // Завершён
+            case "finished": // Выполнен
+                return Color.parseColor("#673AB7"); // Фиолетовый
+            case "canceled": // Отменён
+                return Color.parseColor("#F44336"); // Красный
             default:
-                return Color.BLUE;
+                return Color.parseColor("#9E9E9E"); // Серый по умолчанию
         }
     }
 
