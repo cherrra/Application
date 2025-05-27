@@ -37,7 +37,7 @@
                 android:layout_height="120dp"
                 android:src="@drawable/ic_empty_garage"
                 android:contentDescription="Пустой гараж"
-                android:tint="#CAD6FF"/>
+                android:tint="#A9BCFE"/>
 
             <TextView
                 android:id="@+id/pustoTextView"
