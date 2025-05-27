@@ -20,13 +20,15 @@
 
             <TextView
                 android:id="@+id/ordersTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="140dp"
+                android:fontFamily="@font/nunitosans_bold"
                 android:text="Заказы"
                 android:textColor="#2260FF"
-                android:textSize="24sp"
-                android:fontFamily="@font/nunitosans_bold"/>
+                android:textSize="24sp" />
+
 
             <Button
                 android:id="@+id/historyButton"
@@ -52,8 +54,7 @@
                 android:contentDescription="Информация о статусах"/>
         </RelativeLayout>
 
-
-        <!-- Контейнер с заказами -->
+        <!-- Остальной код остается без изменений -->
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
@@ -68,7 +69,6 @@
                 android:orientation="vertical" />
         </ScrollView>
 
-        <!-- Кнопка записи -->
         <Button
             android:id="@+id/addOrderButton"
             android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
             app:cornerRadius="24dp"/>
     </LinearLayout>
 
-    <!-- Нижнее меню -->
+    <!-- Нижнее меню (без изменений) -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

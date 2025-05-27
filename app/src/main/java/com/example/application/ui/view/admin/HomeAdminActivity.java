@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +26,7 @@ import com.example.application.data.model.Category;
 import com.example.application.ui.view.MainActivity;
 import com.example.application.ui.viewmodel.CategoryViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -124,32 +124,35 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void showAddCategoryDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Добавить новую категорию");
+        // Используем кастомный layout для диалога
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
 
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(16, 16, 16, 16);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
 
-        EditText nameInput = new EditText(this);
-        nameInput.setHint("Введите название категории");
-        layout.addView(nameInput);
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        builder.setView(layout);
+        TextInputEditText nameInput = dialogView.findViewById(R.id.categoryNameInput);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button addButton = dialogView.findViewById(R.id.addButton);
 
-        builder.setPositiveButton("Добавить", (dialog, which) -> {
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        addButton.setOnClickListener(v -> {
             String categoryName = nameInput.getText().toString();
             if (!categoryName.isEmpty()) {
                 createCategory(categoryName);
+                dialog.dismiss();
             } else {
-                Toast.makeText(this, "Название не может быть пустым", Toast.LENGTH_SHORT).show();
+                nameInput.setError("Название не может быть пустым");
             }
         });
 
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
+        dialog.show();
     }
-
     private void createCategory(String categoryName) {
         try {
             EncryptedSharedPrefs encryptedSharedPrefs = new EncryptedSharedPrefs(this);
@@ -310,30 +313,36 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void showEditCategoryDialog(int categoryId, String currentName) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Редактировать категорию");
+        // Используем кастомный layout для диалога
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_category, null);
 
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(16, 16, 16, 16);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
 
-        EditText nameInput = new EditText(this);
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextInputEditText nameInput = dialogView.findViewById(R.id.categoryNameInput);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+
         nameInput.setText(currentName);
-        layout.addView(nameInput);
 
-        builder.setView(layout);
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
 
-        builder.setPositiveButton("Сохранить", (dialog, which) -> {
+        saveButton.setOnClickListener(v -> {
             String newName = nameInput.getText().toString();
             if (!newName.isEmpty()) {
                 updateCategory(categoryId, newName);
+                dialog.dismiss();
             } else {
-                Toast.makeText(this, "Название не может быть пустым", Toast.LENGTH_SHORT).show();
+                nameInput.setError("Название не может быть пустым");
             }
         });
 
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
+        dialog.show();
     }
 
     private void updateCategory(int categoryId, String newCategoryName) {

@@ -24,6 +24,7 @@ import com.example.application.R;
 import com.example.application.data.model.Service;
 import com.example.application.ui.viewmodel.ServiceViewModel;
 import com.example.application.utils.EncryptedSharedPrefs;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONObject;
 
@@ -204,18 +205,106 @@ public class ServicesAdminActivity extends AppCompatActivity {
         button.setPadding(0, 0, 0, 0);
         button.setOnTouchListener(createTouchListener());
     }
+//    private void showAddServiceDialog() {
+//        showServiceDialog(null, "Добавить услугу", (name, price, description) -> {
+//            addService(name, price, description);
+//        });
+//    }
+//
+//    private void showEditServiceDialog(Service service) {
+//        showServiceDialog(service, "Редактировать услугу", (name, price, description) -> {
+//            updateService(service.getIdService(), name, price, description);
+//        });
+//    }
+
     private void showAddServiceDialog() {
-        showServiceDialog(null, "Добавить услугу", (name, price, description) -> {
-            addService(name, price, description);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_service, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextInputEditText nameInput = dialogView.findViewById(R.id.serviceNameInput);
+        TextInputEditText priceInput = dialogView.findViewById(R.id.servicePriceInput);
+        TextInputEditText descInput = dialogView.findViewById(R.id.serviceDescriptionInput);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button addButton = dialogView.findViewById(R.id.addButton);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        addButton.setOnClickListener(v -> {
+            String name = nameInput.getText().toString();
+            String priceStr = priceInput.getText().toString();
+            String description = descInput.getText().toString();
+
+            if (name.isEmpty() || priceStr.isEmpty()) {
+                if (name.isEmpty()) nameInput.setError("Введите название");
+                if (priceStr.isEmpty()) priceInput.setError("Введите цену");
+                return;
+            }
+
+            try {
+                double price = Double.parseDouble(priceStr);
+                addService(name, price, description);
+                dialog.dismiss();
+            } catch (NumberFormatException e) {
+                priceInput.setError("Введите корректную цену");
+            }
         });
+
+        dialog.show();
     }
 
     private void showEditServiceDialog(Service service) {
-        showServiceDialog(service, "Редактировать услугу", (name, price, description) -> {
-            updateService(service.getIdService(), name, price, description);
-        });
-    }
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_service, null);
 
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextInputEditText nameInput = dialogView.findViewById(R.id.serviceNameInput);
+        TextInputEditText priceInput = dialogView.findViewById(R.id.servicePriceInput);
+        TextInputEditText descInput = dialogView.findViewById(R.id.serviceDescriptionInput);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+
+        // Установка значений из существующей услуги
+        nameInput.setText(service.getServiceName());
+        priceInput.setText(String.valueOf(service.getPrice()));
+        if (service.getDescription() != null) {
+            descInput.setText(service.getDescription());
+        }
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        saveButton.setOnClickListener(v -> {
+            String name = nameInput.getText().toString();
+            String priceStr = priceInput.getText().toString();
+            String description = descInput.getText().toString();
+
+            if (name.isEmpty() || priceStr.isEmpty()) {
+                if (name.isEmpty()) nameInput.setError("Введите название");
+                if (priceStr.isEmpty()) priceInput.setError("Введите цену");
+                return;
+            }
+
+            try {
+                double price = Double.parseDouble(priceStr);
+                updateService(service.getIdService(), name, price, description);
+                dialog.dismiss();
+            } catch (NumberFormatException e) {
+                priceInput.setError("Введите корректную цену");
+            }
+        });
+
+        dialog.show();
+    }
     private void showServiceDialog(Service service, String title, ServiceDialogListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);

@@ -56,10 +56,11 @@
             app:endIconTint="#2260FF">
 
 
-        <androidx.appcompat.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/carSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:background="@drawable/custom_spinner_background"
                 android:popupBackground="@drawable/custom_spinner_dropdown"
                 android:spinnerMode="dropdown"/>
