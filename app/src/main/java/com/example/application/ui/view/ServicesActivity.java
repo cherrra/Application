@@ -109,9 +109,9 @@ public class ServicesActivity extends AppCompatActivity {
         // Параметры карточки
         GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams();
         cardParams.width = 0;
-        cardParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        cardParams.height = dpToPx(285);
         cardParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-        cardParams.setMargins(8, 8, 8, 8);
+        cardParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         card.setLayoutParams(cardParams);
 
         // Название услуги
@@ -130,7 +130,7 @@ public class ServicesActivity extends AppCompatActivity {
             descView.setTextSize(14f);
             descView.setTextColor(Color.BLACK);
             descView.setGravity(Gravity.CENTER);
-            descView.setPadding(0, 8, 0, 8);
+            descView.setPadding(0, dpToPx(8), 0, dpToPx(8));
             card.addView(descView);
         }
 
@@ -146,30 +146,27 @@ public class ServicesActivity extends AppCompatActivity {
         // Кнопка в виде кружка с плюсом
         ImageView addButton = new ImageView(this);
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
-                dpToPx(40), // Размер кнопки
+                dpToPx(40),
                 dpToPx(40)
         );
         btnParams.gravity = Gravity.CENTER;
-        btnParams.setMargins(0, 16, 0, 0);
+        btnParams.setMargins(0, dpToPx(16), 0, 0);
         addButton.setLayoutParams(btnParams);
 
-        // Создаем круглую кнопку с плюсом
+        // Круглая кнопка с плюсом
         GradientDrawable btnShape = new GradientDrawable();
         btnShape.setShape(GradientDrawable.OVAL);
-        btnShape.setColor(Color.parseColor("#902260FF")); // Синий фон
+        btnShape.setColor(Color.parseColor("#902260FF"));
         addButton.setBackground(btnShape);
 
-        // Устанавливаем иконку плюса
         addButton.setImageResource(android.R.drawable.ic_input_add);
         addButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        addButton.setColorFilter(Color.WHITE); // Белый плюс
+        addButton.setColorFilter(Color.WHITE);
 
-        // Обработчик нажатия
         addButton.setOnClickListener(v -> {
             saveSelectedService(service);
             updateTotalPrice();
 
-            // Анимация нажатия
             v.animate()
                     .scaleX(0.8f).scaleY(0.8f)
                     .setDuration(100)
@@ -185,6 +182,7 @@ public class ServicesActivity extends AppCompatActivity {
         card.addView(addButton);
         servicesContainer.addView(card);
     }
+
 
     // Вспомогательный метод для преобразования dp в пиксели
     private int dpToPx(int dp) {

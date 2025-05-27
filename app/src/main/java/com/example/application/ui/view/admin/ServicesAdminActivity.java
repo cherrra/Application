@@ -119,7 +119,7 @@ public class ServicesAdminActivity extends AppCompatActivity {
         // Параметры карточки
         GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams();
         cardParams.width = 0;
-        cardParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        cardParams.height = dpToPx(300);
         cardParams.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
         cardParams.setMargins(16, 16, 16, 16);
         card.setLayoutParams(cardParams);
@@ -154,18 +154,26 @@ public class ServicesAdminActivity extends AppCompatActivity {
         card.addView(priceView);
 
         // Контейнер для кнопок
+// Контейнер для кнопок
         LinearLayout buttonsContainer = new LinearLayout(this);
-        buttonsContainer.setOrientation(LinearLayout.HORIZONTAL);
-        buttonsContainer.setGravity(Gravity.CENTER);
-        buttonsContainer.setPadding(0, 0, 0, 0);
+        buttonsContainer.setOrientation(LinearLayout.VERTICAL); // изменить на вертикальную ориентацию
+        buttonsContainer.setGravity(Gravity.CENTER_HORIZONTAL); // выравнивание по центру по горизонтали
+        buttonsContainer.setPadding(0, dpToPx(16), 0, 0);
 
-        // Кнопка редактирования
-        Button editButton = createActionButton("Изменить", "#2260FF");
+// Кнопка редактирования
+        Button editButton = new Button(this);
+        setupServiceActionButton(editButton, "Изменить", "#2260FF");
         editButton.setOnClickListener(v -> showEditServiceDialog(service));
         buttonsContainer.addView(editButton);
 
-        // Кнопка удаления
-        Button deleteButton = createActionButton("Удалить", "#FF5252");
+// Добавим отступ снизу у первой кнопки
+        LinearLayout.LayoutParams editParams = (LinearLayout.LayoutParams) editButton.getLayoutParams();
+        editParams.setMargins(0, 0, 0, dpToPx(8));
+        editButton.setLayoutParams(editParams);
+
+// Кнопка удаления
+        Button deleteButton = new Button(this);
+        setupServiceActionButton(deleteButton, "Удалить", "#FF5252");
         deleteButton.setOnClickListener(v -> confirmDeleteService(service));
         buttonsContainer.addView(deleteButton);
 
@@ -173,29 +181,29 @@ public class ServicesAdminActivity extends AppCompatActivity {
         servicesContainer.addView(card);
     }
 
-    private Button createActionButton(String text, String color) {
-        Button button = new Button(this);
+    private void setupServiceActionButton(Button button, String text, String color) {
+        GradientDrawable buttonShape = new GradientDrawable();
+        buttonShape.setShape(GradientDrawable.RECTANGLE);
+        buttonShape.setCornerRadius(32f);
+        buttonShape.setColor(Color.parseColor(color));
+
         button.setText(text);
         button.setTextColor(Color.WHITE);
-        button.setTextSize(12f);
+        button.setBackground(buttonShape);
         button.setAllCaps(false);
-
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(24f);
-        shape.setColor(Color.parseColor(color));
-        button.setBackground(shape);
+        button.setGravity(Gravity.CENTER);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dpToPx(70), dpToPx(32)
+                dpToPx(80),  // ширина
+                dpToPx(26)   // высота
         );
         params.setMargins(8, 0, 8, 0);
         button.setLayoutParams(params);
 
+        button.setTextSize(12f);
+        button.setPadding(0, 0, 0, 0);
         button.setOnTouchListener(createTouchListener());
-        return button;
     }
-
     private void showAddServiceDialog() {
         showServiceDialog(null, "Добавить услугу", (name, price, description) -> {
             addService(name, price, description);
