@@ -41,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         apiClient = ApiClient.getInstance();
         usernameEditText = findViewById(R.id.usernameEditText);
         emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
+        passwordEditText = findViewById(R.id.passwordInputEditText);
         registerButton = findViewById(R.id.registerButton);
         privacyPolicyCheckBox = findViewById(R.id.privacyPolicyCheckBox);
         privacyPolicyText = findViewById(R.id.privacyPolicyText);
