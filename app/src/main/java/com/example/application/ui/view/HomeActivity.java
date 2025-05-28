@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(55f);
-        shape.setColor(Color.parseColor("#80CAD6FF"));
+        shape.setColor(Color.parseColor("#50CAD6FF"));
         shape.setStroke(2, Color.parseColor("#CAD6FF"));
         card.setBackground(shape);
 
