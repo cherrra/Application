@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } else {
                         runOnUiThread(() -> {
-                            if (response.code() == 401) {
+                            if (response.code() == 400) {
                                 Toast.makeText(LoginActivity.this, "Неверный email или пароль", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Ошибка сервера: " + response.code(), Toast.LENGTH_SHORT).show();
