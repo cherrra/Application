@@ -69,11 +69,16 @@ public class RegisterActivity extends AppCompatActivity {
             boolean isValid = true;
             StringBuilder errorMessages = new StringBuilder();
 
+            // Проверка email
             if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(ru|com)$")) {
                 errorMessages.append("Email должен содержать '@' и заканчиваться на .ru или .com\n");
                 isValid = false;
+            } else if (email.toLowerCase().contains("@admin")) {
+                errorMessages.append("Использование '@admin' в email запрещено\n");
+                isValid = false;
             }
 
+            // Проверка пароля
             if (password.length() < 8) {
                 errorMessages.append("Пароль должен содержать не менее 8 символов\n");
                 isValid = false;
