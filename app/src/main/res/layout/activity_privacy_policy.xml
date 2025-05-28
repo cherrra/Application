@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Последнее обновление: 01/03/2025"
+        android:text="Последнее обновление: 23/05/2025"
         android:textColor="@color/grey_blue"
         android:textSize="18sp"
         android:fontFamily="@font/nunitosans_semibold"
