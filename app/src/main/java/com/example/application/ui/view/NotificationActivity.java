@@ -49,6 +49,7 @@ public class NotificationActivity extends AppCompatActivity {
     private static final long INTERVAL = 30000; // 30 секунд
 
     private LinearLayout notificationsContainer;
+    private LinearLayout emptyStateContainer;
     private EncryptedSharedPrefs prefs;
     private static final String NOTIFICATIONS_KEY = "notifications";
     private static final String SENT_NOTIFICATIONS_KEY = "sent_notifications";
@@ -60,10 +61,10 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
 
         ImageView backArrow = findViewById(R.id.backArrow);
+        notificationsContainer = findViewById(R.id.notificationsContainer);
+        emptyStateContainer = findViewById(R.id.emptyStateContainer);
 
-        backArrow.setOnClickListener(v -> {
-            finish();
-        });
+        backArrow.setOnClickListener(v -> finish());
 
         backArrow.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -83,13 +84,11 @@ public class NotificationActivity extends AppCompatActivity {
             prefs = new EncryptedSharedPrefs(this);
             String token = prefs.getAccessToken();
             if (token != null) {
-                notificationsContainer = findViewById(R.id.notificationsContainer);
-
-                // Запрашиваем разрешения для Android 13+
                 requestNotificationPermission();
                 createNotificationChannel();
                 loadSavedNotifications();
                 startOrderStatusChecker();
+                updateEmptyState();
             } else {
                 showToast("Необходима авторизация");
                 finish();
@@ -98,6 +97,16 @@ public class NotificationActivity extends AppCompatActivity {
             e.printStackTrace();
             showToast("Ошибка инициализации");
             finish();
+        }
+    }
+
+    private void updateEmptyState() {
+        if (notificationsContainer.getChildCount() == 0) {
+            emptyStateContainer.setVisibility(View.VISIBLE);
+            notificationsContainer.setVisibility(View.GONE);
+        } else {
+            emptyStateContainer.setVisibility(View.GONE);
+            notificationsContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -158,18 +167,16 @@ public class NotificationActivity extends AppCompatActivity {
         String status = order.getString("status");
         String notificationText = "Статус заказа #" + orderId + " изменен на: " + status;
 
-        // Получаем последний известный статус этого заказа
         String lastStatusKey = "last_status_" + orderId;
         String lastKnownStatus = prefs.getString(lastStatusKey, "");
 
-        // Если статус изменился
         if (!status.equals(lastKnownStatus)) {
             runOnUiThread(() -> {
                 addNotificationToScreen(notificationText);
                 sendSystemNotification(notificationText);
+                updateEmptyState();
             });
 
-            // Сохраняем новый статус
             prefs.putString(lastStatusKey, status);
             saveNotificationText(notificationText);
         }
@@ -178,21 +185,18 @@ public class NotificationActivity extends AppCompatActivity {
     private void addNotificationToScreen(String text) {
         if (isNotificationAlreadyDisplayed(text)) return;
 
-        // Создаем карточку уведомления
         LinearLayout notificationCard = new LinearLayout(this);
         notificationCard.setOrientation(LinearLayout.HORIZONTAL);
         notificationCard.setGravity(Gravity.CENTER_VERTICAL);
         notificationCard.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
-        // Стиль карточки - аналогично NotificationAdminActivity
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
         cardShape.setCornerRadius(dpToPx(24));
-        cardShape.setColor(Color.parseColor("#FFFFFF")); // Белый фон
-        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD")); // Голубая обводка
+        cardShape.setColor(Color.parseColor("#FFFFFF"));
+        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD"));
         notificationCard.setBackground(cardShape);
 
-        // Параметры карточки
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -200,7 +204,6 @@ public class NotificationActivity extends AppCompatActivity {
         cardParams.setMargins(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
         notificationCard.setLayoutParams(cardParams);
 
-        // Иконка уведомления
         ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_notification);
         LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
@@ -209,18 +212,16 @@ public class NotificationActivity extends AppCompatActivity {
         iconParams.setMargins(0, 0, dpToPx(12), 0);
         icon.setLayoutParams(iconParams);
 
-        // Контейнер для текста
         LinearLayout textContainer = new LinearLayout(this);
         textContainer.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams textContainerParams = new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         textContainer.setLayoutParams(textContainerParams);
 
-        // Текст уведомления
         TextView textView = new TextView(this);
         textView.setText(text);
         textView.setTextSize(16);
-        textView.setTextColor(Color.parseColor("#2260FF")); // Темно-синий цвет
+        textView.setTextColor(Color.parseColor("#2260FF"));
         try {
             Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nunitosans_regular.ttf");
             textView.setTypeface(typeface);
@@ -234,13 +235,12 @@ public class NotificationActivity extends AppCompatActivity {
         notificationCard.addView(icon);
         notificationCard.addView(textContainer);
 
-        // Добавляем карточку в контейнер с анимацией
         notificationsContainer.addView(notificationCard, 0);
 
-        // Анимация - slide in сверху
         Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_top);
         notificationCard.startAnimation(slideIn);
     }
+
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
@@ -304,14 +304,9 @@ public class NotificationActivity extends AppCompatActivity {
     private void loadSavedNotifications() {
         Set<String> savedNotifications = prefs.getStringSet(NOTIFICATIONS_KEY, new HashSet<>());
         for (String notification : savedNotifications) {
-            // Создаем временный TextView для проверки дубликатов
-            TextView tempView = new TextView(this);
-            tempView.setText(notification);
-
-            if (!isNotificationAlreadyDisplayed(notification)) {
-                addNotificationToScreen(notification);
-            }
+            addNotificationToScreen(notification);
         }
+        updateEmptyState();
     }
 
     private void saveNotificationText(String notificationText) {

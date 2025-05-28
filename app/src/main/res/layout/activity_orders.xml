@@ -29,7 +29,6 @@
                 android:textColor="#2260FF"
                 android:textSize="24sp" />
 
-
             <Button
                 android:id="@+id/historyButton"
                 android:layout_width="wrap_content"
@@ -54,7 +53,45 @@
                 android:contentDescription="Информация о статусах"/>
         </RelativeLayout>
 
-        <!-- Остальной код остается без изменений -->
+        <!-- Контейнер для пустого состояния -->
+        <LinearLayout
+            android:id="@+id/emptyStateContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="3dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_orders"
+                android:contentDescription="Нет заказов"
+                android:tint="#A9BCFE"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Пока нет заказов"
+                android:textColor="#2260FF"
+                android:textSize="20sp"
+                android:fontFamily="@font/nunitosans_semibold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Создайте свой первый заказ"
+                android:textColor="#999999"
+                android:textSize="16sp"
+                android:fontFamily="@font/nunitosans_regular"/>
+        </LinearLayout>
+
+        <!-- Контейнер для списка заказов -->
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
@@ -83,7 +120,7 @@
             app:cornerRadius="24dp"/>
     </LinearLayout>
 
-    <!-- Нижнее меню (без изменений) -->
+    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

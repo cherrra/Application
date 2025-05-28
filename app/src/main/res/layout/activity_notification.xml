@@ -42,12 +42,50 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@id/headerContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Empty state container -->
+        <LinearLayout
+            android:id="@+id/emptyStateContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_notification"
+                android:contentDescription="Нет уведомлений"
+                android:tint="#A9BCFE"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Нет уведомлений"
+                android:textColor="#2260FF"
+                android:textSize="20sp"
+                android:fontFamily="@font/nunitosans_semibold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Здесь будут появляться уведомления о статусе ваших заказов"
+                android:textColor="#999999"
+                android:textSize="16sp"
+                android:fontFamily="@font/nunitosans_regular"/>
+        </LinearLayout>
+
+        <!-- Notifications container -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,6 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingHorizontal="16dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="24dp"/>
         </ScrollView>

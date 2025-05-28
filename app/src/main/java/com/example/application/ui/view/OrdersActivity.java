@@ -38,6 +38,7 @@ import okhttp3.Response;
 public class OrdersActivity extends AppCompatActivity {
 
     private LinearLayout orderContainer;
+    private LinearLayout emptyStateContainer;
     private JSONArray ordersArray;
     private boolean isHistoryDisplayed = false;
 
@@ -47,6 +48,7 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
 
         orderContainer = findViewById(R.id.orderContainer);
+        emptyStateContainer = findViewById(R.id.emptyStateContainer);
         fetchOrders();
 
         Button historyButton = findViewById(R.id.historyButton);
@@ -63,8 +65,7 @@ public class OrdersActivity extends AppCompatActivity {
         });
 
         setupNavigation();
-
-}
+    }
 
     private void setupNavigation() {
         findViewById(R.id.homeButton).setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
@@ -89,7 +90,6 @@ public class OrdersActivity extends AppCompatActivity {
             return false;
         });
     }
-
 
     private void showStatusInfoDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_status_info, null);
@@ -131,7 +131,10 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("OrdersActivity", "Ошибка сети: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(OrdersActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> {
+                    Toast.makeText(OrdersActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+                    showEmptyState();
+                });
             }
 
             @Override
@@ -141,21 +144,38 @@ public class OrdersActivity extends AppCompatActivity {
                         String responseBody = response.body().string();
                         Log.d("OrdersResponse", "Ответ сервера: " + responseBody);
                         ordersArray = new JSONArray(responseBody);
-                        runOnUiThread(OrdersActivity.this::displayAllOrders);
+                        runOnUiThread(() -> {
+                            if (ordersArray.length() > 0) {
+                                emptyStateContainer.setVisibility(View.GONE);
+                                displayAllOrders();
+                            } else {
+                                showEmptyState();
+                            }
+                        });
                     } catch (Exception e) {
                         Log.e("OrdersActivity", "Ошибка обработки ответа: " + e.getMessage());
+//                        runOnUiThread(this::showEmptyState);
                     }
                 } else {
                     Log.e("OrdersActivity", "Ошибка сервера: " + response.code());
-                    runOnUiThread(() -> Toast.makeText(OrdersActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        Toast.makeText(OrdersActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
+                        showEmptyState();
+                    });
                 }
             }
         });
     }
 
+    private void showEmptyState() {
+        emptyStateContainer.setVisibility(View.VISIBLE);
+        orderContainer.removeAllViews();
+    }
+
     private void displayAllOrders() {
         orderContainer.removeAllViews();
-        if (ordersArray != null) {
+        if (ordersArray != null && ordersArray.length() > 0) {
+            emptyStateContainer.setVisibility(View.GONE);
             for (int i = 0; i < ordersArray.length(); i++) {
                 try {
                     JSONObject orderObject = ordersArray.getJSONObject(i);
@@ -166,12 +186,15 @@ public class OrdersActivity extends AppCompatActivity {
                     Log.e("OrdersActivity", "Ошибка обработки заказа: " + e.getMessage());
                 }
             }
+        } else {
+            showEmptyState();
         }
     }
 
     private void displayFinishedOrders() {
         orderContainer.removeAllViews();
-        if (ordersArray != null) {
+        if (ordersArray != null && ordersArray.length() > 0) {
+            emptyStateContainer.setVisibility(View.GONE);
             for (int i = 0; i < ordersArray.length(); i++) {
                 try {
                     JSONObject orderObject = ordersArray.getJSONObject(i);
@@ -182,9 +205,12 @@ public class OrdersActivity extends AppCompatActivity {
                     Log.e("OrdersActivity", "Ошибка обработки заказа: " + e.getMessage());
                 }
             }
+        } else {
+            showEmptyState();
         }
     }
 
+    // Остальные методы остаются без изменений
     private void addOrderCard(JSONObject orderObject) {
         try {
             String formattedDate = formatDate(orderObject.getString("order_date"));
@@ -282,6 +308,7 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
+    // Остальные вспомогательные методы остаются без изменений
     private String translateStatus(String status) {
         switch (status.toLowerCase()) {
             case "created":
@@ -353,7 +380,6 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     private void deleteOrder(int orderId, View cardView) {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_cancel_order, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -361,7 +387,6 @@ public class OrdersActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
@@ -400,6 +425,9 @@ public class OrdersActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (response.isSuccessful()) {
                             orderContainer.removeView(cardView);
+                            if (orderContainer.getChildCount() == 0) {
+                                showEmptyState();
+                            }
                             Toast.makeText(OrdersActivity.this, "Заказ отменён", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(OrdersActivity.this, "Ошибка отмены заказа", Toast.LENGTH_SHORT).show();
