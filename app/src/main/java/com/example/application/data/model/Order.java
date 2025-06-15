@@ -17,7 +17,6 @@ public class Order {
     private String comment;
     private int id;
 
-    // Конструктор
     public Order(int idOrder, String carModel, String carBrand, String orderDate, String orderTime, String services, double price, Status status, String comment, int id) {
         this.idOrder = idOrder;
         this.carModel = carModel;
@@ -31,7 +30,6 @@ public class Order {
         this.id = id;
     }
 
-    // Геттеры и сеттеры
     public int getIdOrder() {
         return idOrder;
     }
@@ -107,7 +105,6 @@ public class Order {
         this.status = status;
     }
 
-    // Enum для статуса заказа
     public enum Status {
         ACCEPTED("accepted"),
         IN_PROGRESS("in_progress"),
@@ -135,7 +132,6 @@ public class Order {
         }
     }
 
-    // Метод для парсинга из JSON массива
     public static List<Order> fromJsonArray(JSONArray jsonArray) {
         List<Order> orders = new ArrayList<>();
         try {

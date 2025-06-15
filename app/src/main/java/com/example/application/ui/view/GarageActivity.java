@@ -57,7 +57,6 @@ public class GarageActivity extends AppCompatActivity {
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
         Button addCarButton = findViewById(R.id.addCarButton);
-//        setupButtonAnimation(addCarButton);
 
         setupNavigation();
         fetchGarageDetails();
@@ -95,19 +94,16 @@ public class GarageActivity extends AppCompatActivity {
     }
 
     private void addCarCard(Car car) {
-        // Основной контейнер карточки
         RelativeLayout card = new RelativeLayout(this);
         card.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
-        // Стиль карточки - белый фон с голубой обводкой (как в addUserCard)
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
-        cardShape.setCornerRadius(dpToPx(24)); // Скругление углов 24dp
+        cardShape.setCornerRadius(dpToPx(24));
         cardShape.setColor(Color.WHITE);
-        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD")); // Голубая обводка
+        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD"));
         card.setBackground(cardShape);
-        card.setElevation(dpToPx(2)); // Легкая тень
-
+        card.setElevation(dpToPx(2));
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -115,14 +111,12 @@ public class GarageActivity extends AppCompatActivity {
         cardParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(16));
         card.setLayoutParams(cardParams);
 
-        // Изображение автомобиля с небольшим скруглением
         ImageView carImageView = new ImageView(this);
         GradientDrawable imageShape = new GradientDrawable();
         imageShape.setShape(GradientDrawable.RECTANGLE);
-        imageShape.setCornerRadius(dpToPx(12)); // Скругление углов изображения 12dp
-        imageShape.setColor(Color.parseColor("#F5F5F5")); // Цвет placeholder'а
+        imageShape.setCornerRadius(dpToPx(12));
+        imageShape.setColor(Color.parseColor("#F5F5F5"));
 
-        // Для API >= 21 можно использовать ViewOutlineProvider для лучшего скругления
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             carImageView.setClipToOutline(true);
             carImageView.setOutlineProvider(new ViewOutlineProvider() {
@@ -136,14 +130,13 @@ public class GarageActivity extends AppCompatActivity {
 
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(180) // Фиксированная высота изображения
+                dpToPx(180)
         );
-        imageParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8)); // Отступы вокруг изображения
+        imageParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         carImageView.setLayoutParams(imageParams);
         carImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         carImageView.setId(View.generateViewId());
 
-        // Загрузка изображения
         if (car.getLinkImg() != null && !car.getLinkImg().isEmpty()) {
             loadCarImage(car.getLinkImg(), carImageView);
         } else {
@@ -153,7 +146,6 @@ public class GarageActivity extends AppCompatActivity {
 
         card.addView(carImageView);
 
-        // Контейнер для текстовой информации
         LinearLayout infoLayout = new LinearLayout(this);
         infoLayout.setOrientation(LinearLayout.VERTICAL);
         infoLayout.setPadding(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(16));
@@ -165,7 +157,6 @@ public class GarageActivity extends AppCompatActivity {
         infoParams.addRule(RelativeLayout.BELOW, carImageView.getId());
         infoLayout.setLayoutParams(infoParams);
 
-        // Название автомобиля
         String brandName = "Не указано";
         String modelName = "Не указано";
 
@@ -179,12 +170,11 @@ public class GarageActivity extends AppCompatActivity {
         TextView carTitleView = new TextView(this);
         carTitleView.setText(brandName + " " + modelName);
         carTitleView.setTextSize(20);
-        carTitleView.setTextColor(Color.parseColor("#2260FF")); // Голубой цвет текста
+        carTitleView.setTextColor(Color.parseColor("#2260FF"));
         try {
             Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nunitosans_bold.ttf");
             carTitleView.setTypeface(typeface);
         } catch (Exception e) {
-            // В случае ошибки загрузки шрифта используем стандартный
             carTitleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
             Log.e("Garage", "Error loading NunitoSans font", e);
         }
@@ -192,7 +182,6 @@ public class GarageActivity extends AppCompatActivity {
         carTitleView.setMaxLines(1);
         infoLayout.addView(carTitleView);
 
-        // Контейнер для кнопок
         LinearLayout buttonsLayout = new LinearLayout(this);
         buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonsLayout.setGravity(Gravity.END);
@@ -204,7 +193,6 @@ public class GarageActivity extends AppCompatActivity {
         buttonsParams.setMargins(0, dpToPx(12), 0, 0);
         buttonsLayout.setLayoutParams(buttonsParams);
 
-        // Кнопка "Подробнее"
         Button detailsButton = new Button(this);
         setupModernButton(detailsButton, "Подробнее", "#2260FF");
         detailsButton.setOnClickListener(v -> {
@@ -215,7 +203,6 @@ public class GarageActivity extends AppCompatActivity {
         });
         buttonsLayout.addView(detailsButton);
 
-        // Кнопка "Удалить"
         Button deleteButton = new Button(this);
         setupModernButton(deleteButton, "Удалить", "#FF5252");
         deleteButton.setOnClickListener(v -> deleteCar(car.getIdCar(), card));
@@ -224,11 +211,9 @@ public class GarageActivity extends AppCompatActivity {
         infoLayout.addView(buttonsLayout);
         card.addView(infoLayout);
 
-        // Добавляем карточку в контейнер
         carContainer.addView(card);
     }
 
-    // Метод для создания стилизованных кнопок
     private void setupModernButton(Button button, String text, String color) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
@@ -248,7 +233,6 @@ public class GarageActivity extends AppCompatActivity {
         params.setMargins(dpToPx(8), 0, 0, 0);
         button.setLayoutParams(params);
 
-        // Анимация при нажатии
         button.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -263,22 +247,6 @@ public class GarageActivity extends AppCompatActivity {
         });
     }
 
-    // Остальные методы остаются без изменений
-//    private void setupButtonAnimation(Button button) {
-//        button.setOnTouchListener((v, event) -> {
-//            switch (event.getAction()) {
-//                case MotionEvent.ACTION_DOWN:
-//                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
-//                    break;
-//                case MotionEvent.ACTION_UP:
-//                case MotionEvent.ACTION_CANCEL:
-//                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
-//                    break;
-//            }
-//            return false;
-//        });
-//    }
-
     private TextView createCarInfoTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
@@ -289,33 +257,11 @@ public class GarageActivity extends AppCompatActivity {
         return textView;
     }
 
-//    private void setupRoundButton(Button button, String text) {
-//        GradientDrawable buttonShape = new GradientDrawable();
-//        buttonShape.setShape(GradientDrawable.RECTANGLE);
-//        buttonShape.setCornerRadius(30f);
-//        buttonShape.setColor(Color.parseColor("#2260FF"));
-//
-//        button.setText(text);
-//        button.setTextColor(Color.WHITE);
-//        button.setBackground(buttonShape);
-//        button.setAllCaps(false);
-//        button.setGravity(Gravity.CENTER);
-//
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                dpToPx(100),
-//                dpToPx(25)
-//        );
-//        params.setMargins(0, 8, 8, 0);
-//        button.setLayoutParams(params);
-//        button.setPadding(0, 0, 0, 0);
-//    }
-
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
     private void deleteCar(int carId, RelativeLayout card) {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_car, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -323,7 +269,6 @@ public class GarageActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);

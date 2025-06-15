@@ -57,9 +57,8 @@ public class CategoryRepository {
         return categoriesLiveData;
     }
 
-    // Метод для обновления категории
+
     public void updateCategory(int categoryId, String newCategoryName, String token, Callback callback) {
-        // Создание JSON объекта для тела запроса
         JSONObject requestBodyJson = new JSONObject();
         try {
             requestBodyJson.put("category_name", newCategoryName);
@@ -67,19 +66,16 @@ public class CategoryRepository {
             e.printStackTrace();
         }
 
-        // Преобразование JSON в RequestBody
         RequestBody requestBody = RequestBody.create(
                 MediaType.parse("application/json"),
                 requestBodyJson.toString()
         );
 
-        // Отправка запроса на сервер
         ApiClient.getInstance().updateCategory(categoryId, requestBody, token, callback);
     }
-    // Метод для удаления категории
+
     public void deleteCategory(int categoryId, String token, Callback callback) {
-        // Отправка запроса на удаление категории
-        ApiClient.getInstance().deleteCategory(categoryId, token, callback);
+       ApiClient.getInstance().deleteCategory(categoryId, token, callback);
     }
 
 }

@@ -154,7 +154,6 @@ public class OrdersActivity extends AppCompatActivity {
                         });
                     } catch (Exception e) {
                         Log.e("OrdersActivity", "Ошибка обработки ответа: " + e.getMessage());
-//                        runOnUiThread(this::showEmptyState);
                     }
                 } else {
                     Log.e("OrdersActivity", "Ошибка сервера: " + response.code());
@@ -210,14 +209,12 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
-    // Остальные методы остаются без изменений
     private void addOrderCard(JSONObject orderObject) {
         try {
             String formattedDate = formatDate(orderObject.getString("order_date"));
             int orderId = orderObject.getInt("id_order");
             String status = orderObject.getString("status");
 
-            // Получаем данные об автомобиле из вложенного объекта car или напрямую
             String carInfo = "Не указано";
             if (orderObject.has("car")) {
                 JSONObject carObject = orderObject.getJSONObject("car");
@@ -228,7 +225,6 @@ public class OrdersActivity extends AppCompatActivity {
                     carInfo = brandName + " " + modelName;
                 }
             } else if (orderObject.has("car_model") && orderObject.has("car_brand")) {
-                // Для обратной совместимости, если данные приходят как плоские поля
                 carInfo = orderObject.getString("car_brand") + " " + orderObject.getString("car_model");
             }
 
@@ -308,7 +304,6 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
-    // Остальные вспомогательные методы остаются без изменений
     private String translateStatus(String status) {
         switch (status.toLowerCase()) {
             case "created":
@@ -342,19 +337,19 @@ public class OrdersActivity extends AppCompatActivity {
 
     private int getStatusColor(String status) {
         switch (status.toLowerCase()) {
-            case "created": // Создан
-                return Color.parseColor("#2196F3"); // Синий
-            case "accepted": // Принят
-                return Color.parseColor("#4CAF50"); // Зеленый
-            case "in_progress": // В процессе
-                return Color.parseColor("#FF9800"); // Оранжевый
-            case "completed": // Завершён
-            case "finished": // Выполнен
-                return Color.parseColor("#673AB7"); // Фиолетовый
-            case "canceled": // Отменён
-                return Color.parseColor("#F44336"); // Красный
+            case "created":
+                return Color.parseColor("#2196F3");
+            case "accepted":
+                return Color.parseColor("#4CAF50");
+            case "in_progress":
+                return Color.parseColor("#FF9800");
+            case "completed":
+            case "finished":
+                return Color.parseColor("#673AB7");
+            case "canceled":
+                return Color.parseColor("#F44336");
             default:
-                return Color.parseColor("#9E9E9E"); // Серый по умолчанию
+                return Color.parseColor("#9E9E9E");
         }
     }
 

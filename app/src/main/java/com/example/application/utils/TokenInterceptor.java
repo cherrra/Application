@@ -15,7 +15,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// TokenInterceptor.java
 public class TokenInterceptor implements Interceptor {
     private final EncryptedSharedPrefs prefs;
     private final OkHttpClient client;
@@ -29,7 +28,6 @@ public class TokenInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
 
-        // Добавляем access token
         String accessToken = prefs.getAccessToken();
         if (accessToken != null) {
             originalRequest = originalRequest.newBuilder()
@@ -46,7 +44,6 @@ public class TokenInterceptor implements Interceptor {
                 throw new IOException("No refresh token available");
             }
 
-            // Строим URL для refresh на основе оригинального запроса
             String refreshUrl = originalRequest.url().newBuilder()
                     .encodedPath("/api/auth/refresh")
                     .build()

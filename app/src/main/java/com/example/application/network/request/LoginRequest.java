@@ -10,7 +10,6 @@ public class LoginRequest {
         this.password = password;
     }
 
-    // Геттеры
     public String getEmail() {
         return email;
     }

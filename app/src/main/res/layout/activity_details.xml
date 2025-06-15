@@ -8,7 +8,6 @@
     android:background="#FFFFFF"
     android:padding="20dp">
 
-    <!-- Шапка с кнопкой назад и заголовком -->
     <RelativeLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
@@ -38,7 +37,6 @@
             android:fontFamily="@font/nunitosans_bold"/>
     </RelativeLayout>
 
-    <!-- Карточка профиля с новым цветом фона -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +56,6 @@
             android:padding="24dp"
             android:gravity="center">
 
-            <!-- Аватарка в круглой рамке -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/avatarCard"
                 android:layout_width="130dp"
@@ -78,8 +75,6 @@
                     android:contentDescription="Аватар пользователя"/>
             </com.google.android.material.card.MaterialCardView>
 
-
-            <!-- Информация о пользователе -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,7 +138,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Кнопки действий -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

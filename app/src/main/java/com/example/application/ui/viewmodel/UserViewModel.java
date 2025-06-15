@@ -29,13 +29,11 @@ public class UserViewModel extends ViewModel {
         this.userRepository = new UserRepository();
     }
 
-    // Получение данных пользователя
     public LiveData<User> getUser(String token) {
         Log.d("UserViewModel", "Запрос данных пользователя с токеном: " + token);
         return userRepository.getUserData(token);
     }
 
-    // Обновление данных пользователя
     public LiveData<Boolean> updateUser(Map<String, String> updatedData, String token) {
         MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
 
@@ -58,7 +56,6 @@ public class UserViewModel extends ViewModel {
         return resultLiveData;
     }
 
-    // Загрузка изображения
     public LiveData<Boolean> uploadImage(Uri imageUri, String token, Context context) {
         MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
 
@@ -78,14 +75,12 @@ public class UserViewModel extends ViewModel {
         return resultLiveData;
     }
 
-    // Получение списка пользователей
     public LiveData<Boolean> fetchUsers(String token, Callback callback) {
         MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
         userRepository.fetchUsers(token, callback);
         return resultLiveData;
     }
 
-    // Удаление пользователя
     public LiveData<Boolean> deleteUser(int userId, String token, Callback callback) {
         MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
         userRepository.deleteUser(userId, token, callback);

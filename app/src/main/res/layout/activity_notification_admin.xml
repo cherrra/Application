@@ -8,7 +8,6 @@
     android:background="#FFFFFF"
     android:paddingBottom="16dp">
 
-    <!-- App Bar -->
     <RelativeLayout
     android:id="@+id/headerContainer"
     android:layout_width="match_parent"
@@ -42,8 +41,6 @@
         android:fontFamily="@font/nunitosans_bold" />
 </RelativeLayout>
 
-
-    <!-- Notifications List -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -65,7 +62,6 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Empty State -->
     <TextView
         android:id="@+id/emptyStateText"
         android:layout_width="wrap_content"

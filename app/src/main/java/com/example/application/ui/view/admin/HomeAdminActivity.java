@@ -124,7 +124,6 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void showAddCategoryDialog() {
-        // Используем кастомный layout для диалога
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -132,7 +131,6 @@ public class HomeAdminActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         TextInputEditText nameInput = dialogView.findViewById(R.id.categoryNameInput);
@@ -175,7 +173,6 @@ public class HomeAdminActivity extends AppCompatActivity {
                                 Toast.makeText(HomeAdminActivity.this,
                                         "Категория создана",
                                         Toast.LENGTH_SHORT).show();
-                                // Обновляем список категорий
                                 observeCategories(token);
                             } else {
                                 Toast.makeText(HomeAdminActivity.this,
@@ -196,21 +193,18 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void addCategoryCard(Category category) {
-        // Основной контейнер карточки (горизонтальный)
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.HORIZONTAL);
-        card.setPadding(16, 16, 16, 16); // Уменьшенные отступы
+        card.setPadding(16, 16, 16, 16);
         card.setGravity(Gravity.CENTER_VERTICAL);
 
-        // Стиль карточки
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
         cardShape.setCornerRadius(24f);
         cardShape.setColor(Color.parseColor("#FFFFFF"));
-        cardShape.setStroke(2, Color.parseColor("#E3F2FD")); // Более тонкая обводка
+        cardShape.setStroke(2, Color.parseColor("#E3F2FD"));
         card.setBackground(cardShape);
 
-        // Параметры карточки
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -219,13 +213,11 @@ public class HomeAdminActivity extends AppCompatActivity {
         card.setMinimumHeight(dpToPx(70));
         card.setLayoutParams(cardParams);
 
-        // Контейнер для текста и кнопок (вертикальный)
         LinearLayout contentContainer = new LinearLayout(this);
         contentContainer.setOrientation(LinearLayout.VERTICAL);
         contentContainer.setLayoutParams(new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        // Название категории
         TextView nameView = new TextView(this);
         nameView.setText(category.getCategoryName());
         nameView.setTextSize(16f);
@@ -239,7 +231,6 @@ public class HomeAdminActivity extends AppCompatActivity {
         ));
         contentContainer.addView(nameView);
 
-        // Контейнер для кнопок
         LinearLayout buttonsContainer = new LinearLayout(this);
         buttonsContainer.setOrientation(LinearLayout.HORIZONTAL);
         buttonsContainer.setGravity(Gravity.END);
@@ -247,13 +238,11 @@ public class HomeAdminActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        // Кнопка редактирования (компактная)
         Button editButton = new Button(this);
         setupCompactButton(editButton, "Изменить");
         editButton.setOnClickListener(v -> showEditCategoryDialog(category.getIdCategory(), category.getCategoryName()));
         buttonsContainer.addView(editButton);
 
-        // Кнопка удаления (компактная)
         Button deleteButton = new Button(this);
         setupCompactButton(deleteButton, "Удалить");
         deleteButton.setBackground(createRoundedButtonBackground("#FF5252"));
@@ -263,7 +252,6 @@ public class HomeAdminActivity extends AppCompatActivity {
         contentContainer.addView(buttonsContainer);
         card.addView(contentContainer);
 
-        // Обработчик клика по карточке
         card.setOnClickListener(v -> {
             Intent intent = new Intent(HomeAdminActivity.this, ServicesAdminActivity.class);
             intent.putExtra("id_category", category.getIdCategory());
@@ -273,7 +261,6 @@ public class HomeAdminActivity extends AppCompatActivity {
         categoryContainer.addView(card);
     }
 
-    // Метод для настройки компактных кнопок
     private void setupCompactButton(Button button, String text) {
         GradientDrawable buttonShape = new GradientDrawable();
         buttonShape.setShape(GradientDrawable.RECTANGLE);
@@ -288,8 +275,8 @@ public class HomeAdminActivity extends AppCompatActivity {
 
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dpToPx(80),  // ширина
-                dpToPx(26)   // высота
+                dpToPx(80),
+                dpToPx(26)
         );
         params.setMargins(4, 0, 4, 0);
         button.setLayoutParams(params);
@@ -298,12 +285,10 @@ public class HomeAdminActivity extends AppCompatActivity {
         button.setPadding(0, 0, 0, 0);
     }
 
-    // Метод для конвертации dp в px
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    // Метод для создания фона кнопок с закругленными углами
     private GradientDrawable createRoundedButtonBackground(String color) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
@@ -313,7 +298,6 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void showEditCategoryDialog(int categoryId, String currentName) {
-        // Используем кастомный layout для диалога
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_category, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -321,7 +305,6 @@ public class HomeAdminActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         TextInputEditText nameInput = dialogView.findViewById(R.id.categoryNameInput);
@@ -362,7 +345,7 @@ public class HomeAdminActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             if (response.isSuccessful()) {
                                 Toast.makeText(HomeAdminActivity.this, "Категория обновлена", Toast.LENGTH_SHORT).show();
-                                observeCategories(token); // Перезагружаем список категорий
+                                observeCategories(token);
                             } else {
                                 Toast.makeText(HomeAdminActivity.this, "Ошибка обновления категории", Toast.LENGTH_SHORT).show();
                             }
@@ -393,7 +376,7 @@ public class HomeAdminActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             if (response.isSuccessful()) {
                                 Toast.makeText(HomeAdminActivity.this, "Категория удалена", Toast.LENGTH_SHORT).show();
-                                categoryContainer.removeView(card); // Удаляем карточку из интерфейса
+                                categoryContainer.removeView(card);
                             } else {
                                 Toast.makeText(HomeAdminActivity.this, "Ошибка удаления категории", Toast.LENGTH_SHORT).show();
                             }
@@ -408,7 +391,6 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void confirmAndDeleteCategory(int categoryId, LinearLayout card) {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_category, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -416,7 +398,6 @@ public class HomeAdminActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
@@ -433,7 +414,6 @@ public class HomeAdminActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -441,7 +421,6 @@ public class HomeAdminActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);

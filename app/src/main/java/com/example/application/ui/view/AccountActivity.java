@@ -146,7 +146,6 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_logout, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -154,7 +153,6 @@ public class AccountActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
@@ -181,7 +179,6 @@ public class AccountActivity extends AppCompatActivity {
 
         dialog.show();
 
-        // Добавляем анимации
         Window window = dialog.getWindow();
         if (window != null) {
             window.setWindowAnimations(R.style.DialogAnimation);

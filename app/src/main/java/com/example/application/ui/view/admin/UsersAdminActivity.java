@@ -144,7 +144,6 @@ public class UsersAdminActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 userContainer.removeAllViews();
 
-                                // Добавляем плашку с количеством пользователей
                                 addUsersCountView(usersArray.length());
 
                                 if (usersArray.length() == 0) {
@@ -193,16 +192,14 @@ public class UsersAdminActivity extends AppCompatActivity {
     }
 
     private void addUsersCountView(int usersCount) {
-        // Создаем контейнер для плашки
         LinearLayout countContainer = new LinearLayout(this);
         countContainer.setOrientation(LinearLayout.HORIZONTAL);
         countContainer.setPadding(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
 
-        // Стиль плашки
         GradientDrawable countShape = new GradientDrawable();
         countShape.setShape(GradientDrawable.RECTANGLE);
         countShape.setCornerRadius(dpToPx(12));
-        countShape.setColor(Color.parseColor("#E3F2FD")); // Светло-голубой фон
+        countShape.setColor(Color.parseColor("#E3F2FD"));
         countContainer.setBackground(countShape);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -212,7 +209,6 @@ public class UsersAdminActivity extends AppCompatActivity {
         params.setMargins(dpToPx(16), 0, dpToPx(16), dpToPx(16));
         countContainer.setLayoutParams(params);
 
-        // Иконка
         ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_users);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.dark_blue));
@@ -223,7 +219,6 @@ public class UsersAdminActivity extends AppCompatActivity {
         icon.setLayoutParams(iconParams);
         countContainer.addView(icon);
 
-        // Текст с количеством
         TextView countText = new TextView(this);
         String countString = usersCount + " " + getCorrectPlural(usersCount, "пользователь", "пользователя", "пользователей");
         countText.setText(countString);
@@ -232,11 +227,9 @@ public class UsersAdminActivity extends AppCompatActivity {
         countText.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         countContainer.addView(countText);
 
-        // Добавляем плашку перед всеми пользователями
         userContainer.addView(countContainer, 0);
     }
 
-    // Метод для правильного склонения слова "пользователь"
     private String getCorrectPlural(int number, String one, String few, String many) {
         int n = Math.abs(number) % 100;
         int n1 = n % 10;
@@ -248,13 +241,11 @@ public class UsersAdminActivity extends AppCompatActivity {
     }
 
     private void addUserCard(JSONObject userObject) throws JSONException {
-        // Основные данные
         int userId = userObject.getInt("id");
         String username = userObject.getString("username");
         String email = userObject.getString("email");
         String imageUrl = userObject.optString("link_img", null);
 
-        // Автомобили
         JSONArray carsArray = userObject.optJSONArray("cars");
         String carsInfo = "Нет автомобилей";
         if (carsArray != null && carsArray.length() > 0) {
@@ -272,7 +263,6 @@ public class UsersAdminActivity extends AppCompatActivity {
             carsInfo = carsBuilder.toString();
         }
 
-        // Создание карточки
         RelativeLayout card = new RelativeLayout(this);
         card.setPadding(24, 24, 24, 24);
 
@@ -290,7 +280,6 @@ public class UsersAdminActivity extends AppCompatActivity {
         cardParams.setMargins(8, 8, 8, 16);
         card.setLayoutParams(cardParams);
 
-        // Аватар
         ImageView avatarView = new ImageView(this);
         avatarView.setId(View.generateViewId());
         RelativeLayout.LayoutParams avatarParams = new RelativeLayout.LayoutParams(
@@ -303,7 +292,6 @@ public class UsersAdminActivity extends AppCompatActivity {
         loadUserAvatar(avatarView, imageUrl);
         card.addView(avatarView);
 
-        // Имя пользователя
         TextView usernameView = new TextView(this);
         usernameView.setText(username);
         usernameView.setTextSize(16f);
@@ -320,7 +308,6 @@ public class UsersAdminActivity extends AppCompatActivity {
         usernameView.setLayoutParams(usernameParams);
         card.addView(usernameView);
 
-        // Кнопка удаления
         Button deleteButton = new Button(this);
         setupRoundButton(deleteButton, "Удалить");
         deleteButton.setOnClickListener(v -> deleteUser(userId, card));
@@ -335,20 +322,17 @@ public class UsersAdminActivity extends AppCompatActivity {
         deleteButton.setLayoutParams(buttonParams);
         card.addView(deleteButton);
 
-        // Выпадающее меню
         LinearLayout dropdownMenu = new LinearLayout(this);
         dropdownMenu.setOrientation(LinearLayout.VERTICAL);
         dropdownMenu.setVisibility(View.GONE);
         dropdownMenu.setPadding(dpToPx(16), dpToPx(8), 0, dpToPx(8));
 
-        // Email
         TextView emailView = new TextView(this);
         emailView.setText("Email: " + email);
         emailView.setTextSize(14f);
         emailView.setTextColor(Color.parseColor("#555555"));
         dropdownMenu.addView(emailView);
 
-       // Автомобили
         TextView carsView = new TextView(this);
         carsView.setText("Автомобили: " + carsInfo);
         carsView.setTextSize(12f);
@@ -358,13 +342,11 @@ public class UsersAdminActivity extends AppCompatActivity {
         carsView.setPadding(0, dpToPx(4), 0, 0);
         dropdownMenu.addView(carsView);
 
-        // Контейнер для карточки и меню
         LinearLayout cardContainer = new LinearLayout(this);
         cardContainer.setOrientation(LinearLayout.VERTICAL);
         cardContainer.addView(card);
         cardContainer.addView(dropdownMenu);
 
-        // Обработчик клика
         card.setOnClickListener(v -> {
             if (dropdownMenu.getVisibility() == View.VISIBLE) {
                 dropdownMenu.setVisibility(View.GONE);
@@ -425,7 +407,6 @@ public class UsersAdminActivity extends AppCompatActivity {
     }
 
     private void deleteUser(int userId, RelativeLayout card) {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_user, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -433,7 +414,6 @@ public class UsersAdminActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);

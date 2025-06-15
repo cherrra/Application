@@ -69,7 +69,6 @@ public class AddCarActivity extends AppCompatActivity {
 
     private void saveCar() {
         try {
-            // Создаем объекты Brand и Model
             Brand brand = new Brand();
             brand.setBrandName(brandInput.getText().toString());
 
@@ -77,7 +76,6 @@ public class AddCarActivity extends AppCompatActivity {
             model.setModelName(modelInput.getText().toString());
             model.setBrand(brand);
 
-            // Создаем объект Car и связываем с Model
             Car car = new Car();
             car.setModel(model);
             car.setYear(Integer.parseInt(yearInput.getText().toString()));
@@ -85,7 +83,6 @@ public class AddCarActivity extends AppCompatActivity {
             car.setVinCode(vinCodeInput.getText().toString());
             car.setLicensePlate(licensePlateInput.getText().toString());
 
-            // Получаем токен из EncryptedSharedPrefs
             String token;
             try {
                 token = new EncryptedSharedPrefs(this).getAccessToken();

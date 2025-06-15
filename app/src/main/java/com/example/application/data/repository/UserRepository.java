@@ -51,7 +51,7 @@ public class UserRepository {
                         String username = jsonObject.getString("username");
                         String email = jsonObject.getString("email");
 
-                        // Преобразование даты рождения
+
                         String birthDateString = jsonObject.optString("birth_date", null);
                         String formattedDate = formatDate(birthDateString);
 
@@ -61,7 +61,7 @@ public class UserRepository {
                         boolean idAdmin = jsonObject.optInt("id_admin", 0) == 1;
                         int idCar = jsonObject.optInt("id_car", 0);
 
-                        // Создание объекта User
+
                         User user = new User(
                                 id,
                                 username,
@@ -97,12 +97,10 @@ public class UserRepository {
         }
 
         try {
-            // Если дата уже в формате "dd.MM.yyyy", просто возвращаем ее
             if (rawDate.matches("\\d{2}\\.\\d{2}\\.\\d{4}")) {
                 return rawDate;
             }
 
-            // Если дата в формате "yyyy-MM-dd", преобразуем в "dd.MM.yyyy"
             SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             SimpleDateFormat desiredFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
             Date date = isoFormat.parse(rawDate);

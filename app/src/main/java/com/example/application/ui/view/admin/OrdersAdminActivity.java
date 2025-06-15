@@ -1,6 +1,7 @@
 package com.example.application.ui.view.admin;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -16,9 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -359,6 +363,8 @@ public class OrdersAdminActivity extends AppCompatActivity {
                 return "Принят";
             case "in_progress":
                 return "В процессе";
+            case "completed":
+                return "Выполнен";
             case "finished":
                 return "Завершен";
             case "canceled":
@@ -435,12 +441,76 @@ public class OrdersAdminActivity extends AppCompatActivity {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    private void showUpdateStatusDialog(int orderId, String currentStatus) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Обновить статус заказа");
+//    private void showUpdateStatusDialog(int orderId, String currentStatus) {
+//        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+//        builder.setTitle("Обновить статус заказа");
+//
+//        String[] statuses = new String[]{"created", "accepted", "in_progress", "finished", "canceled"};
+//        String[] statusesDisplay = new String[]{"Создан", "Принят", "В процессе", "Завершен", "Отменён"};
+//
+//        int selectedIndex = 0;
+//        for (int i = 0; i < statuses.length; i++) {
+//            if (statuses[i].equalsIgnoreCase(currentStatus)) {
+//                selectedIndex = i;
+//                break;
+//            }
+//        }
+//
+//        builder.setSingleChoiceItems(statusesDisplay, selectedIndex, null);
+//        builder.setPositiveButton("Обновить", (dialog, which) -> {
+//            android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialog;
+//            int selectedPosition = alertDialog.getListView().getCheckedItemPosition();
+//            if (selectedPosition >= 0) {
+//                try {
+//                    String token = encryptedSharedPrefs.getAccessToken();
+//                    if (token != null) {
+//                        updateOrderStatus(token, orderId, statuses[selectedPosition]);
+//                    }
+//                } catch (Exception e) {
+//                    Log.e("OrdersAdminActivity", "Ошибка обновления статуса", e);
+//                }
+//            }
+//        });
+//        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
+//        builder.create().show();
+//    }
 
-        String[] statuses = new String[]{"created", "accepted", "in_progress", "finished", "canceled"};
-        String[] statusesDisplay = new String[]{"Создан", "Принят", "В процессе", "Завершен", "Отменён"};
+    private void showUpdateStatusDialog(int orderId, String currentStatus) {
+        // Создаем кастомное view для диалога
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_update_status, null);
+
+        // Создаем диалог
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        // Делаем прозрачный фон для скругленных углов
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        // Находим элементы в диалоге
+        TextView title = dialogView.findViewById(R.id.dialogTitle);
+        LinearLayout statusContainer = dialogView.findViewById(R.id.statusContainer);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button updateButton = dialogView.findViewById(R.id.updateButton);
+
+        title.setText("Обновить статус заказа #" + orderId);
+
+        // Массив статусов и их отображаемых названий
+        String[] statuses = new String[]{"created", "accepted", "in_progress", "completed", "finished", "canceled"};
+        String[] statusesDisplay = new String[]{"Создан", "Принят", "В процессе", "Выполнен", "Завершен", "Отменён"};
+        int[] statusColors = new int[]{
+                Color.parseColor("#2196F3"), // created - синий
+                Color.parseColor("#4CAF50"), // accepted - зеленый
+                Color.parseColor("#FF9800"), // in_progress - оранжевый
+                Color.parseColor("#9E9E9E"), // completed - серый
+                Color.parseColor("#673AB7"), // finished - фиолетовый
+                Color.parseColor("#F44336")  // canceled - красный
+        };
+
+        // Создаем RadioGroup для управления выбором
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setOrientation(LinearLayout.VERTICAL);
 
         int selectedIndex = 0;
         for (int i = 0; i < statuses.length; i++) {
@@ -450,26 +520,53 @@ public class OrdersAdminActivity extends AppCompatActivity {
             }
         }
 
-        builder.setSingleChoiceItems(statusesDisplay, selectedIndex, null);
-        builder.setPositiveButton("Обновить", (dialog, which) -> {
-            android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialog;
-            int selectedPosition = alertDialog.getListView().getCheckedItemPosition();
-            if (selectedPosition >= 0) {
+        for (int i = 0; i < statuses.length; i++) {
+            // Создаем RadioButton для каждого статуса
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setId(View.generateViewId());
+            radioButton.setText(statusesDisplay[i]);
+            radioButton.setTextSize(16);
+            radioButton.setTextColor(Color.BLACK);
+            radioButton.setButtonTintList(ColorStateList.valueOf(statusColors[i]));
+            radioButton.setPadding(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
+            radioButton.setTag(statuses[i]); // Сохраняем значение статуса в тег
+
+            // Устанавливаем выбранный статус
+            if (i == selectedIndex) {
+                radioButton.setChecked(true);
+            }
+
+            radioGroup.addView(radioButton);
+        }
+
+        statusContainer.addView(radioGroup);
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        updateButton.setOnClickListener(v -> {
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            if (selectedId != -1) {
+                RadioButton selectedRadioButton = radioGroup.findViewById(selectedId);
+                String newStatus = (String) selectedRadioButton.getTag(); // Получаем статус из тега
+
                 try {
                     String token = encryptedSharedPrefs.getAccessToken();
                     if (token != null) {
-                        updateOrderStatus(token, orderId, statuses[selectedPosition]);
+                        updateOrderStatus(token, orderId, newStatus, dialog);
                     }
                 } catch (Exception e) {
                     Log.e("OrdersAdminActivity", "Ошибка обновления статуса", e);
+                    Toast.makeText(OrdersAdminActivity.this, "Ошибка обновления статуса", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(OrdersAdminActivity.this, "Выберите статус", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
+
+        dialog.show();
     }
 
-    private void updateOrderStatus(String token, int orderId, String newStatus) {
+    private void updateOrderStatus(String token, int orderId, String newStatus, AlertDialog dialog) {
         OkHttpClient client = new OkHttpClient();
         JSONObject statusUpdate = new JSONObject();
         try {
@@ -492,26 +589,81 @@ public class OrdersAdminActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(OrdersAdminActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> {
+                    dialog.dismiss();
+                    Toast.makeText(OrdersAdminActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 runOnUiThread(() -> {
+                    dialog.dismiss();
                     if (response.isSuccessful()) {
                         Toast.makeText(OrdersAdminActivity.this, "Статус обновлен", Toast.LENGTH_SHORT).show();
+                        // Обновляем список заказов
                         try {
-                            fetchAllOrders(encryptedSharedPrefs.getAccessToken());
+                            fetchAllOrders(token);
                         } catch (Exception e) {
                             Log.e("OrdersAdminActivity", "Ошибка обновления списка", e);
                         }
                     } else {
-                        Toast.makeText(OrdersAdminActivity.this,
-                                "Ошибка обновления: " + response.code(), Toast.LENGTH_SHORT).show();
+                        try {
+                            String errorBody = response.body().string();
+                            Log.e("OrdersAdminActivity", "Ошибка обновления: " + errorBody);
+                            Toast.makeText(OrdersAdminActivity.this,
+                                    "Ошибка обновления: " + response.code(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
         });
     }
+//    private void updateOrderStatus(String token, int orderId, String newStatus) {
+//        OkHttpClient client = new OkHttpClient();
+//        JSONObject statusUpdate = new JSONObject();
+//        try {
+//            statusUpdate.put("status", newStatus);
+//        } catch (Exception e) {
+//            Log.e("OrdersAdminActivity", "Ошибка создания JSON", e);
+//        }
+//
+//        RequestBody body = RequestBody.create(
+//                MediaType.parse("application/json; charset=utf-8"),
+//                statusUpdate.toString()
+//        );
+//
+//        Request request = new Request.Builder()
+//                .url("https://automser.store/api/orders/admin/" + orderId)
+//                .put(body)
+//                .addHeader("Authorization", "Bearer " + token)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                runOnUiThread(() ->
+//                        Toast.makeText(OrdersAdminActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show());
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                runOnUiThread(() -> {
+//                    if (response.isSuccessful()) {
+//                        Toast.makeText(OrdersAdminActivity.this, "Статус обновлен", Toast.LENGTH_SHORT).show();
+//                        try {
+//                            fetchAllOrders(encryptedSharedPrefs.getAccessToken());
+//                        } catch (Exception e) {
+//                            Log.e("OrdersAdminActivity", "Ошибка обновления списка", e);
+//                        }
+//                    } else {
+//                        Toast.makeText(OrdersAdminActivity.this,
+//                                "Ошибка обновления: " + response.code(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
+//    }
 }

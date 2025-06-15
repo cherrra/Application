@@ -103,13 +103,11 @@ public class ServicesAdminActivity extends AppCompatActivity {
     }
 
     private void addServiceCard(Service service) {
-        // Основной контейнер карточки
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(32, 32, 32, 32);
         card.setGravity(Gravity.CENTER);
 
-        // Стиль карточки
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(55f);
@@ -117,7 +115,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
         shape.setStroke(2, Color.parseColor("#CAD6FF"));
         card.setBackground(shape);
 
-        // Параметры карточки
         GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams();
         cardParams.width = 0;
         cardParams.height = dpToPx(300);
@@ -125,7 +122,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
         cardParams.setMargins(16, 16, 16, 16);
         card.setLayoutParams(cardParams);
 
-        // Название услуги
         TextView nameView = new TextView(this);
         nameView.setText(service.getServiceName());
         nameView.setTextSize(18f);
@@ -134,7 +130,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
         nameView.setGravity(Gravity.CENTER);
         card.addView(nameView);
 
-        // Описание услуги
         if (service.getDescription() != null && !service.getDescription().isEmpty()) {
             TextView descView = new TextView(this);
             descView.setText(service.getDescription());
@@ -145,7 +140,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
             card.addView(descView);
         }
 
-        // Цена услуги
         TextView priceView = new TextView(this);
         priceView.setText(String.format("%.2f ₽", service.getPrice()));
         priceView.setTextSize(16f);
@@ -154,25 +148,20 @@ public class ServicesAdminActivity extends AppCompatActivity {
         priceView.setGravity(Gravity.CENTER);
         card.addView(priceView);
 
-        // Контейнер для кнопок
-// Контейнер для кнопок
         LinearLayout buttonsContainer = new LinearLayout(this);
-        buttonsContainer.setOrientation(LinearLayout.VERTICAL); // изменить на вертикальную ориентацию
-        buttonsContainer.setGravity(Gravity.CENTER_HORIZONTAL); // выравнивание по центру по горизонтали
+        buttonsContainer.setOrientation(LinearLayout.VERTICAL);
+        buttonsContainer.setGravity(Gravity.CENTER_HORIZONTAL);
         buttonsContainer.setPadding(0, dpToPx(16), 0, 0);
 
-// Кнопка редактирования
         Button editButton = new Button(this);
         setupServiceActionButton(editButton, "Изменить", "#2260FF");
         editButton.setOnClickListener(v -> showEditServiceDialog(service));
         buttonsContainer.addView(editButton);
 
-// Добавим отступ снизу у первой кнопки
         LinearLayout.LayoutParams editParams = (LinearLayout.LayoutParams) editButton.getLayoutParams();
         editParams.setMargins(0, 0, 0, dpToPx(8));
         editButton.setLayoutParams(editParams);
 
-// Кнопка удаления
         Button deleteButton = new Button(this);
         setupServiceActionButton(deleteButton, "Удалить", "#FF5252");
         deleteButton.setOnClickListener(v -> confirmDeleteService(service));
@@ -195,8 +184,8 @@ public class ServicesAdminActivity extends AppCompatActivity {
         button.setGravity(Gravity.CENTER);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dpToPx(80),  // ширина
-                dpToPx(26)   // высота
+                dpToPx(80),
+                dpToPx(26)
         );
         params.setMargins(8, 0, 8, 0);
         button.setLayoutParams(params);
@@ -205,17 +194,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
         button.setPadding(0, 0, 0, 0);
         button.setOnTouchListener(createTouchListener());
     }
-//    private void showAddServiceDialog() {
-//        showServiceDialog(null, "Добавить услугу", (name, price, description) -> {
-//            addService(name, price, description);
-//        });
-//    }
-//
-//    private void showEditServiceDialog(Service service) {
-//        showServiceDialog(service, "Редактировать услугу", (name, price, description) -> {
-//            updateService(service.getIdService(), name, price, description);
-//        });
-//    }
 
     private void showAddServiceDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_service, null);
@@ -274,7 +252,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
 
-        // Установка значений из существующей услуги
         nameInput.setText(service.getServiceName());
         priceInput.setText(String.valueOf(service.getPrice()));
         if (service.getDescription() != null) {
@@ -417,7 +394,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
     }
 
     private void confirmDeleteService(Service service) {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_service, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -425,7 +401,6 @@ public class ServicesAdminActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);

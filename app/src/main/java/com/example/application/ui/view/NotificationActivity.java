@@ -46,7 +46,7 @@ import okhttp3.Response;
 public class NotificationActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
-    private static final long INTERVAL = 30000; // 30 секунд
+    private static final long INTERVAL = 30000;
 
     private LinearLayout notificationsContainer;
     private LinearLayout emptyStateContainer;

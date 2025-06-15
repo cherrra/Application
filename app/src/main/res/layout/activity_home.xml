@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Логотип -->
     <ImageView
         android:id="@+id/myImageView"
         android:layout_width="135dp"
@@ -16,7 +15,6 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/logo" />
 
-    <!-- Кнопка уведомлений - выровнена по вертикали с логотипом -->
     <ImageButton
         android:id="@+id/notificationButton"
         android:layout_width="58dp"
@@ -51,7 +49,6 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/photo_ams" />
 
-            <!-- Заголовок "Наши услуги" с фоном (прижат к краю экрана) -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +72,6 @@
                     android:textSize="22sp" />
             </LinearLayout>
 
-            <!-- Категории (с обычными отступами как раньше) -->
             <LinearLayout
                 android:id="@+id/categoryContainer"
                 android:layout_width="match_parent"
@@ -85,11 +81,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp">
-
-                <!-- Здесь будут ваши категории -->
             </LinearLayout>
 
-            <!-- Заголовок "Где нас найти" с фоном (прижат к краю экрана) -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,7 +106,6 @@
                     android:fontFamily="@font/nunitosans_bold" />
             </LinearLayout>
 
-            <!-- WebView (с обычными отступами как раньше) -->
             <WebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
@@ -125,7 +117,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -137,7 +128,6 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <!-- Главная -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
@@ -152,7 +142,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <!-- Гараж -->
         <TextView
             android:id="@+id/garageButton"
             android:layout_width="0dp"
@@ -167,7 +156,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <!-- Аккаунт -->
         <TextView
             android:id="@+id/accountButton"
             android:layout_width="0dp"
@@ -182,7 +170,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <!-- Заказы -->
         <TextView
             android:id="@+id/orderButton"
             android:layout_width="0dp"

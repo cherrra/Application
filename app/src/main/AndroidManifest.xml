@@ -22,32 +22,74 @@
 
         <activity
             android:name=".ui.view.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.view.LoginActivity" />
-        <activity android:name=".ui.view.RegisterActivity" />
-        <activity android:name=".ui.view.PrivacyPolicyActivity" />
-        <activity android:name=".ui.view.admin.HomeAdminActivity" />
-        <activity android:name=".ui.view.admin.UsersAdminActivity" />
-        <activity android:name=".ui.view.HomeActivity" />
-        <activity android:name=".ui.view.AccountActivity" />
-        <activity android:name=".ui.view.DetailsActivity" />
-        <activity android:name=".ui.view.EditActivity" />
-        <activity android:name=".ui.view.GarageActivity" />
-        <activity android:name=".ui.view.DetailsCarActivity" />
-        <activity android:name=".ui.view.AddCarActivity" />
-        <activity android:name=".ui.view.EditCarActivity" />
-        <activity android:name=".ui.view.OrdersActivity" />
-        <activity android:name=".ui.view.ServicesActivity" />
-        <activity android:name=".ui.view.admin.ServicesAdminActivity" />
-        <activity android:name=".ui.view.AddOrderActivity" />
-        <activity android:name=".ui.view.NotificationActivity" />
-        <activity android:name=".ui.view.admin.NotificationAdminActivity" />
-        <activity android:name=".ui.view.admin.OrdersAdminActivity" />
+        <activity android:name=".ui.view.LoginActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.PrivacyPolicyActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.admin.HomeAdminActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.admin.UsersAdminActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.HomeActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.AccountActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.DetailsActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.EditActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.GarageActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.DetailsCarActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.AddCarActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.EditCarActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.OrdersActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.ServicesActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.admin.ServicesAdminActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.AddOrderActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.NotificationActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.admin.NotificationAdminActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".ui.view.admin.OrdersAdminActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
     </application>
 
 

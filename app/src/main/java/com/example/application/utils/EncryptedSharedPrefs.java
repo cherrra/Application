@@ -11,30 +11,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Set;
 
-//public class EncryptedSharedPrefs {
-//    private static final String FILE_NAME = "encrypted_prefs";
-//    private final SharedPreferences sharedPreferences;
-//
-//    public EncryptedSharedPrefs(Context context) throws GeneralSecurityException, IOException {
-//        String masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
-//        sharedPreferences = EncryptedSharedPreferences.create(
-//                FILE_NAME,
-//                masterKeyAlias,
-//                context,
-//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//        );
-//    }
-//
-//    public void saveToken(String token) {
-//        sharedPreferences.edit().putString("token", token).apply();
-//        Log.d("EncryptedSharedPrefs", "Токен: " + (token != null ? token : "очищен"));
-//    }
-//
-//    public String getToken() {
-//        return sharedPreferences.getString("token", null);
-//    }
-//}
 public class EncryptedSharedPrefs {
     private static final String FILE_NAME = "encrypted_prefs";
     private final SharedPreferences sharedPreferences;
@@ -89,34 +65,4 @@ public class EncryptedSharedPrefs {
     public Set<String> getStringSet(String key, Set<String> defaultValues) {
         return sharedPreferences.getStringSet(key, defaultValues);
     }
-
-    // Новые методы для работы с long через String
-    public long getLongAsString(String key, long defaultValue) {
-        String value = sharedPreferences.getString(key, null);
-        return value != null ? Long.parseLong(value) : defaultValue;
-    }
-
-    public void putLongAsString(String key, long value) {
-        sharedPreferences.edit().putString(key, String.valueOf(value)).apply();
-    }
-
-    // Альтернативная реализация с обработкой ошибок
-    public long getLongSafe(String key, long defaultValue) {
-        try {
-            String value = sharedPreferences.getString(key, null);
-            return value != null ? Long.parseLong(value) : defaultValue;
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
-    public void putLongSafe(String key, long value) {
-        try {
-            sharedPreferences.edit().putString(key, String.valueOf(value)).apply();
-        } catch (Exception e) {
-            Log.e("EncryptedSharedPrefs", "Error saving long value", e);
-        }
-    }
-
-
 }

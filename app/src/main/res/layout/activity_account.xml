@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Шапка профиля -->
     <LinearLayout
         android:id="@+id/profileHeader"
         android:layout_width="match_parent"
@@ -26,7 +25,6 @@
             android:fontFamily="@font/nunitosans_bold" />
     </LinearLayout>
 
-    <!-- Аватар поверх шапки и основного контента -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/avatarCard"
         android:layout_width="130dp"
@@ -48,8 +46,6 @@
             tools:ignore="ContentDescription"/>
     </com.google.android.material.card.MaterialCardView>
 
-
-    <!-- Основной контент -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -64,7 +60,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Карточка информации -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,7 +109,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Кнопка выхода -->
             <LinearLayout
                 android:id="@+id/addCarButtonContainer"
                 android:layout_width="match_parent"
@@ -137,7 +131,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Нижняя навигация -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -149,7 +142,6 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <!-- Главная -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
@@ -164,7 +156,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <!-- Гараж -->
         <TextView
             android:id="@+id/garageButton"
             android:layout_width="0dp"
@@ -179,7 +170,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <!-- Аккаунт -->
         <TextView
             android:id="@+id/accountButton"
             android:layout_width="0dp"
@@ -194,7 +184,6 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <!-- Заказы -->
         <TextView
             android:id="@+id/orderButton"
             android:layout_width="0dp"

@@ -7,7 +7,6 @@
     android:background="#FFFFFF"
     android:fitsSystemWindows="true">
 
-    <!-- Шапка с кнопкой назад и заголовком -->
     <RelativeLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
@@ -47,7 +46,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Изображение автомобиля - теперь с тенью и закругленными углами -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
@@ -66,7 +64,6 @@
                     android:background="#CAD6FF"/>
             </androidx.cardview.widget.CardView>
 
-            <!-- Карточка с деталями - новый дизайн -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,20 +102,17 @@
                             android:fontFamily="@font/nunitosans_bold"/>
                     </LinearLayout>
 
-                    <!-- Разделитель -->
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="16dp"
                         android:background="#A0B4FF"/>
 
-                    <!-- Список деталей в новой стилистике -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <!-- Год -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -148,7 +142,6 @@
                                 android:fontFamily="@font/nunitosans_regular"/>
                         </LinearLayout>
 
-                        <!-- Пробег -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -178,7 +171,6 @@
                                 android:fontFamily="@font/nunitosans_regular"/>
                         </LinearLayout>
 
-                        <!-- VIN -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -209,7 +201,6 @@
                                 android:fontFamily="@font/nunitosans_regular"/>
                         </LinearLayout>
 
-                        <!-- Номер -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -241,7 +232,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Кнопка редактирования - улучшенный стиль -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/editButton"
                 android:layout_width="match_parent"

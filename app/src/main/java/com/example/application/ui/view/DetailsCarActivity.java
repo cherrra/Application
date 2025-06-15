@@ -38,7 +38,7 @@ public class DetailsCarActivity extends AppCompatActivity {
 
         ImageView backArrow = findViewById(R.id.backArrow);
         backArrow.setOnClickListener(v -> {
-            finish(); // Закрываем текущую активность и возвращаемся назад
+            finish();
         });
 
         backArrow.setOnTouchListener((v, event) -> {
@@ -55,10 +55,8 @@ public class DetailsCarActivity extends AppCompatActivity {
             return true;
         });
 
-        // Инициализация ViewModel
         carViewModel = new ViewModelProvider(this).get(CarViewModel.class);
 
-        // Получение ссылок на View элементы
         ImageView carImage = findViewById(R.id.carImage);
         TextView carTitle = findViewById(R.id.carTitle);
         TextView yearText = findViewById(R.id.yearText);
@@ -67,14 +65,12 @@ public class DetailsCarActivity extends AppCompatActivity {
         TextView licenseText = findViewById(R.id.licenseText);
         MaterialButton editButton = findViewById(R.id.editButton);
 
-        // Получение данных автомобиля
         carDetailsJson = getIntent().getStringExtra("carDetails");
 
         if (carDetailsJson != null) {
             try {
                 Car car = new Gson().fromJson(carDetailsJson, Car.class);
                 if (car != null) {
-                    // Установка данных в View
                     carTitle.setText(String.format("%s %s",
                             car.getModel().getBrand().getBrandName(),
                             car.getModel().getModelName()));
@@ -83,17 +79,14 @@ public class DetailsCarActivity extends AppCompatActivity {
                     vinText.setText(car.getVinCode());
                     licenseText.setText(car.getLicensePlate());
 
-                    // Загрузка изображения автомобиля
                     if (car.getLinkImg() != null && !car.getLinkImg().isEmpty()) {
                         loadCarImage(car.getLinkImg(), carImage);
                     } else {
                         carImage.setImageResource(R.drawable.ic_placeholder);
                     }
 
-                    // Сохранение автомобиля в ViewModel
                     carViewModel.setSelectedCar(car);
 
-                    // Обработчик кнопки редактирования
                     editButton.setOnClickListener(v -> {
                         Intent intent = new Intent(this, EditCarActivity.class);
                         intent.putExtra("carDetails", carDetailsJson);

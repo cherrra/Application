@@ -7,7 +7,6 @@
     android:padding="20dp"
     android:background="#FFFFFF">
 
-    <!-- Шапка с кнопкой назад и заголовком в одной строке -->
     <RelativeLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
@@ -20,7 +19,7 @@
             android:id="@+id/backArrow"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="14dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="Назад"/>
@@ -37,7 +36,6 @@
             android:fontFamily="@font/nunitosans_bold"/>
     </RelativeLayout>
 
-    <!-- Подзаголовок с датой -->
     <TextView
         android:id="@+id/lastUpdatedText"
         android:layout_width="wrap_content"
@@ -51,7 +49,6 @@
         app:layout_constraintTop_toBottomOf="@id/headerContainer"
         android:layout_marginStart="16dp"/>
 
-    <!-- Основной текст политики -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

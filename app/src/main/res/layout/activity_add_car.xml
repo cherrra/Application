@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Заголовок -->
         <RelativeLayout
             android:id="@+id/headerContainer"
             android:layout_width="match_parent"
@@ -43,7 +42,6 @@
                 android:fontFamily="@font/nunitosans_bold"/>
         </RelativeLayout>
 
-           <!-- Поля ввода -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,7 +112,6 @@
                 android:backgroundTint="#2260FF"/>
         </LinearLayout>
 
-        <!-- Кнопка -->
         <Button
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"

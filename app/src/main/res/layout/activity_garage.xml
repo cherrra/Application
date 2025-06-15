@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Основной контент -->
     <LinearLayout
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
@@ -74,7 +73,6 @@
                 android:orientation="vertical" />
         </ScrollView>
 
-        <!-- Кнопка добавления автомобиля -->
         <LinearLayout
             android:id="@+id/addCarButtonContainer"
             android:layout_width="match_parent"
@@ -95,7 +93,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

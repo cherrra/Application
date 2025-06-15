@@ -75,7 +75,6 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <!-- Главная -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
@@ -90,7 +89,6 @@
             android:textColor="@color/grey_blue"
             android:textSize="18sp" />
 
-        <!-- Пользователи -->
         <TextView
             android:id="@+id/usersButton"
             android:layout_width="0dp"
@@ -105,7 +103,6 @@
             android:textColor="@color/grey_blue"
             android:textSize="18sp" />
 
-        <!-- Заказы -->
         <TextView
             android:id="@+id/orderButton"
             android:layout_width="0dp"

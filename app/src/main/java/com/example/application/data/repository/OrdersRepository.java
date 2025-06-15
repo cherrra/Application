@@ -56,8 +56,6 @@ public class OrdersRepository {
         });
     }
 
-
-
     public void fetchOrders(String token, OrderCallback callback) {
         apiClient.getOrders(token, new Callback() {
             @Override

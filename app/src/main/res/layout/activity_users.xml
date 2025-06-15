@@ -29,7 +29,6 @@
         android:textColor="#000000"
         android:textColorHint="#808080"/>
 
-    <!-- Single ScrollView (removed duplicates) -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -38,8 +37,6 @@
         android:layout_above="@id/bottomNavigation"
         android:paddingTop="8dp">
 
-
-        <!-- Single LinearLayout (removed duplicates) -->
         <LinearLayout
             android:id="@+id/userContainer"
             android:layout_width="match_parent"
@@ -48,7 +45,6 @@
             android:padding="16dp"/>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -60,7 +56,6 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <!-- Главная -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
@@ -75,7 +70,6 @@
             android:textColor="@color/grey_blue"
             android:textSize="18sp" />
 
-        <!-- Пользователи -->
         <TextView
             android:id="@+id/usersButton"
             android:layout_width="0dp"
@@ -90,7 +84,6 @@
             android:textSize="18sp"
             android:fontFamily="@font/nunitosans_semibold" />
 
-        <!-- Заказы -->
         <TextView
             android:id="@+id/orderButton"
             android:layout_width="0dp"

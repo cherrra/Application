@@ -47,7 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Empty state container -->
         <LinearLayout
             android:id="@+id/emptyStateContainer"
             android:layout_width="match_parent"
@@ -85,7 +84,6 @@
                 android:fontFamily="@font/nunitosans_regular"/>
         </LinearLayout>
 
-        <!-- Notifications container -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

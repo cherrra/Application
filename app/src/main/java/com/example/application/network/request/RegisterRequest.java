@@ -10,8 +10,6 @@ public class RegisterRequest {
         this.email = email;
         this.password = password;
     }
-
-    // Геттеры (сеттеры можно добавить при необходимости)
     public String getUsername() {
         return username;
     }

@@ -88,18 +88,10 @@ public class DetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-//        deleteAccountButton.setOnClickListener(v -> {
-//            new AlertDialog.Builder(DetailsActivity.this)
-//                    .setMessage("Вы уверены, что хотите удалить аккаунт?")
-//                    .setPositiveButton("Да", (dialog, which) -> deleteAccount())
-//                    .setNegativeButton("Нет", null)
-//                    .show();
-//        });
         deleteAccountButton.setOnClickListener(v -> showDeleteAccountDialog());
     }
 
     private void showDeleteAccountDialog() {
-        // Создаем кастомное диалоговое окно
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_delete_account, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -107,7 +99,6 @@ public class DetailsActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        // Делаем прозрачный фон для скругленных углов
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
@@ -122,6 +113,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
     private void fetchUserDetails() {
         try {
             String token = new EncryptedSharedPrefs(this).getAccessToken();

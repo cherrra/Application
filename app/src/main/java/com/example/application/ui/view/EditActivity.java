@@ -94,7 +94,6 @@ public class EditActivity extends AppCompatActivity {
         usernameEditText.setText(intent.getStringExtra("username"));
         emailEditText.setText(intent.getStringExtra("email"));
 
-        // Обработка даты рождения
         String birthDate = intent.getStringExtra("birthDate");
         if (birthDate != null && !birthDate.isEmpty() && !birthDate.equals("Не указана")) {
             try {
@@ -160,7 +159,6 @@ public class EditActivity extends AppCompatActivity {
         updatedData.put("username", usernameEditText.getText().toString());
         updatedData.put("email", emailEditText.getText().toString());
 
-        // Форматирование даты для сервера (yyyy-MM-dd)
         if (birthDateEditText.getText().length() > 0) {
             SimpleDateFormat serverFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             updatedData.put("birth_date", serverFormat.format(birthDateCalendar.getTime()));
@@ -170,7 +168,6 @@ public class EditActivity extends AppCompatActivity {
 
         updatedData.put("phone_number", phoneNumberEditText.getText().toString());
 
-        // Сначала обновляем данные пользователя
         userViewModel.updateUser(updatedData, token).observe(this, success -> {
             if (success) {
                 if (selectedImageUri != null) {
@@ -212,7 +209,6 @@ public class EditActivity extends AppCompatActivity {
         Snackbar.make(findViewById(android.R.id.content),
                 "Данные успешно обновлены", Snackbar.LENGTH_SHORT).show();
 
-        // Возвращаем обновленные данные в DetailsActivity
         Intent resultIntent = new Intent();
         resultIntent.putExtra("username", usernameEditText.getText().toString());
         resultIntent.putExtra("email", emailEditText.getText().toString());

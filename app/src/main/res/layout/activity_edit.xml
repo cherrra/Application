@@ -60,7 +60,6 @@
                 android:contentDescription="Аватар пользователя"/>
         </androidx.cardview.widget.CardView>
 
-        <!-- Кнопка загрузки с иконкой -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/uploadImageButton"
             android:layout_width="200dp"
@@ -74,7 +73,6 @@
             app:backgroundTint="#2260FF"
             app:cornerRadius="24dp"/>
 
-        <!-- Контейнер для полей ввода (оставлены как есть) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

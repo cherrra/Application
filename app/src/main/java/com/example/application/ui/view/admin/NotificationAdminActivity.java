@@ -54,8 +54,7 @@ import okhttp3.Response;
 public class NotificationAdminActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
-    private static final long INTERVAL = 30000; // 30 секунд
-
+    private static final long INTERVAL = 30000;
     private LinearLayout notificationsContainer;
     private EncryptedSharedPrefs prefs;
     private static final String NOTIFICATIONS_KEY = "admin_notifications";
@@ -150,7 +149,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
                     JSONArray ordersArray = new JSONArray(responseBody);
 
                     if (ordersArray.length() > 0) {
-                        // Обрабатываем от новых к старым
                         for (int i = ordersArray.length() - 1; i >= 0; i--) {
                             JSONObject order = ordersArray.getJSONObject(i);
                             processNewOrder(order);
@@ -175,10 +173,8 @@ public class NotificationAdminActivity extends AppCompatActivity {
             String status = order.optString("status", "");
             String services = order.optString("services", "");
 
-            // Формируем полную дату и время
             String fullDateTime = "";
             if (!orderDate.isEmpty() && !orderTime.isEmpty()) {
-                // Удаляем 'T' и миллисекунды из ISO формата
                 String normalizedDate = orderDate.replace("T", " ").split("\\.")[0];
                 fullDateTime = normalizedDate + " " + orderTime;
             }
@@ -239,7 +235,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
         }
 
         try {
-            // Формат: "yyyy-MM-dd HH:mm:ss HH:mm:ss"
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss HH:mm:ss", Locale.getDefault());
             Date date = sdf.parse(dateTimeStr);
             return date != null ? date.getTime() : 0;
@@ -267,25 +262,21 @@ public class NotificationAdminActivity extends AppCompatActivity {
     private void addNotificationToScreen(String text) {
         if (isNotificationAlreadyDisplayed(text)) return;
 
-        // Hide empty state if visible
         TextView emptyStateText = findViewById(R.id.emptyStateText);
         emptyStateText.setVisibility(View.GONE);
 
-        // Main notification card
         LinearLayout notificationCard = new LinearLayout(this);
         notificationCard.setOrientation(LinearLayout.HORIZONTAL);
         notificationCard.setGravity(Gravity.CENTER_VERTICAL);
         notificationCard.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16));
 
-        // Card styling - аналогично карточкам категорий
         GradientDrawable cardShape = new GradientDrawable();
         cardShape.setShape(GradientDrawable.RECTANGLE);
         cardShape.setCornerRadius(dpToPx(24));
-        cardShape.setColor(Color.parseColor("#FFFFFF")); // Белый фон
-        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD")); // Голубая обводка
+        cardShape.setColor(Color.parseColor("#FFFFFF"));
+        cardShape.setStroke(dpToPx(2), Color.parseColor("#E3F2FD"));
         notificationCard.setBackground(cardShape);
 
-        // Параметры карточки
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -293,7 +284,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
         cardParams.setMargins(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(8));
         notificationCard.setLayoutParams(cardParams);
 
-        // Icon
         ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_notification);
         LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
@@ -302,14 +292,12 @@ public class NotificationAdminActivity extends AppCompatActivity {
         iconParams.setMargins(0, 0, dpToPx(12), 0);
         icon.setLayoutParams(iconParams);
 
-        // Text container
         LinearLayout textContainer = new LinearLayout(this);
         textContainer.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams textContainerParams = new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         textContainer.setLayoutParams(textContainerParams);
 
-        // Notification text
         TextView textView = new TextView(this);
         textView.setText(text);
         textView.setTextSize(16);
@@ -318,7 +306,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
             Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/nunitosans_regular.ttf");
             textView.setTypeface(typeface);
         } catch (Exception e) {
-            // В случае ошибки загрузки шрифта используем стандартный
             textView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
             Log.e("NotificationAdmin", "Error loading NunitoSans font", e);
         }
@@ -330,7 +317,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
         notificationCard.addView(icon);
         notificationCard.addView(textContainer);
 
-        // Add to container with animation
         notificationsContainer.addView(notificationCard, 0);
 
         Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_top);
@@ -379,7 +365,6 @@ public class NotificationAdminActivity extends AppCompatActivity {
             return;
         }
 
-        // Intent для открытия активности при нажатии на уведомление
         Intent intent = new Intent(this, NotificationAdminActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,

@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             encryptedSharedPrefs = new EncryptedSharedPrefs(this);
-            // Используем getAccessToken() вместо getToken()
             String savedToken = encryptedSharedPrefs.getAccessToken();
             Log.d("LoginActivity", "Токен при запуске: " + (savedToken != null ? savedToken : "отсутствует"));
         } catch (GeneralSecurityException | IOException e) {
@@ -63,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            ApiClient apiClient = ApiClient.getInstance(); // без параметров
+            ApiClient apiClient = ApiClient.getInstance();
             apiClient.login(email, password, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -81,7 +80,6 @@ public class LoginActivity extends AppCompatActivity {
                             String accessToken = jsonObject.getString("accessToken");
                             String refreshToken = jsonObject.getString("refreshToken");
 
-                            // Сохраняем оба токена
                             encryptedSharedPrefs.saveTokens(accessToken, refreshToken);
 
                             runOnUiThread(() -> {

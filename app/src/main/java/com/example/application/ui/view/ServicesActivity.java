@@ -47,7 +47,7 @@ public class ServicesActivity extends AppCompatActivity {
         ImageView backArrow = findViewById(R.id.backArrow);
 
         backArrow.setOnClickListener(v -> {
-            finish(); // Закрываем текущую активность и возвращаемся назад
+            finish();
         });
 
         backArrow.setOnTouchListener((v, event) -> {
@@ -93,20 +93,17 @@ public class ServicesActivity extends AppCompatActivity {
     }
 
     private void addServiceCard(Service service) {
-        // Создаем контейнер для карточки
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.VERTICAL);
         card.setPadding(32, 32, 32, 32);
-        card.setGravity(Gravity.CENTER); // Центрируем содержимое
+        card.setGravity(Gravity.CENTER);
 
-        // Фон с закругленными углами
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(55f);
         shape.setColor(Color.parseColor("#80CAD6FF"));
         card.setBackground(shape);
 
-        // Параметры карточки
         GridLayout.LayoutParams cardParams = new GridLayout.LayoutParams();
         cardParams.width = 0;
         cardParams.height = dpToPx(285);
@@ -114,7 +111,6 @@ public class ServicesActivity extends AppCompatActivity {
         cardParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         card.setLayoutParams(cardParams);
 
-        // Название услуги
         TextView nameView = new TextView(this);
         nameView.setText(service.getServiceName());
         nameView.setTextSize(18f);
@@ -123,7 +119,6 @@ public class ServicesActivity extends AppCompatActivity {
         nameView.setTypeface(null, Typeface.BOLD);
         card.addView(nameView);
 
-        // Описание услуги (если есть)
         if (service.getDescription() != null && !service.getDescription().isEmpty()) {
             TextView descView = new TextView(this);
             descView.setText(service.getDescription());
@@ -134,7 +129,6 @@ public class ServicesActivity extends AppCompatActivity {
             card.addView(descView);
         }
 
-        // Цена
         TextView priceView = new TextView(this);
         priceView.setText(service.getPrice() + " ₽");
         priceView.setTextSize(16f);
@@ -143,7 +137,6 @@ public class ServicesActivity extends AppCompatActivity {
         priceView.setTypeface(null, Typeface.BOLD);
         card.addView(priceView);
 
-        // Кнопка в виде кружка с плюсом
         ImageView addButton = new ImageView(this);
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
                 dpToPx(40),
@@ -153,7 +146,6 @@ public class ServicesActivity extends AppCompatActivity {
         btnParams.setMargins(0, dpToPx(16), 0, 0);
         addButton.setLayoutParams(btnParams);
 
-        // Круглая кнопка с плюсом
         GradientDrawable btnShape = new GradientDrawable();
         btnShape.setShape(GradientDrawable.OVAL);
         btnShape.setColor(Color.parseColor("#902260FF"));
@@ -183,8 +175,6 @@ public class ServicesActivity extends AppCompatActivity {
         servicesContainer.addView(card);
     }
 
-
-    // Вспомогательный метод для преобразования dp в пиксели
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }

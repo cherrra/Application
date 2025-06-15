@@ -25,22 +25,21 @@ public class ApiClient {
     private final OkHttpClient client;
     private final Gson gson = new Gson();
 
-    // Приватный конструктор
+
     private ApiClient(Context context) throws GeneralSecurityException, IOException {
         this.client = new OkHttpClient.Builder()
                 .addInterceptor(new TokenInterceptor(context))
                 .build();
     }
 
-    // Метод инициализации — вызывать один раз при старте приложения
     public static synchronized void init(Context context) throws GeneralSecurityException, IOException {
         if (instance == null) {
-            appContext = context.getApplicationContext(); // используем application context
+            appContext = context.getApplicationContext();
             instance = new ApiClient(appContext);
         }
     }
 
-    // Геттер без параметров — безопасен для использования в репозиториях
+
     public static synchronized ApiClient getInstance() {
         if (instance == null) {
             throw new IllegalStateException("ApiClient is not initialized. Call ApiClient.init(context) first.");
@@ -60,24 +59,10 @@ public class ApiClient {
         return BASE_URL;
     }
 
-//    public void login(String email, String password, Callback callback) {
-//        LoginRequest loginRequest = new LoginRequest(email, password);
-//        String json = gson.toJson(loginRequest);
-//
-//        RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
-//        Request request = new Request.Builder()
-//                .url(BASE_URL + "auth/login")
-//                .post(body)
-//                .build();
-//
-//        client.newCall(request).enqueue(callback);
-//    }
-
     public void login(String email, String password, Callback callback) {
         LoginRequest loginRequest = new LoginRequest(email, password);
         String json = gson.toJson(loginRequest);
 
-        // Логируем тело запроса перед отправкой
         Log.d("ApiClient", "Отправляемый JSON: " + json);
 
         RequestBody body = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
@@ -86,7 +71,7 @@ public class ApiClient {
                 .post(body)
                 .build();
 
-        // Добавляем логирование через Interceptor
+        //логирование через Interceptor
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -164,7 +149,6 @@ public class ApiClient {
         client.newCall(request).enqueue(callback);
     }
 
-    // Удалить машину
     public void deleteCar(int carId, String token, Callback callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + "cars/" + carId)
@@ -174,7 +158,6 @@ public class ApiClient {
         client.newCall(request).enqueue(callback);
     }
 
-    // Добавить машину
     public void addCar(RequestBody body, String token, Callback callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + "cars")
@@ -184,8 +167,6 @@ public class ApiClient {
         client.newCall(request).enqueue(callback);
     }
 
-
-    // Обновить данные машины
     public void updateCar(int carId, RequestBody body, String token, Callback callback) {
         Request request = new Request.Builder()
                 .url(BASE_URL + "cars/" + carId)
@@ -209,7 +190,6 @@ public class ApiClient {
                 .build();
         client.newCall(request).enqueue(callback);
     }
-
 
     public void addService(RequestBody body, String token, Callback callback) {
         Request request = new Request.Builder()

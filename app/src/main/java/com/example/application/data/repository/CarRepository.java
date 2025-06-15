@@ -66,16 +66,13 @@ public class CarRepository {
                         for (int i = 0; i < carsArray.length(); i++) {
                             JSONObject carObject = carsArray.getJSONObject(i);
 
-                            // Создаем объект Brand
                             Brand brand = new Brand();
                             brand.setBrandName(carObject.getString("brand_name"));
 
-                            // Создаем объект Model
                             Model model = new Model();
                             model.setModelName(carObject.getString("model_name"));
                             model.setBrand(brand);
 
-                            // Создаем объект Car
                             Car car = new Car();
                             car.setIdCar(carObject.getInt("id_car"));
                             car.setModel(model);
@@ -102,8 +99,7 @@ public class CarRepository {
     }
 
     public void addCar(Car car, String token, MutableLiveData<Boolean> result) {
-        try {
-            // Получаем данные бренда и модели
+          try {
             String brandName = car.getModel().getBrand().getBrandName();
             String modelName = car.getModel().getModelName();
 
@@ -119,9 +115,9 @@ public class CarRepository {
             RequestBody body = RequestBody.create(jsonObject.toString(), JSON);
 
             Request request = new Request.Builder()
-                    .url(BASE_URL)
+                    .url(BASE_URL + "cars")
                     .post(body)
-                    .addHeader("Authorization", token)
+                    .addHeader("Authorization", "Bearer " + token)
                     .build();
 
             client.newCall(request).enqueue(new Callback() {
@@ -170,7 +166,7 @@ public class CarRepository {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     Log.d("CarRepository", "Ответ сервера: " + response.code());
-                    callback.onResponse(call, response);  // проксируем
+                    callback.onResponse(call, response);
                 }
 
             });

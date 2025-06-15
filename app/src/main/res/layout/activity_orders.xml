@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Основной контент -->
     <LinearLayout
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
@@ -12,7 +11,6 @@
         android:layout_above="@id/bottomNavigation"
         android:orientation="vertical">
 
-        <!-- Заголовок и кнопка истории -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +51,6 @@
                 android:contentDescription="Информация о статусах"/>
         </RelativeLayout>
 
-        <!-- Контейнер для пустого состояния -->
         <LinearLayout
             android:id="@+id/emptyStateContainer"
             android:layout_width="match_parent"
@@ -91,7 +88,6 @@
                 android:fontFamily="@font/nunitosans_regular"/>
         </LinearLayout>
 
-        <!-- Контейнер для списка заказов -->
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
@@ -120,7 +116,6 @@
             app:cornerRadius="24dp"/>
     </LinearLayout>
 
-    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

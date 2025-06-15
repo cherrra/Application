@@ -375,7 +375,7 @@ public class AddOrderActivity extends AppCompatActivity {
                     try {
                         if (response.isSuccessful()) {
                             showToast("Запись успешно создана");
-                            clearServices(); // Очищаем выбранные услуги после успешного создания
+                            clearServices();
                             finish();
                         } else {
                             handleServerError(response.code(), responseBody);

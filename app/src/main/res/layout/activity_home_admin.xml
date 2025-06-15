@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Верхняя панель с логотипом, уведомлениями и выходом -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <!-- Кнопка уведомлений -->
         <ImageButton
             android:id="@+id/notificationButton"
             android:layout_width="48dp"
@@ -31,12 +29,10 @@
             android:src="@drawable/ic_notification"
             android:contentDescription="Уведомления" />
 
-        <!-- Отступ между кнопками -->
         <Space
             android:layout_width="8dp"
             android:layout_height="1dp" />
 
-        <!-- Кнопка выхода -->
         <Button
             android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
@@ -48,8 +44,6 @@
             app:cornerRadius="24dp" />
     </LinearLayout>
 
-
-    <!-- Заголовок "Категории услуг" -->
     <TextView
         android:id="@+id/categoriesTextView"
         android:layout_width="wrap_content"
@@ -62,7 +56,6 @@
         android:textSize="20sp"
         android:fontFamily="@font/nunitosans_bold" />
 
-    <!-- Кнопка добавления категории -->
     <Button
         android:id="@+id/addCategoryButton"
         android:layout_width="wrap_content"
@@ -76,7 +69,6 @@
         app:backgroundTint="#2260FF"
         app:cornerRadius="24dp" />
 
-    <!-- Контейнер с категориями -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -93,7 +85,6 @@
             android:padding="8dp" />
     </ScrollView>
 
-    <!-- Нижнее меню -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -105,7 +96,6 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
-        <!-- Главная -->
         <TextView
             android:id="@+id/homeButton"
             android:layout_width="0dp"
@@ -120,7 +110,6 @@
             android:textSize="18sp"
             android:fontFamily="@font/nunitosans_bold" />
 
-        <!-- Пользователи -->
         <TextView
             android:id="@+id/usersButton"
             android:layout_width="0dp"
@@ -135,7 +124,6 @@
             android:fontFamily="@font/nunitosans_semibold"
             android:textSize="18sp" />
 
-        <!-- Заказы -->
         <TextView
             android:id="@+id/orderButton"
             android:layout_width="0dp"

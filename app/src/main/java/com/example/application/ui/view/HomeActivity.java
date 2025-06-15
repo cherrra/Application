@@ -151,7 +151,6 @@ public class HomeActivity extends AppCompatActivity {
         nameView.setLayoutParams(textParams);
         card.addView(nameView);
 
-        // Анимация при нажатии
         card.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:

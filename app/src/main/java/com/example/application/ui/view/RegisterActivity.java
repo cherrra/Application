@@ -31,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox privacyPolicyCheckBox;
 
     private TextView privacyPolicyText;
+    private TextView bottomPrivacyPolicyText;
     private ApiClient apiClient;
 
     @Override
@@ -45,8 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         privacyPolicyCheckBox = findViewById(R.id.privacyPolicyCheckBox);
         privacyPolicyText = findViewById(R.id.privacyPolicyText);
+        bottomPrivacyPolicyText = findViewById(R.id.bottomPrivacyPolicyText);
 
-        // Начальное состояние кнопки (заблокирована)
         registerButton.setEnabled(false);
         updateRegisterButtonState(false);
         setupButtonAnimation(registerButton);
@@ -57,7 +58,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         privacyPolicyText.setOnClickListener(v -> {
-            // Переход на политику конфиденциальности
+            startActivity(new Intent(RegisterActivity.this, PrivacyPolicyActivity.class));
+        });
+
+        bottomPrivacyPolicyText.setOnClickListener(v -> {
             startActivity(new Intent(RegisterActivity.this, PrivacyPolicyActivity.class));
         });
 

@@ -55,7 +55,6 @@ public class CarViewModel extends ViewModel {
             @Override
             public void onResponse(Call call, Response response) {
                 try {
-                    // Читаем тело ответа только здесь
                     String responseBody = response.body() != null ? response.body().string() : "null";
                     Log.d("CarViewModel", "Ответ сервера: " + response.code() + " " + responseBody);
                     imageUploadStatus.postValue(response.isSuccessful());
