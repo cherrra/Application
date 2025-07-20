@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -140,6 +141,34 @@ public class OrdersRepository {
         });
     }
 
+    // --- НОВЫЙ МЕТОД ДЛЯ ПОЛУЧЕНИЯ ЗАНЯТЫХ СЛОТОВ ---
+    public void getBookedTimeSlots(String token, String date, BookedTimeSlotsCallback callback) {
+        apiClient.getBookedTimeSlots(token, date, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onError("Ошибка сети при получении занятых слотов: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().string());
+                        List<String> bookedSlots = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            bookedSlots.add(jsonArray.getString(i));
+                        }
+                        callback.onSuccess(bookedSlots);
+                    } catch (Exception e) {
+                        callback.onError("Ошибка обработки данных о занятых слотах: " + e.getMessage());
+                    }
+                } else {
+                    callback.onError("Ошибка сервера при получении занятых слотов: " + response.code());
+                }
+            }
+        });
+    }
+
     public interface OrderCallback {
         void onSuccess(List<Order> orders);
         void onError(String error);
@@ -157,6 +186,12 @@ public class OrdersRepository {
 
     public interface UserCallback {
         void onSuccess(User user);
+        void onError(String error);
+    }
+
+    // --- НОВЫЙ КОЛБЭК ДЛЯ ЗАНЯТЫХ СЛОТОВ ---
+    public interface BookedTimeSlotsCallback {
+        void onSuccess(List<String> bookedSlots);
         void onError(String error);
     }
 }

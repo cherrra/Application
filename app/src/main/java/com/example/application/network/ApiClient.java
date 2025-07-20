@@ -300,5 +300,15 @@ public class ApiClient {
             client.newCall(request).enqueue(callback);
         }
 
+    // --- НОВЫЙ МЕТОД ДЛЯ ПОЛУЧЕНИЯ ЗАНЯТЫХ СЛОТОВ ---
+    public void getBookedTimeSlots(String token, String date, Callback callback) {
+        String url = BASE_URL + "orders/booked-slots?date=" + date; // Ваш текущий URL
+        Log.d("ApiClient", "Отправка запроса GET на URL для занятых слотов: " + url); // <-- ДОБАВЬТЕ ЭТУ СТРОКУ
+        Request request = new Request.Builder()
+                .url(url) // Используйте переменную url
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        client.newCall(request).enqueue(callback);
+    }
 }
 
